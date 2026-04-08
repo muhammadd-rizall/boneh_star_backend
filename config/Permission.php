@@ -16,6 +16,10 @@ return [
         'create' => 'roles.create',
         'update' => 'roles.update',
         'delete' => 'roles.delete',
+    ],
+
+    // Permission management
+    'permissions' => [
         'manage' => 'permissions.manage',
     ],
 ];

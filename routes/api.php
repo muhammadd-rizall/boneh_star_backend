@@ -36,6 +36,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::post('/{role}/permissions/{permission}/detach', [RoleController::class, 'detachPermission'])->name('detach-permission');
         });
         Route::apiResource('roles', RoleController::class);
-
+        
+    });
 
 });
