@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\BaseController;
 use App\Http\Requests\Admin\Role\StoreRoleRequest;
 use App\Http\Requests\Admin\Role\SyncPermissionRequest;
 use App\Http\Requests\Admin\Role\UpdateRoleRequest;
@@ -12,7 +12,7 @@ use App\Models\Permission;
 use App\Models\Role;
 use App\Services\Admin\RoleService;
 
-class RoleController extends Controller
+class RoleController extends BaseController
 {
     protected RoleService $roleService;
 
