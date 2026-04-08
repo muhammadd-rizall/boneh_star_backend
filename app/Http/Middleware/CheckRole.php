@@ -19,7 +19,7 @@ class CheckRole
 
 
         // Check if user is authenticated
-        if(!$user){
+        if (!$user) {
             return response()->json([
                 'success' => false,
                 'message' => 'Unauthorized',
@@ -28,12 +28,20 @@ class CheckRole
 
 
         // Check if user has one of the required roles
-        if(!in_array($user->role->slug, $roles)){
+        $hasAnyRole = false;
+        foreach ($roles as $role) {
+            if ($user->hasRole($role)) {
+                $hasAnyRole = true;
+                break;
+            }
+        }
+
+        if (!$hasAnyRole) {
             return response()->json([
                 'success' => false,
                 'message' => 'You do not have permission to access this resource.',
                 'required_roles' => $roles,
-                'your_role' => $user->role->slug,
+                'your_roles' => $user->roles->pluck('slug'),
             ], 403);
         }
 

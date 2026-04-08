@@ -17,16 +17,25 @@ class CheckPermission
     {
         $user = $request->user();
 
-        if(!$user){
+        if (!$user) {
             return response()->json([
                 'success' => false,
                 'message' => 'Unauthorized',
             ], 401);
         }
 
-        $hasPermission = $user->role->permissions()->whereIn('slug', explode(',', $permissions))->exists();
+        // Split multiple permissions if provided (e.g. 'users.view,users.create')
+        $permissionArray = explode(',', $permissions);
+        
+        $hasPermission = false;
+        foreach ($permissionArray as $permission) {
+            if ($user->hasPermissions(trim($permission))) {
+                $hasPermission = true;
+                break;
+            }
+        }
 
-        if(!$hasPermission){
+        if (!$hasPermission) {
             return response()->json([
                 'success' => false,
                 'message' => 'You do not have permission to access this resource.',

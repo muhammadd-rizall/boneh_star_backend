@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -33,24 +34,24 @@ class User extends Authenticatable
     }
 
 
-    //get role of the user
-    public function role()
+    //get roles of the user
+    public function roles(): BelongsToMany
     {
-        return $this->belongsTo(Role::class);
+        return $this->belongsToMany(Role::class, 'user_roles')->withTimestamps();
     }
 
 
     //check if the user has a specific permission
-    public function hasPermissions($permissionSlug): bool
+    public function hasPermissions(string $permissionSlug): bool
     {
-        return $this->permissions()->contains($permissionSlug);
+        return $this->roles->flatMap->permissions->pluck('slug')->contains($permissionSlug);
     }
 
 
     //check if the user has a specific role
     public function hasRole(string $roleSlug): bool
     {
-        return $this->role?->slug === $roleSlug;
+        return $this->roles->contains('slug', $roleSlug);
     }
 
 
