@@ -1,11 +1,32 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\CustomerController;
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\UserController;
+use App\Http\Controllers\Api\Auth\Admin\LoginController as AdminLoginController;
+use App\Http\Controllers\Api\Auth\Admin\LogoutController as AdminLogoutController;
+use App\Http\Controllers\Api\Auth\Public\LoginController as PublicLoginController;
+use App\Http\Controllers\Api\Auth\Public\LogoutController as PublicLogoutController;
+use App\Http\Controllers\Api\Auth\Public\RegisterController as PublicRegisterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+// Auth Public routes
+Route::prefix('auth')->name('auth.')->group(function () {
+    Route::post('/login', [PublicLoginController::class, 'login'])->name('login');
+    Route::post('/register', [PublicRegisterController::class, 'register'])->name('register');
+});
+
+// Auth Admin routes
+Route::prefix('admin/auth')->name('admin.auth.')->group(function () {
+    Route::post('/login', [AdminLoginController::class, 'login'])->name('login');
+});
+
 Route::middleware(['auth:sanctum'])->group(function () {
+
+    // Auth Logout routes
+    Route::post('/auth/logout', [PublicLogoutController::class, 'logout'])->name('auth.logout');
+    Route::post('/admin/auth/logout', [AdminLogoutController::class, 'logout'])->name('admin.auth.logout');
 
     // Get current authenticated user
     Route::get('/user', function (Request $request) {
@@ -36,7 +57,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::post('/{role}/permissions/{permission}/detach', [RoleController::class, 'detachPermission'])->name('detach-permission');
         });
         Route::apiResource('roles', RoleController::class);
-        
+
+        // Customer management routes
+        Route::prefix('customers')->name('customers.')->group(function () {
+            Route::get('/trashed', [CustomerController::class, 'trashed'])->name('trashed');
+            Route::post('/{id}/restore', [CustomerController::class, 'restore'])->name('restore');
+            Route::delete('/{id}/force-delete', [CustomerController::class, 'forceDelete'])->name('force-delete');
+        });
+        Route::apiResource('customers', CustomerController::class);
+
     });
 
 });

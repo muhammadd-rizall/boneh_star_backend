@@ -14,13 +14,13 @@ class RoleResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-       return [
+        return [
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
             'is_active' => $this->is_active,
             'user_count' => $this->when(isset($this->users_count), $this->users_count),
-            'permissions' => permissionResource::collection($this->whenLoaded('permissions')),
+            'permissions' => PermissionResource::collection($this->whenLoaded('permissions')),
             'deleted_at' => $this->deleted_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
