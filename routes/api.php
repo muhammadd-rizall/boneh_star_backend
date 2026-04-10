@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Admin\BusesController;
 use App\Http\Controllers\Api\Admin\CustomerController;
+use App\Http\Controllers\Api\Admin\DriverController;
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Auth\Admin\LoginController as AdminLoginController;
@@ -74,6 +75,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::delete('/{id}/force-delete', [BusesController::class, 'forceDelete'])->name('force-delete');
         });
         Route::apiResource('buses', BusesController::class);
+
+        // Driver management routes
+        Route::prefix('drivers')->name('drivers.')->group(function () {
+            Route::get('/trashed', [DriverController::class, 'trashed'])->name('trashed');
+            Route::post('/{id}/restore', [DriverController::class, 'restore'])->name('restore');
+            Route::delete('/{id}/force-delete', [DriverController::class, 'forceDelete'])->name('force-delete');
+        });
+        Route::apiResource('drivers', DriverController::class);
 
     });
 });

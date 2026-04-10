@@ -1,0 +1,65 @@
+<?php
+
+namespace App\Policies;
+
+use App\Models\Driver;
+use App\Models\User;
+
+class DriverPolicy
+{
+    /**
+     * Determine whether the user can view any models.
+     */
+    public function viewAny(User $user): bool
+    {
+        return $user->hasPermissionTo('drivers.view');
+    }
+
+    /**
+     * Determine whether the user can view the model.
+     */
+    public function view(User $user, Driver $driver): bool
+    {
+        return $user->hasPermissionsTo('drivers.view');
+    }
+
+    /**
+     * Determine whether the user can create models.
+     */
+    public function create(User $user): bool
+    {
+        return $user->hasPermissionsTo('drivers.create');
+    }
+
+    /**
+     * Determine whether the user can update the model.
+     */
+    public function update(User $user, Driver $driver): bool
+    {
+        return $user->hasPermissionsTo('drivers.update');
+    }
+
+    /**
+     * Determine whether the user can delete the model.
+     */
+    public function delete(User $user, Driver $driver): bool
+    {
+        return $user->hasPermissionsTo('drivers.delete');
+    }
+
+    /**
+     * Determine whether the user can restore the model.
+     */
+    public function restore(User $user, Driver $driver): bool
+    {
+        return $user->hasPermissionsTo('drivers.restore');
+    }
+
+    /**
+     * Determine whether the user can permanently delete the model.
+     */
+    public function forceDelete(User $user, Driver $driver): bool
+    {
+        return $user->hasPermissionsTo('drievers.forceDelete');
+    }
+}

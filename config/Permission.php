@@ -27,7 +27,7 @@ return [
         'manage' => 'permissions.manage',
     ],
 
-    //customer permissions
+    // customer permissions
     'customers' => [
         'view' => 'customers.view',
         'create' => 'customers.create',
@@ -35,5 +35,25 @@ return [
         'delete' => 'customers.delete',
         'restore' => 'customers.restore',
         'forceDelete' => 'customers.forceDelete',
+    ],
+
+    // bus permission
+    'buses' => [
+        'view' => 'buses.view',
+        'create' => 'buses.create',
+        'update' => 'buses.update',
+        'delete' => 'buses.delete',
+        'restore' => 'buses.restore',
+        'forceDelete' => 'buses.forceDelete',
+    ],
+
+    // driver permission
+    'drivers' => [
+        'view' => 'drivers.view',
+        'create' => 'drivers.create',
+        'update' => 'drivers.update',
+        'delete' => 'drivers.delete',
+        'restore' => 'drivers.restore',
+        'forceDelete' => 'drivers.forceDelete',
     ],
 ];
