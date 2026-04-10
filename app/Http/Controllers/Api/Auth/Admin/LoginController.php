@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Auth\Admin;
 
 use App\Http\Controllers\Api\BaseController;
-use App\Http\Resources\Admin\UserResource;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;

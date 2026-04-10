@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Requests\Admin\Customer;
+namespace App\Http\Requests\Customer;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreCustomerRequest extends FormRequest
+class UpdateCustomerRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return $this->user()->can('customers.create');
+        return $this->user()->can('customers.update');
     }
 
     /**
@@ -22,13 +22,24 @@ class StoreCustomerRequest extends FormRequest
      */
     public function rules(): array
     {
+        $customerId = $this->route('customer');
+        if (is_object($customerId)) {
+            $customerId = $customerId->id;
+        }
+
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:customers,email'],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique('customers', 'email')->ignore($customerId),
+            ],
             'phone' => ['nullable', 'string', 'max:20'],
             'profile_picture' => ['nullable', 'string', 'max:255'],
             'address' => ['nullable', 'string'],
-            'password' => ['required', 'string', 'min:8'],
+            'password' => ['nullable', 'string', 'min:8'],
             'is_active' => ['nullable', 'boolean'],
         ];
     }
@@ -40,7 +51,6 @@ class StoreCustomerRequest extends FormRequest
             'email.required' => 'Email is required.',
             'email.email' => 'Email must be a valid email address.',
             'email.unique' => 'Email has already been taken.',
-            'password.required' => 'Password is required.',
             'password.min' => 'Password must be at least 8 characters.',
         ];
     }

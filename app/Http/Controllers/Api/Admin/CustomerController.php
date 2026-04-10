@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Customer\StoreCustomerRequest;
-use App\Http\Requests\Admin\Customer\UpdateCustomerRequest;
-use App\Http\Resources\Admin\CustomerResource;
+use App\Http\Requests\Customer\StoreCustomerRequest;
+use App\Http\Requests\Customer\UpdateCustomerRequest;
+use App\Http\Resources\CustomerResource;
 use App\Models\Customer;
-use App\Services\Admin\CustomerService;
+use App\Services\CustomerService;
 
 class CustomerController extends Controller
 {

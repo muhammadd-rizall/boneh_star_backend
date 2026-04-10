@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Api\BaseController;
-use App\Http\Requests\Admin\User\StoreUserRequest;
-use App\Http\Requests\Admin\User\UpdateUserRequest;
-use App\Http\Resources\Admin\UserResource;
+use App\Http\Requests\User\StoreUserRequest;
+use App\Http\Requests\User\UpdateUserRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
-use App\Services\Admin\UserService;
+use App\Services\UserService;
 
 class UserController extends BaseController
 {
@@ -47,7 +47,7 @@ class UserController extends BaseController
         unset($data['role_ids']);
 
         $user = $this->userService->createUser($data);
-        
+
         if (!empty($roleIds)) {
             $user->roles()->sync($roleIds);
         }

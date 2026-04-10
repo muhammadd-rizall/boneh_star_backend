@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Admin;
+namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class RoleResource extends JsonResource
+class PermissionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,10 +18,7 @@ class RoleResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
-            'is_active' => $this->is_active,
-            'user_count' => $this->when(isset($this->users_count), $this->users_count),
-            'permissions' => PermissionResource::collection($this->whenLoaded('permissions')),
-            'deleted_at' => $this->deleted_at,
+            'group' => $this->group,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Auth\Public;
 
 use App\Http\Controllers\Api\BaseController;
-use App\Http\Resources\Admin\CustomerResource;
+use App\Http\Resources\CustomerResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

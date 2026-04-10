@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Api\BaseController;
-use App\Http\Requests\Admin\Role\StoreRoleRequest;
-use App\Http\Requests\Admin\Role\SyncPermissionRequest;
-use App\Http\Requests\Admin\Role\UpdateRoleRequest;
-use App\Http\Resources\Admin\PermissionResource;
-use App\Http\Resources\Admin\RoleResource;
+use App\Http\Requests\Role\StoreRoleRequest;
+use App\Http\Requests\Role\SyncPermissionRequest;
+use App\Http\Requests\Role\UpdateRoleRequest;
+use App\Http\Resources\PermissionResource;
+use App\Http\Resources\RoleResource;
 use App\Models\Permission;
 use App\Models\Role;
-use App\Services\Admin\RoleService;
+use App\Services\RoleService;
 
 class RoleController extends BaseController
 {

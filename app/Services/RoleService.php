@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\Admin;
+namespace App\Services;
 
-use App\Repositories\Admin\RoleRepository;
+use App\Repositories\RoleRepository;
 
 
 
