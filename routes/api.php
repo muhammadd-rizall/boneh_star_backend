@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\BusesController;
 use App\Http\Controllers\Api\Admin\CustomerController;
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\UserController;
@@ -66,6 +67,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
         });
         Route::apiResource('customers', CustomerController::class);
 
-    });
+        // Buses management routes
+        Route::prefix('buses')->name('buses.')->group(function () {
+            Route::get('/trashed', [BusesController::class, 'trashed'])->name('trashed');
+            Route::post('/{id}/restore', [BusesController::class, 'restore'])->name('restore');
+            Route::delete('/{id}/force-delete', [BusesController::class, 'forceDelete'])->name('force-delete');
+        });
+        Route::apiResource('buses', BusesController::class);
 
+    });
 });
