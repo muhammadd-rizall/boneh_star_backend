@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\BookingController;
 use App\Http\Controllers\Api\Admin\BusesController;
 use App\Http\Controllers\Api\Admin\CustomerController;
 use App\Http\Controllers\Api\Admin\DriverController;
@@ -83,6 +84,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::delete('/{id}/force-delete', [DriverController::class, 'forceDelete'])->name('force-delete');
         });
         Route::apiResource('drivers', DriverController::class);
+
+        // Booking management routes
+        Route::prefix('bookings')->name('bookings.')->group(function () {
+            Route::get('/trashed', [BookingController::class, 'trashed'])->name('trashed');
+            Route::post('/{id}/restore', [BookingController::class, 'restore'])->name('restore');
+            Route::delete('/{id}/force-delete', [BookingController::class, 'forceDelete'])->name('force-delete');
+        });
+        Route::apiResource('bookings', BookingController::class);
 
     });
 });

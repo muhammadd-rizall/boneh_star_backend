@@ -56,4 +56,14 @@ return [
         'restore' => 'drivers.restore',
         'forceDelete' => 'drivers.forceDelete',
     ],
+
+    //booking permission
+    'bookings' => [
+        'view' => 'bookings.view',
+        'create' => 'bookings.create',
+        'update' => 'bookings.update',
+        'delete' => 'bookings.delete',
+        'restore' => 'bookings.restore',
+        'forceDelete' => 'bookings.forceDelete',
+    ],
 ];

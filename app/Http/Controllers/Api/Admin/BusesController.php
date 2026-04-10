@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\BaseController;
 use App\Http\Requests\Bus\StoreBusesRequest;
 use App\Http\Requests\Bus\UpdateBusesRequest;
 use App\Http\Resources\BusesResource;
 use App\Models\Buses;
 use App\Services\BusesService;
 
-class BusesController extends Controller
+class BusesController extends BaseController
 {
     protected BusesService $busesService;
 
@@ -17,7 +17,6 @@ class BusesController extends Controller
     {
         $this->busesService = $busesService;
     }
-
 
     /**
      * Display a listing of the resource.
@@ -35,8 +34,6 @@ class BusesController extends Controller
         ], 200);
     }
 
-
-
     /**
      * Display the specified resource.
      */
@@ -52,7 +49,6 @@ class BusesController extends Controller
             'message' => 'Bus retrieved successfully',
         ], 200);
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -72,8 +68,6 @@ class BusesController extends Controller
         ], 201);
     }
 
-
-
     /**
      * Update the specified resource in storage.
      */
@@ -92,7 +86,6 @@ class BusesController extends Controller
         ], 200);
     }
 
-
     /**
      * Remove the specified resource from storage.
      */
@@ -107,7 +100,6 @@ class BusesController extends Controller
             'message' => 'Bus deleted successfully',
         ], 200);
     }
-
 
     /**
      * Display a listing of the trashed resources.
@@ -125,7 +117,6 @@ class BusesController extends Controller
         ], 200);
     }
 
-
     /**
      * Restore the specified resource from storage.
      */
@@ -140,7 +131,6 @@ class BusesController extends Controller
             'message' => 'Bus restored successfully',
         ], 200);
     }
-
 
     /**
      * Permanently delete the specified resource from storage.
