@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Policies\Admin;
+namespace App\Policies;
 
 use App\Models\User;
 
@@ -17,7 +17,7 @@ class UserPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, user $model): bool
+    public function view(User $user, User $model): bool
     {
         return $user->hasPermissions('users.view');
     }
@@ -33,7 +33,7 @@ class UserPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, user $model): bool
+    public function update(User $user, User $model): bool
     {
         return $user->hasPermissions('users.update');
     }
@@ -41,7 +41,7 @@ class UserPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, user $model): bool
+    public function delete(User $user, User $model): bool
     {
         return $user->hasPermissions('users.delete');
     }
@@ -49,7 +49,7 @@ class UserPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, user $model): bool
+    public function restore(User $user, User $model): bool
     {
         return $user->hasPermissions('users.delete');
     }
@@ -57,7 +57,7 @@ class UserPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, user $model): bool
+    public function forceDelete(User $user, User $model): bool
     {
         return $user->hasPermissions('users.delete');
     }

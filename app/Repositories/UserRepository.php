@@ -34,4 +34,16 @@ class UserRepository extends BaseRepository
             $query->where('roles.id', $roleId);
         })->with(['roles'])->get();
     }
+
+
+    //get user statistics
+    public function getStatistics(): array
+    {
+        return [
+            'total' => $this->model->count(),
+            'active' => $this->model->active()->count(),
+            'inactive' => $this->model->where('is_active', false)->count(),
+            'trashed' => $this->model->onlyTrashed()->count(),
+        ];
+    }
 }

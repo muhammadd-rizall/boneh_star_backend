@@ -104,4 +104,12 @@ class UserService
     {
         return $this->userRepository->getByRole($roleId);
     }
+
+
+
+    //get user statistics
+    public function getStatistics(): array
+    {
+        return $this->userRepository->getStatistics();
+    }
 }

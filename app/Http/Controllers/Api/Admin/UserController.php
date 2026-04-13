@@ -26,10 +26,12 @@ class UserController extends BaseController
     {
         $this->authorize('viewAny', User::class);
 
+        $statistics = $this->userService->getStatistics();
         $users = $this->userService->getAllUsers();
 
         return response()->json([
             'success' => true,
+            'statistics' => $statistics,
             'data' => UserResource::collection($users),
             'message' => 'Users retrieved successfully',
         ], 200);
