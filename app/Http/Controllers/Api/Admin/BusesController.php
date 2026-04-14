@@ -25,11 +25,14 @@ class BusesController extends BaseController
     {
         $this->authorize('viewAny', Buses::class);
 
-        $buses = $this->busesService->getAllBuses();
+        $statistics = $this->busesService->getStatistics();
+
+        $buses = $this->busesService->getPaginatedBuses();
 
         return response()->json([
             'success' => true,
-            'data' => BusesResource::collection($buses),
+            'statistic' => $statistics,
+            'data' => BusesResource::collection($buses)->response()->getData(true),
             'message' => 'Buses retrieved successfully',
         ], 200);
     }

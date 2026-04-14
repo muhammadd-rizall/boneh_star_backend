@@ -11,7 +11,7 @@ class SyncPermissionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->hasPermissions('permissions.manage');
+        return $this->user()->hasPermissionTo('permissions.manage');
     }
 
     /**

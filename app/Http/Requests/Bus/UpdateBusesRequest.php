@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Bus;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateBusesRequest extends FormRequest
@@ -17,16 +18,17 @@ class UpdateBusesRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
             'name' => ['sometimes', 'string', 'max:255'],
-            'code' => ['sometimes', 'string', 'max:50', 'unique:buses,code,' . $this->route('bus')],
+            'code' => ['sometimes', 'string', 'max:50', 'unique:buses,code,'.$this->route('bus')],
             'capacity' => ['sometimes', 'string', 'min:1'],
             'price_per_day' => ['sometimes', 'numeric', 'min:0'],
-            'image' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'images' => ['nullable', 'array'],
+            'images.*' => ['image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
             'description' => ['nullable', 'string', 'max:255'],
             'is_active' => ['sometimes', 'boolean'],
         ];
@@ -44,8 +46,10 @@ class UpdateBusesRequest extends FormRequest
             'capacity.min' => 'Capacity must be at least 1',
             'price_per_day.numeric' => 'Price per day must be a number',
             'price_per_day.min' => 'Price per day must be at least 0',
-            'image.string' => 'Image must be a string',
-            'image.max' => 'Image must not exceed 255 characters',
+            'images.array' => 'Images must be an array',
+            'images.*.image' => 'File must be an image',
+            'images.*.mimes' => 'Image must be a type of: jpeg, png, jpg, gif, svg',
+            'images.*.max' => 'Image size must not exceed 2048KB',
             'description.string' => 'Description must be a string',
             'description.max' => 'Description must not exceed 255 characters',
             'is_active.boolean' => 'Is active must be a boolean',

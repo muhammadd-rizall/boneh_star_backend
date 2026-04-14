@@ -21,22 +21,22 @@ class RoleController extends BaseController
         $this->roleService = $roleService;
     }
 
-
-
-    /// Display a listing of the resource.
+    // / Display a listing of the resource.
     public function index()
     {
         $this->authorize('viewAny', Role::class);
 
-        $role = $this->roleService->getAllRoles();
+        $statistics = $this->roleService->getStatistics();
+
+        $roles = $this->roleService->getAllRoles();
 
         return response()->json([
             'success' => true,
-            'data' => $role,
+            'statistic' => $statistics,
+            'data' => RoleResource::collection($roles),
             'message' => 'Roles retrieved successfully',
         ], 200);
     }
-
 
     // Display the specified resource.
     public function show(Role $role)
@@ -52,7 +52,6 @@ class RoleController extends BaseController
         ], 200);
     }
 
-
     // Store a newly created resource in storage.
     public function store(StoreRoleRequest $request)
     {
@@ -65,7 +64,7 @@ class RoleController extends BaseController
 
         $role = $this->roleService->createRole($data);
 
-        if (!empty($permissionIds)) {
+        if (! empty($permissionIds)) {
             $role->permissions()->sync($permissionIds);
         }
 
@@ -75,8 +74,6 @@ class RoleController extends BaseController
             'message' => 'Role created successfully',
         ], 201);
     }
-
-
 
     // Update the specified resource in storage.
     public function update(UpdateRoleRequest $request, Role $role)
@@ -101,8 +98,6 @@ class RoleController extends BaseController
         ], 200);
     }
 
-
-
     // Remove the specified resource from storage.
     public function destroy(Role $role)
     {
@@ -115,7 +110,6 @@ class RoleController extends BaseController
             'message' => 'Role deleted successfully',
         ], 200);
     }
-
 
     // Display a listing of the trashed resources.
     public function trashed()
@@ -130,7 +124,6 @@ class RoleController extends BaseController
             'message' => 'Trashed roles retrieved successfully',
         ], 200);
     }
-
 
     // Restore the specified resource from storage.
     public function restore($id)
@@ -147,7 +140,6 @@ class RoleController extends BaseController
         ], 200);
     }
 
-
     // Permanently delete the specified resource from storage.
     public function forceDelete($id)
     {
@@ -163,23 +155,31 @@ class RoleController extends BaseController
         ], 200);
     }
 
-
-    // Get all permissions grouped by group name
-    public function permissions(Role $role)
+    // Get all permissions as a flat collection
+    public function allPermissions()
     {
-        $this->authorize('ViewAny', Role::class);
+        $this->authorize('viewAny', Role::class);
 
-        $permissions = Permission::all()->groupBy('group');
+        $permissions = Permission::all();
 
         return response()->json([
             'success' => true,
-            'data' => $permissions->map(function ($groupedPermissions) {
-                return PermissionResource::collection($groupedPermissions);
-            }),
-            'message' => 'Permissions retrieved successfully',
+            'data' => PermissionResource::collection($permissions),
+            'message' => 'All permissions retrieved successfully',
         ], 200);
     }
 
+    // Get permissions of a specific role
+    public function permissions(Role $role)
+    {
+        $this->authorize('view', $role);
+
+        return response()->json([
+            'success' => true,
+            'data' => PermissionResource::collection($role->permissions),
+            'message' => 'Role permissions retrieved successfully',
+        ], 200);
+    }
 
     // Sync permissions of the role
     public function syncPermissions(SyncPermissionRequest $request, Role $role)
@@ -196,7 +196,6 @@ class RoleController extends BaseController
         ], 200);
     }
 
-
     // Attach a permission to the role
     public function attachPermission(Role $role, Permission $permission)
     {
@@ -211,14 +210,12 @@ class RoleController extends BaseController
         ], 200);
     }
 
-
-
     // Detach a permission from the role
     public function detachPermission(Role $role, Permission $permission)
     {
         $this->authorize('managePermissions', $role);
 
-        $role->$this->roleService->syncPermissions($role->id, [], [$permission->id]);
+        $this->roleService->syncPermissions($role->id, [], [$permission->id]);
 
         return response()->json([
             'success' => true,

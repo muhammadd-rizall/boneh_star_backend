@@ -12,7 +12,7 @@ class BookingPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionsTo('bookings.view');
+        return $user->hasPermissionTo('bookings.view');
     }
 
     /**
@@ -20,7 +20,7 @@ class BookingPolicy
      */
     public function view(User $user, Booking $booking): bool
     {
-        return $user->hasPermissionsTo('bookings.view');
+        return $user->hasPermissionTo('bookings.view');
     }
 
     /**
@@ -28,7 +28,7 @@ class BookingPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionsTo('bookings.create');
+        return $user->hasPermissionTo('bookings.create');
     }
 
     /**
@@ -36,7 +36,7 @@ class BookingPolicy
      */
     public function update(User $user, Booking $booking): bool
     {
-        return $user->hasPermissionsTo('bookings.update');
+        return $user->hasPermissionTo('bookings.update');
     }
 
     /**
@@ -44,7 +44,7 @@ class BookingPolicy
      */
     public function delete(User $user, Booking $booking): bool
     {
-        return $user->hasPermissionsTo('bookings.delete');
+        return $user->hasPermissionTo('bookings.delete');
     }
 
     /**
@@ -52,7 +52,7 @@ class BookingPolicy
      */
     public function restore(User $user, Booking $booking): bool
     {
-        return $user->hasPermissionsTo('bookings.restore');
+        return $user->hasPermissionTo('bookings.restore');
     }
 
     /**
@@ -60,6 +60,6 @@ class BookingPolicy
      */
     public function forceDelete(User $user, Booking $booking): bool
     {
-        return $user->hasPermissionsTo('bookings.forceDelete');
+        return $user->hasPermissionTo('bookings.forceDelete');
     }
 }

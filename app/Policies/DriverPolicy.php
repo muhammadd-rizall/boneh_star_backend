@@ -20,7 +20,7 @@ class DriverPolicy
      */
     public function view(User $user, Driver $driver): bool
     {
-        return $user->hasPermissionsTo('drivers.view');
+        return $user->hasPermissionTo('drivers.view');
     }
 
     /**
@@ -28,7 +28,7 @@ class DriverPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionsTo('drivers.create');
+        return $user->hasPermissionTo('drivers.create');
     }
 
     /**
@@ -36,7 +36,7 @@ class DriverPolicy
      */
     public function update(User $user, Driver $driver): bool
     {
-        return $user->hasPermissionsTo('drivers.update');
+        return $user->hasPermissionTo('drivers.update');
     }
 
     /**
@@ -44,7 +44,7 @@ class DriverPolicy
      */
     public function delete(User $user, Driver $driver): bool
     {
-        return $user->hasPermissionsTo('drivers.delete');
+        return $user->hasPermissionTo('drivers.delete');
     }
 
     /**
@@ -52,7 +52,7 @@ class DriverPolicy
      */
     public function restore(User $user, Driver $driver): bool
     {
-        return $user->hasPermissionsTo('drivers.restore');
+        return $user->hasPermissionTo('drivers.restore');
     }
 
     /**
@@ -60,6 +60,6 @@ class DriverPolicy
      */
     public function forceDelete(User $user, Driver $driver): bool
     {
-        return $user->hasPermissionsTo('drievers.forceDelete');
+        return $user->hasPermissionTo('drivers.forceDelete');
     }
 }

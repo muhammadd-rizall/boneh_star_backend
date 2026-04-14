@@ -25,10 +25,13 @@ class CustomerController extends BaseController
     {
         $this->authorize('viewAny', Customer::class);
 
+        $statistics = $this->customerService->getStatistics();
+
         $customers = $this->customerService->getPaginatedCustomers();
 
         return response()->json([
             'success' => true,
+            'statistic' => $statistics,
             'data' => CustomerResource::collection($customers)->response()->getData(true),
             'message' => 'Customers retrieved successfully',
         ], 200);
@@ -64,7 +67,6 @@ class CustomerController extends BaseController
             'data' => new CustomerResource($customer),
             'message' => 'Customer retrieved successfully',
         ], 200);
-
     }
 
     /**
@@ -140,6 +142,5 @@ class CustomerController extends BaseController
             'success' => true,
             'message' => 'Customer permanently deleted successfully',
         ], 200);
-
     }
 }

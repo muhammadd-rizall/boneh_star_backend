@@ -66,4 +66,10 @@ class CustomerService
     {
         return $this->customerRepository->forceDelete($id);
     }
+
+    // get user statistics
+    public function getStatistics(): array
+    {
+        return $this->customerRepository->getStatistics();
+    }
 }

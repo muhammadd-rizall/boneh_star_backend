@@ -49,6 +49,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         // Role management routes
         Route::prefix('roles')->name('roles.')->group(function () {
+            Route::get('/permissions', [RoleController::class, 'allPermissions'])->name('permissions.all');
             Route::get('/trashed', [RoleController::class, 'trashed'])->name('trashed');
             Route::post('/{id}/restore', [RoleController::class, 'restore'])->name('restore');
             Route::delete('/{id}/force-delete', [RoleController::class, 'forceDelete'])->name('force-delete');

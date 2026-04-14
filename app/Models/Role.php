@@ -7,14 +7,12 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable('name', 'slug', 'is_active')]
 class Role extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
-
 
     public function casts()
     {
@@ -23,29 +21,31 @@ class Role extends Model
         ];
     }
 
-
-    //get users of the role
+    // get users of the role
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'user_roles')->withTimestamps();
     }
 
-
-    //get permissions of the role
+    // get permissions of the role
     public function permissions(): BelongsToMany
     {
         return $this->belongsToMany(Permission::class, 'role_permissions')->withTimestamps();
     }
 
-
-    //check if the role has a specific permission
-    public function hasPermission(string $permissionSlug): bool
+    // check if the role has a specific permission
+    public function hasPermissionTo(string $permissionSlug): bool
     {
         return $this->permissions()->where('slug', $permissionSlug)->exists();
     }
 
+    // alias for hasPermissionTo
+    public function hasPermission(string $permissionSlug): bool
+    {
+        return $this->hasPermissionTo($permissionSlug);
+    }
 
-    //scope to get only active roles
+    // scope to get only active roles
     public function scopeActive($query)
     {
         return $query->where('is_active', true);

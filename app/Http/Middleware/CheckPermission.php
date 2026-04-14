@@ -13,11 +13,11 @@ class CheckPermission
      *
      * @param  Closure(Request): (Response)  $next
      */
-   public function handle(Request $request, Closure $next, string $permissions): Response
+    public function handle(Request $request, Closure $next, string $permissions): Response
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'success' => false,
                 'message' => 'Unauthorized',
@@ -26,16 +26,16 @@ class CheckPermission
 
         // Split multiple permissions if provided (e.g. 'users.view,users.create')
         $permissionArray = explode(',', $permissions);
-        
+
         $hasPermission = false;
         foreach ($permissionArray as $permission) {
-            if ($user->hasPermissions(trim($permission))) {
+            if ($user->hasPermissionTo(trim($permission))) {
                 $hasPermission = true;
                 break;
             }
         }
 
-        if (!$hasPermission) {
+        if (! $hasPermission) {
             return response()->json([
                 'success' => false,
                 'message' => 'You do not have permission to access this resource.',
