@@ -16,11 +16,15 @@ class BusesResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'code' => $this->code,
+            'bus_category_id' => $this->bus_category_id,
+            'plat_number' => $this->plat_number,
             'name' => $this->name,
-            'capacity' => $this->capacity,
-            'price_per_day' => $this->price_per_day,
-            'image' => $this->image, // Keeping for compatibility
+            'seat_count' => $this->seat_count,
+            'production_year' => $this->production_year,
+            'brand' => $this->brand,
+            'status' => $this->status,
+            'notes' => $this->notes,
+            'category' => new BusCategoriesResource($this->whenLoaded('category')),
             'images' => $this->whenLoaded('images', function () {
                 return $this->images->map(function ($image) {
                     return [
@@ -31,8 +35,6 @@ class BusesResource extends JsonResource
                     ];
                 });
             }),
-            'description' => $this->description,
-            'is_active' => $this->is_active,
             'deleted_at' => $this->deleted_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

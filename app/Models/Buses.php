@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['code', 'name', 'capacity', 'price_per_day', 'image', 'description', 'is_active'])]
+#[Fillable(['bus_category_id', 'plat_number', 'name', 'seat_count', 'production_year', 'brand', 'status', 'notes'])]
 class Buses extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
@@ -22,9 +23,17 @@ class Buses extends Model
     protected function casts(): array
     {
         return [
-            'is_active' => 'boolean',
-            'price_per_day' => 'decimal:2',
+            'seat_count' => 'integer',
+            'production_year' => 'integer',
         ];
+    }
+
+    /**
+     * Get the category that owns the bus.
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(BusCategory::class, 'bus_category_id');
     }
 
     /**

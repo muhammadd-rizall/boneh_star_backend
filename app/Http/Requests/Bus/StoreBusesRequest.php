@@ -23,41 +23,36 @@ class StoreBusesRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'bus_category_id' => ['required', 'exists:bus_categories,id'],
+            'plat_number' => ['required', 'string', 'max:255', 'unique:buses,plat_number'],
             'name' => ['required', 'string', 'max:255'],
-            'code' => ['required', 'string', 'max:50', 'unique:buses,code'],
-            'capacity' => ['required', 'string', 'min:1'],
-            'price_per_day' => ['required', 'numeric', 'min:0'],
+            'seat_count' => ['required', 'integer', 'min:1'],
+            'production_year' => ['required', 'integer', 'min:1900', 'max:'.date('Y')],
+            'brand' => ['nullable', 'string', 'max:255'],
+            'status' => ['required', 'in:available,booked,maintenance,inactive'],
+            'notes' => ['nullable', 'string'],
             'images' => ['nullable', 'array'],
             'images.*' => ['image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-            'description' => ['nullable', 'string', 'max:255'],
-            'is_active' => ['required', 'boolean'],
         ];
     }
 
     public function messages(): array
     {
         return [
+            'bus_category_id.required' => 'Bus category is required',
+            'bus_category_id.exists' => 'Bus category does not exist',
+            'plat_number.required' => 'Plat number is required',
+            'plat_number.unique' => 'Plat number has already been taken',
             'name.required' => 'Name is required',
-            'name.string' => 'Name must be a string',
-            'name.max' => 'Name must not exceed 255 characters',
-            'code.required' => 'Code is required',
-            'code.string' => 'Code must be a string',
-            'code.max' => 'Code must not exceed 50 characters',
-            'code.unique' => 'Code has already been taken',
-            'capacity.required' => 'Capacity is required',
-            'capacity.string' => 'Capacity must be a string',
-            'capacity.min' => 'Capacity must be at least 1',
-            'price_per_day.required' => 'Price per day is required',
-            'price_per_day.numeric' => 'Price per day must be a number',
-            'price_per_day.min' => 'Price per day must be at least 0',
+            'seat_count.required' => 'Seat count is required',
+            'production_year.required' => 'Production year is required',
+            'status.required' => 'Status is required',
+            'status.in' => 'Invalid status selected',
+            'notes.required' => 'Notes are required',
             'images.array' => 'Images must be an array',
             'images.*.image' => 'File must be an image',
             'images.*.mimes' => 'Image must be a type of: jpeg, png, jpg, gif, svg',
             'images.*.max' => 'Image size must not exceed 2048KB',
-            'description.string' => 'Description must be a string',
-            'description.max' => 'Description must not exceed 255 characters',
-            'is_active.required' => 'Is active is required',
-            'is_active.boolean' => 'Is active must be a boolean',
         ];
     }
 }

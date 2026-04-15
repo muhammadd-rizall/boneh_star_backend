@@ -18,7 +18,7 @@ class BusesService
     // get all buses
     public function getAllBuses()
     {
-        return $this->busesRepository->all(['images']);
+        return $this->busesRepository->all(['category', 'images']);
     }
 
     // get paginated buses
@@ -30,7 +30,7 @@ class BusesService
     // get bus by id
     public function getBusById(string $id)
     {
-        return $this->busesRepository->find($id, ['images']);
+        return $this->busesRepository->find($id, ['category', 'images']);
     }
 
     // create bus
@@ -49,7 +49,7 @@ class BusesService
                 }
             }
 
-            return $bus->load('images');
+            return $bus->load(['category', 'images']);
         });
     }
 
@@ -60,9 +60,6 @@ class BusesService
             $bus = $this->busesRepository->update($id, $data);
 
             if (isset($data['images']) && is_array($data['images'])) {
-                // Optional: Delete old images if replacing everything
-                // $this->deleteBusImages($bus);
-
                 foreach ($data['images'] as $index => $image) {
                     $path = $image->store('buses', 'public');
                     $bus->images()->create([
@@ -72,7 +69,7 @@ class BusesService
                 }
             }
 
-            return $bus->load('images');
+            return $bus->load(['category', 'images']);
         });
     }
 
@@ -85,7 +82,7 @@ class BusesService
     // get all trashed buses
     public function getTrashedBuses()
     {
-        return $this->busesRepository->allTrashed(['images']);
+        return $this->busesRepository->allTrashed(['category', 'images']);
     }
 
     // restore bus by id

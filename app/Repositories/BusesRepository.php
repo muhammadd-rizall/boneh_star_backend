@@ -30,14 +30,14 @@ class BusesRepository extends BaseRepository
         return [
             'cards' => [
                 'total' => $this->model->count(),
-                'active' => $this->model->where('is_active', true)->count(),
-                'inactive' => $this->model->where('is_active', false)->count(),
-                'average_price' => round($this->model->avg('price_per_day') ?? 0, 2),
+                'available' => $this->model->where('status', 'available')->count(),
+                'booked' => $this->model->where('status', 'booked')->count(),
+                'maintenance' => $this->model->where('status', 'maintenance')->count(),
             ],
-            'by_capacity' => $this->model->select('capacity', DB::raw('count(*) as count'))
-                ->groupBy('capacity')
+            'by_status' => $this->model->select('status', DB::raw('count(*) as count'))
+                ->groupBy('status')
                 ->get()
-                ->pluck('count', 'capacity')
+                ->pluck('count', 'status')
                 ->toArray(),
         ];
     }
