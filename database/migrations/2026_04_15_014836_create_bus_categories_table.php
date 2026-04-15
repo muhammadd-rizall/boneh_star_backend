@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('drivers', function (Blueprint $table) {
+        Schema::create('bus_categories', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
-            $table->string('phone');
-            $table->string('position');
-            $table->enum('status', ['active', 'inactive']);
+            $table->integer('min_capacity');
+            $table->integer('max_capacity');
+            $table->text('description')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('drivers');
+        Schema::dropIfExists('bus_categories');
     }
 };

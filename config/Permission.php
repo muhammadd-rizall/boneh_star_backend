@@ -37,6 +37,16 @@ return [
         'forceDelete' => 'customers.forceDelete',
     ],
 
+    // Bus Categories permissions
+    'categories' => [
+        'view' => 'categories.view',
+        'create' => 'categories.create',
+        'update' => 'categories.update',
+        'delete' => 'categories.delete',
+        'restore' => 'categories.restore',
+        'forceDelete' => 'categories.forceDelete',
+    ],
+
     // bus permission
     'buses' => [
         'view' => 'buses.view',
@@ -57,7 +67,7 @@ return [
         'forceDelete' => 'drivers.forceDelete',
     ],
 
-    //booking permission
+    // booking permission
     'bookings' => [
         'view' => 'bookings.view',
         'create' => 'bookings.create',
