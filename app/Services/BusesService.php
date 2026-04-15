@@ -39,6 +39,10 @@ class BusesService
         return DB::transaction(function () use ($data) {
             $bus = $this->busesRepository->create($data);
 
+            if (isset($data['facilities'])) {
+                $bus->facilities()->sync($data['facilities']);
+            }
+
             if (isset($data['images']) && is_array($data['images'])) {
                 foreach ($data['images'] as $index => $image) {
                     $path = $image->store('buses', 'public');
@@ -49,7 +53,7 @@ class BusesService
                 }
             }
 
-            return $bus->load(['category', 'images']);
+            return $bus->load(['category', 'images', 'facilities']);
         });
     }
 
@@ -58,6 +62,10 @@ class BusesService
     {
         return DB::transaction(function () use ($id, $data) {
             $bus = $this->busesRepository->update($id, $data);
+
+            if (isset($data['facilities'])) {
+                $bus->facilities()->sync($data['facilities']);
+            }
 
             if (isset($data['images']) && is_array($data['images'])) {
                 foreach ($data['images'] as $index => $image) {
@@ -69,7 +77,7 @@ class BusesService
                 }
             }
 
-            return $bus->load(['category', 'images']);
+            return $bus->load(['category', 'images', 'facilities']);
         });
     }
 

@@ -31,6 +31,8 @@ class UpdateBusesRequest extends FormRequest
             'brand' => ['nullable', 'string', 'max:255'],
             'status' => ['sometimes', 'in:available,booked,maintenance,inactive'],
             'notes' => ['nullable', 'string'],
+            'facilities' => ['nullable', 'array'],
+            'facilities.*' => ['exists:bus_facilities,id'],
             'images' => ['nullable', 'array'],
             'images.*' => ['image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ];

@@ -25,6 +25,7 @@ class BusesResource extends JsonResource
             'status' => $this->status,
             'notes' => $this->notes,
             'category' => new BusCategoriesResource($this->whenLoaded('category')),
+            'facilities' => BusFacilitiesResource::collection($this->whenLoaded('facilities')),
             'images' => $this->whenLoaded('images', function () {
                 return $this->images->map(function ($image) {
                     return [

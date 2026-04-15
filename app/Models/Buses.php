@@ -43,4 +43,12 @@ class Buses extends Model
     {
         return $this->hasMany(BusImage::class, 'bus_id');
     }
+
+    /**
+     * Get the facilities for the bus.
+     */
+    public function facilities(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(BusFacilities::class, 'bus_facility', 'bus_id', 'bus_facility_id');
+    }
 }
