@@ -47,6 +47,16 @@ return [
         'forceDelete' => 'categories.forceDelete',
     ],
 
+    // Bus Facilities permissions
+    'facilities' => [
+        'view' => 'facilities.view',
+        'create' => 'facilities.create',
+        'update' => 'facilities.update',
+        'delete' => 'facilities.delete',
+        'restore' => 'facilities.restore',
+        'forceDelete' => 'facilities.forceDelete',
+    ],
+
     // bus permission
     'buses' => [
         'view' => 'buses.view',
