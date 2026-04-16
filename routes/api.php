@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Admin\BusImagesController;
 use App\Http\Controllers\Api\Admin\CustomerController;
 use App\Http\Controllers\Api\Admin\DriverController;
 use App\Http\Controllers\Api\Admin\RoleController;
+use App\Http\Controllers\Api\Admin\RouteTypeController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Auth\Admin\LoginController as AdminLoginController;
 use App\Http\Controllers\Api\Auth\Admin\LogoutController as AdminLogoutController;
@@ -129,6 +130,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::delete('/{id}/force-delete', [ActivityTypeController::class, 'forceDelete'])->name('force-delete');
         });
         Route::apiResource('activity-types', ActivityTypeController::class);
+
+        // Route Type management routes
+        Route::prefix('route-types')->name('route-types.')->group(function () {
+            Route::get('/trashed', [RouteTypeController::class, 'trashed'])->name('trashed');
+            Route::post('/{id}/restore', [RouteTypeController::class, 'restore'])->name('restore');
+            Route::delete('/{id}/force-delete', [RouteTypeController::class, 'forceDelete'])->name('force-delete');
+        });
+        Route::apiResource('route-types', RouteTypeController::class);
 
     });
 });

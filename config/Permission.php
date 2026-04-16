@@ -97,4 +97,14 @@ return [
         'forceDelete' => 'activities.forceDelete',
     ],
 
+    // route type permission
+    'routes' => [
+        'view' => 'routes.view',
+        'create' => 'routes.create',
+        'update' => 'routes.update',
+        'delete' => 'routes.delete',
+        'restore' => 'routes.restore',
+        'forceDelete' => 'routes.forceDelete',
+    ],
+
 ];
