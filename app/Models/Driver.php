@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['name', 'phone', 'position', 'status'])]
+#[Fillable(['name', 'phone', 'address', 'photo', 'status', 'notes'])]
 class Driver extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;

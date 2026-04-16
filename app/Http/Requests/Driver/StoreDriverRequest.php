@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Driver;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreDriverRequest extends FormRequest
@@ -23,22 +22,12 @@ class StoreDriverRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:20'],
-            'position' => ['required', 'string', 'max:255'],
-            'status' => ['required', 'in:active,inactive'],
-        ];
-    }
-
-    public function messages()
-    {
-        return [
-            'name.required' => 'Nama driver wajib diisi',
-            'phone.required' => 'Nomor telepon wajib diisi',
-            'phone.max' => 'Nomor telepon tidak boleh lebih dari 20 karakter',
-            'position.required' => 'Posisi wajib diisi',
-            'status.required' => 'Status wajib diisi',
-            'status.in' => 'Status harus active atau inactive',
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'address' => 'required|string',
+            'photo' => 'nullable|string',
+            'status' => 'nullable|in:available,on_duty,inactive',
+            'notes' => 'nullable|string',
         ];
     }
 }

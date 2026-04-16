@@ -14,15 +14,15 @@ class DriverService
     }
 
     // get all drivers
-    public function getAllDriver()
+    public function getAllDrivers()
     {
-        return $this->driverRepository->getAllDriver();
+        return $this->driverRepository->getAllDrivers();
     }
 
     // get paginated drivers
-    public function getPaginatedDriver(int $perPage = 10)
+    public function getPaginatedDrivers(int $perPage = 10)
     {
-        return $this->driverRepository->getPaginatedDriver($perPage);
+        return $this->driverRepository->getPaginatedDrivers($perPage);
     }
 
     // get driver by id
@@ -50,7 +50,7 @@ class DriverService
     }
 
     // get all trashed drivers
-    public function getTrashedDriver()
+    public function getTrashedDrivers()
     {
         return $this->driverRepository->allTrashed();
     }
@@ -65,5 +65,11 @@ class DriverService
     public function forceDeleteDriver(string $id)
     {
         return $this->driverRepository->forceDelete($id);
+    }
+
+    // get driver statistics
+    public function getStatistics(): array
+    {
+        return $this->driverRepository->getStatistics();
     }
 }

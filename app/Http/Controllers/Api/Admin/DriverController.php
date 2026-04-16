@@ -9,6 +9,7 @@ use App\Http\Resources\DriverResource;
 use App\Models\Driver;
 use App\Services\DriverService;
 
+
 class DriverController extends BaseController
 {
     protected DriverService $driverService;
@@ -25,12 +26,14 @@ class DriverController extends BaseController
     {
         $this->authorize('viewAny', Driver::class);
 
-        $driver = $this->driverService->getAllDriver();
+        $statistics = $this->driverService->getStatistics();
+        $drivers = $this->driverService->getPaginatedDrivers();
 
         return response()->json([
             'success' => true,
-            'data' => DriverResource::collection($driver),
-            'message' => 'driver retrieved successfully',
+            'statistic' => $statistics,
+            'data' => DriverResource::collection($drivers)->response()->getData(true),
+            'message' => 'Drivers retrieved successfully',
         ], 200);
     }
 
@@ -39,14 +42,15 @@ class DriverController extends BaseController
      */
     public function store(StoreDriverRequest $request)
     {
-        $data = $request->validated();
+        $this->authorize('create', Driver::class);
 
+        $data = $request->validated();
         $driver = $this->driverService->createDriver($data);
 
         return response()->json([
             'success' => true,
             'data' => new DriverResource($driver),
-            'message' => 'driver created successfully',
+            'message' => 'Driver created successfully',
         ], 201);
     }
 
@@ -62,7 +66,7 @@ class DriverController extends BaseController
         return response()->json([
             'success' => true,
             'data' => new DriverResource($driver),
-            'message' => 'driver retrieved successfully',
+            'message' => 'Driver retrieved successfully',
         ], 200);
     }
 
@@ -71,14 +75,15 @@ class DriverController extends BaseController
      */
     public function update(UpdateDriverRequest $request, string $id)
     {
-        $data = $request->validated();
+        $this->authorize('update', Driver::class);
 
+        $data = $request->validated();
         $driver = $this->driverService->updateDriver($id, $data);
 
         return response()->json([
             'success' => true,
             'data' => new DriverResource($driver),
-            'message' => 'driver updated successfully',
+            'message' => 'Driver updated successfully',
         ], 200);
     }
 
@@ -104,12 +109,12 @@ class DriverController extends BaseController
     {
         $this->authorize('viewAny', Driver::class);
 
-        $driver = $this->driverService->getTrashedDriver();
+        $drivers = $this->driverService->getTrashedDrivers();
 
         return response()->json([
             'success' => true,
-            'data' => DriverResource::collection($driver),
-            'message' => 'Trashed driver retrieved successfully',
+            'data' => DriverResource::collection($drivers),
+            'message' => 'Trashed drivers retrieved successfully',
         ], 200);
     }
 
