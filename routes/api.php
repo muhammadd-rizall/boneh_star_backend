@@ -1,7 +1,11 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\ActivityTypeController;
 use App\Http\Controllers\Api\Admin\BookingController;
+use App\Http\Controllers\Api\Admin\BusCategoryController;
 use App\Http\Controllers\Api\Admin\BusesController;
+use App\Http\Controllers\Api\Admin\BusFacilitiesController;
+use App\Http\Controllers\Api\Admin\BusImagesController;
 use App\Http\Controllers\Api\Admin\CustomerController;
 use App\Http\Controllers\Api\Admin\DriverController;
 use App\Http\Controllers\Api\Admin\RoleController;
@@ -70,6 +74,22 @@ Route::middleware(['auth:sanctum'])->group(function () {
         });
         Route::apiResource('customers', CustomerController::class);
 
+        // Bus Categories management routes
+        Route::prefix('bus-categories')->name('bus-categories.')->group(function () {
+            Route::get('/trashed', [BusCategoryController::class, 'trashed'])->name('trashed');
+            Route::post('/{id}/restore', [BusCategoryController::class, 'restore'])->name('restore');
+            Route::delete('/{id}/force-delete', [BusCategoryController::class, 'forceDelete'])->name('force-delete');
+        });
+        Route::apiResource('bus-categories', BusCategoryController::class);
+
+        // Bus Facilities management routes
+        Route::prefix('bus-facilities')->name('bus-facilities.')->group(function () {
+            Route::get('/trashed', [BusFacilitiesController::class, 'trashed'])->name('trashed');
+            Route::post('/{id}/restore', [BusFacilitiesController::class, 'restore'])->name('restore');
+            Route::delete('/{id}/force-delete', [BusFacilitiesController::class, 'forceDelete'])->name('force-delete');
+        });
+        Route::apiResource('bus-facilities', BusFacilitiesController::class);
+
         // Buses management routes
         Route::prefix('buses')->name('buses.')->group(function () {
             Route::get('/trashed', [BusesController::class, 'trashed'])->name('trashed');
@@ -77,6 +97,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::delete('/{id}/force-delete', [BusesController::class, 'forceDelete'])->name('force-delete');
         });
         Route::apiResource('buses', BusesController::class);
+
+        // Bus Images management routes
+        Route::prefix('bus-images')->name('bus-images.')->group(function () {
+            Route::post('/', [BusImagesController::class, 'store'])->name('store');
+            Route::patch('/{id}', [BusImagesController::class, 'update'])->name('update');
+            Route::delete('/{id}', [BusImagesController::class, 'destroy'])->name('destroy');
+            Route::post('/{id}/set-primary', [BusImagesController::class, 'setPrimary'])->name('set-primary');
+        });
 
         // Driver management routes
         Route::prefix('drivers')->name('drivers.')->group(function () {
@@ -93,6 +121,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::delete('/{id}/force-delete', [BookingController::class, 'forceDelete'])->name('force-delete');
         });
         Route::apiResource('bookings', BookingController::class);
+
+        // Activity Type management routes
+        Route::prefix('activity-types')->name('activity-types.')->group(function () {
+            Route::get('/trashed', [ActivityTypeController::class, 'trashed'])->name('trashed');
+            Route::post('/{id}/restore', [ActivityTypeController::class, 'restore'])->name('restore');
+            Route::delete('/{id}/force-delete', [ActivityTypeController::class, 'forceDelete'])->name('force-delete');
+        });
+        Route::apiResource('activity-types', ActivityTypeController::class);
 
     });
 });

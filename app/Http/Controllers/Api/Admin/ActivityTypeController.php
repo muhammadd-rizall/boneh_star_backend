@@ -1,0 +1,151 @@
+<?php
+
+namespace App\Http\Controllers\Api\Admin;
+
+use App\Http\Controllers\Api\BaseController;
+use App\Http\Requests\ActivityType\StoreActivityTypeRequest;
+use App\Http\Requests\ActivityType\UpdateActivityTypeRequest;
+use App\Http\Resources\ActivityTypeResource;
+use App\Models\ActivityType;
+use App\Services\ActivityTypeService;
+use Illuminate\Http\JsonResponse;
+
+class ActivityTypeController extends BaseController
+{
+    protected ActivityTypeService $activityTypeService;
+
+    public function __construct(ActivityTypeService $activityTypeService)
+    {
+        $this->activityTypeService = $activityTypeService;
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(): JsonResponse
+    {
+        $this->authorize('viewAny', ActivityType::class);
+
+        $statistics = $this->activityTypeService->getStatistics();
+        $activityTypes = $this->activityTypeService->getPaginatedActivityTypes();
+
+        return response()->json([
+            'success' => true,
+            'statistic' => $statistics,
+            'data' => ActivityTypeResource::collection($activityTypes)->response()->getData(true),
+            'message' => 'Activity types retrieved successfully',
+        ], 200);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StoreActivityTypeRequest $request): JsonResponse
+    {
+        $this->authorize('create', ActivityType::class);
+
+        $data = $request->validated();
+        $activityType = $this->activityTypeService->createActivityType($data);
+
+        return response()->json([
+            'success' => true,
+            'data' => new ActivityTypeResource($activityType),
+            'message' => 'Activity type created successfully',
+        ], 201);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id): JsonResponse
+    {
+        $this->authorize('view', ActivityType::class);
+
+        $activityType = $this->activityTypeService->getActivityTypeById($id);
+
+        return response()->json([
+            'success' => true,
+            'data' => new ActivityTypeResource($activityType),
+            'message' => 'Activity type retrieved successfully',
+        ], 200);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdateActivityTypeRequest $request, string $id): JsonResponse
+    {
+        $this->authorize('update', ActivityType::class);
+
+        $data = $request->validated();
+        $activityType = $this->activityTypeService->updateActivityType($id, $data);
+
+        return response()->json([
+            'success' => true,
+            'data' => new ActivityTypeResource($activityType),
+            'message' => 'Activity type updated successfully',
+        ], 200);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id): JsonResponse
+    {
+        $this->authorize('delete', ActivityType::class);
+
+        $this->activityTypeService->deleteActivityType($id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Activity type deleted successfully',
+        ], 200);
+    }
+
+    /**
+     * Display a listing of the trashed resources.
+     */
+    public function trashed(): JsonResponse
+    {
+        $this->authorize('viewAny', ActivityType::class);
+
+        $activityTypes = $this->activityTypeService->getTrashedActivityTypes();
+
+        return response()->json([
+            'success' => true,
+            'data' => ActivityTypeResource::collection($activityTypes),
+            'message' => 'Trashed activity types retrieved successfully',
+        ], 200);
+    }
+
+    /**
+     * Restore the specified resource from storage.
+     */
+    public function restore(string $id): JsonResponse
+    {
+        $this->authorize('restore', ActivityType::class);
+
+        $this->activityTypeService->restoreActivityType($id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Activity type restored successfully',
+        ], 200);
+    }
+
+    /**
+     * Permanently delete the specified resource from storage.
+     */
+    public function forceDelete(string $id): JsonResponse
+    {
+        $this->authorize('forceDelete', ActivityType::class);
+
+        $this->activityTypeService->forceDeleteActivityType($id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Activity type permanently deleted successfully',
+        ], 200);
+
+    }
+}

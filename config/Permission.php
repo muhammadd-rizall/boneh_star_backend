@@ -86,4 +86,15 @@ return [
         'restore' => 'bookings.restore',
         'forceDelete' => 'bookings.forceDelete',
     ],
+
+    // activity type permission
+    'activities' => [
+        'view' => 'activities.view',
+        'create' => 'activities.create',
+        'update' => 'activities.update',
+        'delete' => 'activities.delete',
+        'restore' => 'activities.restore',
+        'forceDelete' => 'activities.forceDelete',
+    ],
+
 ];
