@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Driver;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreDriverRequest extends FormRequest
@@ -22,12 +23,27 @@ class StoreDriverRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'address' => 'required|string',
-            'photo' => 'nullable|string',
-            'status' => 'nullable|in:available,on_duty,inactive',
-            'notes' => 'nullable|string',
+            'name' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'max:20'],
+            'address' => ['required', 'string'],
+            'photo' => ['nullable', 'string'],
+            'status' => ['nullable', 'in:available,on_duty,inactive'],
+            'notes' => ['nullable', 'string'],
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Name is required',
+            'phone.required' => 'Phone is required',
+            'address.required' => 'Address is required',
+            'status.in' => 'Invalid status selected',
         ];
     }
 }

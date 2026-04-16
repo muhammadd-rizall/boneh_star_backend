@@ -12,7 +12,7 @@ class UpdateActivityTypeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('activities.update');
     }
 
     /**
@@ -25,6 +25,20 @@ class UpdateActivityTypeRequest extends FormRequest
         return [
             'name' => ['sometimes', 'required', 'string', 'max:255', 'unique:activity_types,name,'.$this->route('activity_type')],
             'description' => ['sometimes', 'required', 'string'],
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Name is required',
+            'name.unique' => 'Name has already been taken',
+            'description.required' => 'Description is required',
         ];
     }
 }

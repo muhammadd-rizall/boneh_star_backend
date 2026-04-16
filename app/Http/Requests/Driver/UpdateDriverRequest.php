@@ -22,12 +22,28 @@ class UpdateDriverRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'sometimes|required|string|max:255',
-            'phone' => 'sometimes|required|string|max:20',
-            'address' => 'sometimes|required|string',
-            'photo' => 'nullable|string',
-            'status' => 'sometimes|required|in:available,on_duty,inactive',
-            'notes' => 'nullable|string',
+            'name' => ['sometimes', 'required', 'string', 'max:255'],
+            'phone' => ['sometimes', 'required', 'string', 'max:20'],
+            'address' => ['sometimes', 'required', 'string'],
+            'photo' => ['nullable', 'string'],
+            'status' => ['sometimes', 'required', 'in:available,on_duty,inactive'],
+            'notes' => ['nullable', 'string'],
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Name is required',
+            'phone.required' => 'Phone is required',
+            'address.required' => 'Address is required',
+            'status.required' => 'Status is required',
+            'status.in' => 'Invalid status selected',
         ];
     }
 }
