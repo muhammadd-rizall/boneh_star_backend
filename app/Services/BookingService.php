@@ -49,6 +49,25 @@ class BookingService
         return $this->bookingRepository->delete($id);
     }
 
+     // get all trashed facilities
+    public function getTrashedBooking()
+    {
+        return $this->bookingRepository->allTrashed();
+    }
+
+    // restore facility by id
+    public function restoreBooking(string $id)
+    {
+        return $this->bookingRepository->restore($id);
+    }
+
+    // force delete facility by id
+    public function forceDeleteBooking(string $id)
+    {
+        return $this->bookingRepository->forceDelete($id);
+    }
+
+
     // get booking statistics
     public function getBookingStatistics()
     {

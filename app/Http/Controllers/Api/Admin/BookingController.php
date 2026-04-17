@@ -101,4 +101,51 @@ class BookingController extends BaseController
             'message' => 'Booking deleted successfully',
         ]);
     }
+
+    /**
+     * Display a listing of the trashed resources.
+     */
+    public function trashed()
+    {
+        $this->authorize('viewAny', Booking::class);
+
+        $booking = $this->bookingService->getTrashedBooking();
+
+        return response()->json([
+            'success' => true,
+            'data' => BookingResource::collection($booking),
+            'message' => 'Trashed booking retrieved successfully',
+        ], 200);
+    }
+
+    /**
+     * Restore the specified resource from storage.
+     */
+    public function restore(string $id)
+    {
+        $this->authorize('restore', Booking::class);
+
+        $this->bookingService->restoreBooking($id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Booking restored successfully',
+        ], 200);
+    }
+
+    /**
+     * Permanently delete the specified resource from storage.
+     */
+    public function forceDelete(string $id)
+    {
+        $this->authorize('forceDelete', Booking::class);
+
+        $this->bookingService->forceDeleteBooking($id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Booking permanently deleted successfully',
+        ], 200);
+    }
+
 }
