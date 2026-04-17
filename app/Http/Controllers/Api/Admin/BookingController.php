@@ -8,7 +8,6 @@ use App\Http\Requests\Booking\UpdateBookingRequest;
 use App\Http\Resources\BookingResource;
 use App\Models\Booking;
 use App\Services\BookingService;
-use Illuminate\Http\JsonResponse;
 
 class BookingController extends BaseController
 {
@@ -22,7 +21,7 @@ class BookingController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index()
     {
         $this->authorize('viewAny', Booking::class);
 
@@ -40,7 +39,7 @@ class BookingController extends BaseController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreBookingRequest $request): JsonResponse
+    public function store(StoreBookingRequest $request)
     {
         $this->authorize('create', Booking::class);
 
@@ -49,7 +48,7 @@ class BookingController extends BaseController
 
         return response()->json([
             'success' => true,
-            'data' => new BookingResource($booking->load(['customer', 'activity', 'routeType'])),
+            'data' => new BookingResource($booking->load(['customer', 'activity', 'routeType', 'bookingBuses.bus', 'bookingBuses.driver'])),
             'message' => 'Booking created successfully',
         ], 201);
     }
@@ -57,7 +56,7 @@ class BookingController extends BaseController
     /**
      * Display the specified resource.
      */
-    public function show(string $id): JsonResponse
+    public function show(string $id)
     {
         $this->authorize('view', Booking::class);
 
@@ -73,7 +72,7 @@ class BookingController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateBookingRequest $request, string $id): JsonResponse
+    public function update(UpdateBookingRequest $request, string $id)
     {
         $this->authorize('update', Booking::class);
 
@@ -82,7 +81,7 @@ class BookingController extends BaseController
 
         return response()->json([
             'success' => true,
-            'data' => new BookingResource($booking->load(['customer', 'activity', 'routeType'])),
+            'data' => new BookingResource($booking->load(['customer', 'activity', 'routeType', 'bookingBuses.bus', 'bookingBuses.driver'])),
             'message' => 'Booking updated successfully',
         ]);
     }
@@ -90,7 +89,7 @@ class BookingController extends BaseController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id): JsonResponse
+    public function destroy(string $id)
     {
         $this->authorize('delete', Booking::class);
 
@@ -109,13 +108,13 @@ class BookingController extends BaseController
     {
         $this->authorize('viewAny', Booking::class);
 
-        $booking = $this->bookingService->getTrashedBooking();
+        $bookings = $this->bookingService->getTrashedBooking();
 
         return response()->json([
             'success' => true,
-            'data' => BookingResource::collection($booking),
-            'message' => 'Trashed booking retrieved successfully',
-        ], 200);
+            'data' => BookingResource::collection($bookings),
+            'message' => 'Trashed bookings retrieved successfully',
+        ]);
     }
 
     /**
@@ -130,7 +129,7 @@ class BookingController extends BaseController
         return response()->json([
             'success' => true,
             'message' => 'Booking restored successfully',
-        ], 200);
+        ]);
     }
 
     /**
@@ -145,7 +144,6 @@ class BookingController extends BaseController
         return response()->json([
             'success' => true,
             'message' => 'Booking permanently deleted successfully',
-        ], 200);
+        ]);
     }
-
 }

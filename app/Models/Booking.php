@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Database\Factories\BookingFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -31,7 +30,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Booking extends Model
 {
     /** @use HasFactory<BookingFactory> */
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, SoftDeletes;
 
     protected $casts = [
         'departure_date' => 'datetime',

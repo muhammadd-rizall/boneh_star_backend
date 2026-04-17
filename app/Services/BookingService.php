@@ -95,7 +95,7 @@ class BookingService
      */
     public function getTrashedBooking()
     {
-        return $this->bookingRepository->allTrashed();
+        return $this->bookingRepository->allTrashed(['customer', 'activity', 'routeType']);
     }
 
     /**

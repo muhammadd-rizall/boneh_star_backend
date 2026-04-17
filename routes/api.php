@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Admin\BusFacilitiesController;
 use App\Http\Controllers\Api\Admin\BusImagesController;
 use App\Http\Controllers\Api\Admin\CustomerController;
 use App\Http\Controllers\Api\Admin\DriverController;
+use App\Http\Controllers\Api\Admin\QuotationController;
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\RouteTypeController;
 use App\Http\Controllers\Api\Admin\UserController;
@@ -138,6 +139,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::delete('/{id}/force-delete', [RouteTypeController::class, 'forceDelete'])->name('force-delete');
         });
         Route::apiResource('route-types', RouteTypeController::class);
+
+        // Quotation management routes
+        Route::prefix('quotations')->name('quotations.')->group(function () {
+            Route::get('/trashed', [QuotationController::class, 'trashed'])->name('trashed');
+            Route::post('/{id}/restore', [QuotationController::class, 'restore'])->name('restore');
+            Route::delete('/{id}/force-delete', [QuotationController::class, 'forceDelete'])->name('force-delete');
+        });
+        Route::apiResource('quotations', QuotationController::class);
 
     });
 });

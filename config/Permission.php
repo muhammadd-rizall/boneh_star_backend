@@ -107,4 +107,14 @@ return [
         'forceDelete' => 'routes.forceDelete',
     ],
 
+    // quotation permission
+    'quotations' => [
+        'view' => 'quotations.view',
+        'create' => 'quotations.create',
+        'update' => 'quotations.update',
+        'delete' => 'quotations.delete',
+        'restore' => 'quotations.restore',
+        'forceDelete' => 'quotations.forceDelete',
+    ],
+
 ];

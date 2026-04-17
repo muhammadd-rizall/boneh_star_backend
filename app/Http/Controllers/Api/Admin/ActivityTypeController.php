@@ -8,7 +8,6 @@ use App\Http\Requests\ActivityType\UpdateActivityTypeRequest;
 use App\Http\Resources\ActivityTypeResource;
 use App\Models\ActivityType;
 use App\Services\ActivityTypeService;
-use Illuminate\Http\JsonResponse;
 
 class ActivityTypeController extends BaseController
 {
@@ -22,7 +21,7 @@ class ActivityTypeController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index()
     {
         $this->authorize('viewAny', ActivityType::class);
 
@@ -40,7 +39,7 @@ class ActivityTypeController extends BaseController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreActivityTypeRequest $request): JsonResponse
+    public function store(StoreActivityTypeRequest $request)
     {
         $this->authorize('create', ActivityType::class);
 
@@ -57,7 +56,7 @@ class ActivityTypeController extends BaseController
     /**
      * Display the specified resource.
      */
-    public function show(string $id): JsonResponse
+    public function show(string $id)
     {
         $this->authorize('view', ActivityType::class);
 
@@ -73,7 +72,7 @@ class ActivityTypeController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateActivityTypeRequest $request, string $id): JsonResponse
+    public function update(UpdateActivityTypeRequest $request, string $id)
     {
         $this->authorize('update', ActivityType::class);
 
@@ -90,7 +89,7 @@ class ActivityTypeController extends BaseController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id): JsonResponse
+    public function destroy(string $id)
     {
         $this->authorize('delete', ActivityType::class);
 
@@ -105,7 +104,7 @@ class ActivityTypeController extends BaseController
     /**
      * Display a listing of the trashed resources.
      */
-    public function trashed(): JsonResponse
+    public function trashed()
     {
         $this->authorize('viewAny', ActivityType::class);
 
@@ -121,7 +120,7 @@ class ActivityTypeController extends BaseController
     /**
      * Restore the specified resource from storage.
      */
-    public function restore(string $id): JsonResponse
+    public function restore(string $id)
     {
         $this->authorize('restore', ActivityType::class);
 
@@ -136,7 +135,7 @@ class ActivityTypeController extends BaseController
     /**
      * Permanently delete the specified resource from storage.
      */
-    public function forceDelete(string $id): JsonResponse
+    public function forceDelete(string $id)
     {
         $this->authorize('forceDelete', ActivityType::class);
 
