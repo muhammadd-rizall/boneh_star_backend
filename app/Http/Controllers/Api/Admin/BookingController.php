@@ -8,6 +8,7 @@ use App\Http\Requests\Booking\UpdateBookingRequest;
 use App\Http\Resources\BookingResource;
 use App\Models\Booking;
 use App\Services\BookingService;
+use Illuminate\Http\JsonResponse;
 
 class BookingController extends BaseController
 {
@@ -21,33 +22,34 @@ class BookingController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $this->authorize('viewAny', Booking::class);
 
-        $booking = $this->bookingService->getAllBooking();
+        $bookings = $this->bookingService->getAllBooking();
+        $statistics = $this->bookingService->getBookingStatistics();
 
         return response()->json([
             'success' => true,
-            'data' => BookingResource::collection($booking),
-            'message' => 'Booking retrieved successfully',
-        ], 200);
+            'data' => BookingResource::collection($bookings),
+            'statistics' => $statistics,
+            'message' => 'Bookings retrieved successfully',
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreBookingRequest $request)
+    public function store(StoreBookingRequest $request): JsonResponse
     {
         $this->authorize('create', Booking::class);
 
         $data = $request->validated();
-
         $booking = $this->bookingService->createBooking($data);
 
         return response()->json([
             'success' => true,
-            'data' => new BookingResource($booking),
+            'data' => new BookingResource($booking->load(['customer', 'activity', 'routeType'])),
             'message' => 'Booking created successfully',
         ], 201);
     }
@@ -55,7 +57,7 @@ class BookingController extends BaseController
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
         $this->authorize('view', Booking::class);
 
@@ -65,31 +67,30 @@ class BookingController extends BaseController
             'success' => true,
             'data' => new BookingResource($booking),
             'message' => 'Booking retrieved successfully',
-        ], 200);
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateBookingRequest $request, string $id)
+    public function update(UpdateBookingRequest $request, string $id): JsonResponse
     {
         $this->authorize('update', Booking::class);
 
         $data = $request->validated();
-
         $booking = $this->bookingService->updateBooking($id, $data);
 
         return response()->json([
             'success' => true,
-            'data' => new BookingResource($booking),
+            'data' => new BookingResource($booking->load(['customer', 'activity', 'routeType'])),
             'message' => 'Booking updated successfully',
-        ], 200);
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
         $this->authorize('delete', Booking::class);
 
@@ -98,52 +99,6 @@ class BookingController extends BaseController
         return response()->json([
             'success' => true,
             'message' => 'Booking deleted successfully',
-        ], 200);
-    }
-
-    /**
-     * Display a listing of the trashed resources.
-     */
-    public function trashed()
-    {
-        $this->authorize('viewAny', Booking::class);
-
-        $booking = $this->bookingService->getTrashedBooking();
-
-        return response()->json([
-            'success' => true,
-            'data' => BookingResource::collection($booking),
-            'message' => 'Trashed booking retrieved successfully',
-        ], 200);
-    }
-
-    /**
-     * Restore the specified resource from storage.
-     */
-    public function restore(string $id)
-    {
-        $this->authorize('restore', Booking::class);
-
-        $this->bookingService->restoreBooking($id);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Booking restored successfully',
-        ], 200);
-    }
-
-    /**
-     * Permanently delete the specified resource from storage.
-     */
-    public function forceDelete(string $id)
-    {
-        $this->authorize('forceDelete', Booking::class);
-
-        $this->bookingService->forceDeleteBooking($id);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Booking permanently deleted successfully',
-        ], 200);
+        ]);
     }
 }

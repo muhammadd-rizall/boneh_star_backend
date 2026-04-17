@@ -28,7 +28,7 @@ class BookingService
     // get booking by id
     public function getBookingById(string $id)
     {
-        return $this->bookingRepository->find($id);
+        return $this->bookingRepository->getBookingById($id);
     }
 
     // create booking
@@ -49,21 +49,9 @@ class BookingService
         return $this->bookingRepository->delete($id);
     }
 
-    // get all trashed bookings
-    public function getTrashedBooking()
+    // get booking statistics
+    public function getBookingStatistics()
     {
-        return $this->bookingRepository->allTrashed();
-    }
-
-    // restore booking by id
-    public function restoreBooking(string $id)
-    {
-        return $this->bookingRepository->restore($id);
-    }
-
-    // force delete booking by id
-    public function forceDeleteBooking(string $id)
-    {
-        return $this->bookingRepository->forceDelete($id);
+        return $this->bookingRepository->getStatistics();
     }
 }
