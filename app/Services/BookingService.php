@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\BookingRepository;
+use Illuminate\Support\Facades\DB;
 
 class BookingService
 {
@@ -13,62 +14,109 @@ class BookingService
         $this->bookingRepository = $bookingRepository;
     }
 
-    // get all bookings
+    /**
+     * Get all bookings with eager loaded relations.
+     */
     public function getAllBooking()
     {
         return $this->bookingRepository->getAllBooking();
     }
 
-    // get paginated bookings
+    /**
+     * Get paginated bookings with eager loaded relations.
+     */
     public function getPaginatedBooking(int $perPage = 10)
     {
         return $this->bookingRepository->getPaginatedBooking($perPage);
     }
 
-    // get booking by id
+    /**
+     * Get booking by ID with relations.
+     */
     public function getBookingById(string $id)
     {
         return $this->bookingRepository->getBookingById($id);
     }
 
-    // create booking
+    /**
+     * Create a new booking and assign buses/drivers.
+     */
     public function createBooking(array $data)
     {
-        return $this->bookingRepository->create($data);
+        return DB::transaction(function () use ($data) {
+            $buses = $data['buses'] ?? [];
+            unset($data['buses']);
+
+            $booking = $this->bookingRepository->create($data);
+
+            if (!empty($buses)) {
+                foreach ($buses as $bus) {
+                    $booking->bookingBuses()->create($bus);
+                }
+            }
+
+            return $booking;
+        });
     }
 
-    // update booking by id
+    /**
+     * Update an existing booking and sync bus/driver assignments.
+     */
     public function updateBooking(string $id, array $data)
     {
-        return $this->bookingRepository->update($id, $data);
+        return DB::transaction(function () use ($id, $data) {
+            $buses = $data['buses'] ?? [];
+            unset($data['buses']);
+
+            $booking = $this->bookingRepository->update($id, $data);
+
+            if (isset($buses)) {
+                // Sync approach: remove existing and create new ones
+                $booking->bookingBuses()->delete();
+                foreach ($buses as $bus) {
+                    $booking->bookingBuses()->create($bus);
+                }
+            }
+
+            return $booking;
+        });
     }
 
-    // delete booking by id
+    /**
+     * Delete a booking by ID.
+     */
     public function deleteBooking(string $id)
     {
         return $this->bookingRepository->delete($id);
     }
 
-     // get all trashed facilities
+    /**
+     * Get all trashed bookings.
+     */
     public function getTrashedBooking()
     {
         return $this->bookingRepository->allTrashed();
     }
 
-    // restore facility by id
+    /**
+     * Restore a trashed booking by ID.
+     */
     public function restoreBooking(string $id)
     {
         return $this->bookingRepository->restore($id);
     }
 
-    // force delete facility by id
+    /**
+     * Permanently delete a trashed booking by ID.
+     */
     public function forceDeleteBooking(string $id)
     {
         return $this->bookingRepository->forceDelete($id);
     }
 
-
-    // get booking statistics
+    /**
+     * Get booking statistics.
+     */
     public function getBookingStatistics()
     {
         return $this->bookingRepository->getStatistics();

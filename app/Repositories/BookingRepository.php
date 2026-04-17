@@ -13,17 +13,17 @@ class BookingRepository extends BaseRepository
 
     public function getAllBooking()
     {
-        return $this->model->with(['customer', 'activity', 'routeType'])->get();
+        return $this->model->with(['customer', 'activity', 'routeType', 'bookingBuses.bus', 'bookingBuses.driver'])->get();
     }
 
     public function getPaginatedBooking(int $perPage = 10)
     {
-        return $this->model->with(['customer', 'activity', 'routeType'])->latest()->paginate($perPage);
+        return $this->model->with(['customer', 'activity', 'routeType', 'bookingBuses.bus', 'bookingBuses.driver'])->latest()->paginate($perPage);
     }
 
     public function getBookingById(string $id)
     {
-        return $this->model->with(['customer', 'activity', 'routeType'])->findOrFail($id);
+        return $this->model->with(['customer', 'activity', 'routeType', 'bookingBuses.bus', 'bookingBuses.driver'])->findOrFail($id);
     }
 
     public function getStatistics()

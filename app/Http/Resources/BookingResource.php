@@ -35,6 +35,7 @@ class BookingResource extends JsonResource
             'customer' => new CustomerResource($this->whenLoaded('customer')),
             'activity' => new ActivityTypeResource($this->whenLoaded('activity')),
             'route_type' => new RouteTypeResource($this->whenLoaded('routeType')),
+            'booking_buses' => BookingBusResource::collection($this->whenLoaded('bookingBuses')),
         ];
     }
 }

@@ -27,6 +27,7 @@ return new class extends Migration
             $table->enum('status', ['pending', 'quoted', 'confirmed', 'ongoing', 'completed', 'cancelled'])->default('pending');
             $table->enum('cancelled_by',['customer', 'admin'])->nullable();
             $table->text('cancelled_reason')->nullable();
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');

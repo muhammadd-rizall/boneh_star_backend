@@ -35,6 +35,11 @@ class StoreBookingRequest extends FormRequest
             'bus_count_requested' => ['required', 'integer', 'min:1'],
             'special_notes' => ['nullable', 'string'],
             'status' => ['required', 'in:pending,quoted,confirmed,ongoing,completed,cancelled'],
+            'buses' => ['nullable', 'array'],
+            'buses.*.bus_id' => ['required', 'uuid', 'exists:buses,id'],
+            'buses.*.driver_id' => ['required', 'uuid', 'exists:drivers,id'],
+            'buses.*.seat_count' => ['required', 'integer', 'min:1'],
+            'buses.*.assignment_notes' => ['nullable', 'string'],
         ];
     }
 
@@ -65,6 +70,11 @@ class StoreBookingRequest extends FormRequest
             'bus_count_requested.min' => 'Bus count requested must be at least 1',
             'status.required' => 'Status is required',
             'status.in' => 'Invalid status selected',
+            'buses.*.bus_id.required' => 'Bus is required for assignment',
+            'buses.*.bus_id.exists' => 'Selected bus does not exist',
+            'buses.*.driver_id.required' => 'Driver is required for assignment',
+            'buses.*.driver_id.exists' => 'Selected driver does not exist',
+            'buses.*.seat_count.required' => 'Seat count is required for assignment',
         ];
     }
 }
