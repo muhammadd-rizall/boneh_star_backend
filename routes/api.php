@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\Admin\DriverController;
 use App\Http\Controllers\Api\Admin\QuotationController;
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\RouteTypeController;
+use App\Http\Controllers\Api\Admin\TransactionController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Auth\Admin\LoginController as AdminLoginController;
 use App\Http\Controllers\Api\Auth\Admin\LogoutController as AdminLogoutController;
@@ -147,6 +148,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::delete('/{id}/force-delete', [QuotationController::class, 'forceDelete'])->name('force-delete');
         });
         Route::apiResource('quotations', QuotationController::class);
+
+        // Transaction management routes
+        Route::prefix('transactions')->name('transactions.')->group(function () {
+            Route::get('/trashed', [TransactionController::class, 'trashed'])->name('trashed');
+            Route::post('/{id}/restore', [TransactionController::class, 'restore'])->name('restore');
+            Route::delete('/{id}/force-delete', [TransactionController::class, 'forceDelete'])->name('force-delete');
+        });
+        Route::apiResource('transactions', TransactionController::class);
 
     });
 });

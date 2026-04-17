@@ -117,4 +117,14 @@ return [
         'forceDelete' => 'quotations.forceDelete',
     ],
 
+    // transaction permission
+    'transactions' => [
+        'view' => 'transactions.view',
+        'create' => 'transactions.create',
+        'update' => 'transactions.update',
+        'delete' => 'transactions.delete',
+        'restore' => 'transactions.restore',
+        'forceDelete' => 'transactions.forceDelete',
+    ],
+
 ];
