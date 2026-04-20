@@ -148,4 +148,15 @@ return [
         'forceDelete' => 'payments.forceDelete',
     ],
 
+    // review permission
+    'reviews' => [
+        'view' => 'reviews.view',
+        'create' => 'reviews.create',
+        'update' => 'reviews.update',
+        'delete' => 'reviews.delete',
+        'restore' => 'reviews.restore',
+        'forceDelete' => 'reviews.forceDelete',
+        'publish' => 'reviews.publish',
+    ],
+
 ];

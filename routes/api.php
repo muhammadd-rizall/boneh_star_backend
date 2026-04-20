@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\Admin\DriverController;
 use App\Http\Controllers\Api\Admin\PaymentController;
 use App\Http\Controllers\Api\Admin\PaymentMethodController;
 use App\Http\Controllers\Api\Admin\QuotationController;
+use App\Http\Controllers\Api\Admin\ReviewController;
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\RouteTypeController;
 use App\Http\Controllers\Api\Admin\TransactionController;
@@ -176,6 +177,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::delete('/{id}/force-delete', [PaymentController::class, 'forceDelete'])->name('force-delete');
         });
         Route::apiResource('payments', PaymentController::class);
+
+        // Review management routes
+        Route::prefix('reviews')->name('reviews.')->group(function () {
+            Route::post('/{id}/toggle-publish', [ReviewController::class, 'togglePublish'])->name('toggle-publish');
+            Route::get('/trashed', [ReviewController::class, 'trashed'])->name('trashed');
+            Route::post('/{id}/restore', [ReviewController::class, 'restore'])->name('restore');
+            Route::delete('/{id}/force-delete', [ReviewController::class, 'forceDelete'])->name('force-delete');
+        });
+        Route::apiResource('reviews', ReviewController::class);
 
     });
 });

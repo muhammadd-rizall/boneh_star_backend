@@ -26,8 +26,7 @@ class PaymentController extends BaseController
     public function index(Request $request): JsonResponse
     {
         $this->authorize('viewAny', Payment::class);
-        $perPage = $request->get('per_page', 10);
-        $payments = $this->paymentService->getPaginatedPayments($perPage);
+        $payments = $this->paymentService->getPaginatedPayments();
         $statistics = $this->paymentService->getStatistics();
 
         return response()->json([
