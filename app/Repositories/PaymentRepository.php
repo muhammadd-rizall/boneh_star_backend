@@ -46,4 +46,71 @@ class PaymentRepository extends BaseRepository
                 ->toArray(),
         ];
     }
+
+    /**
+     * Get income report data.
+     */
+    public function getIncomeReportData(?int $month = null, ?int $year = null)
+    {
+        $query = $this->model->query()
+            ->with(['transaction.booking.customer', 'paymentMethod'])
+            ->where('status', 'verified');
+
+        if ($month) {
+            $query->whereMonth('payment_date', $month);
+        }
+
+        if ($year) {
+            $query->whereYear('payment_date', $year);
+        }
+
+        return $query->orderBy('payment_date', 'desc')->get();
+    }
+
+    /**
+     * Get monthly income statistics.
+     */
+    public function getIncomeStatistics(?int $year = null)
+    {
+        $year = $year ?? date('Y');
+
+        // Monthly income breakdown
+        $monthlyIncome = $this->model->query()
+            ->select(
+                DB::raw("to_char(payment_date, 'YYYY-MM') as month"),
+                DB::raw('SUM(amount) as total_masuk'),
+                DB::raw("SUM(CASE WHEN payment_type = 'dp' THEN amount ELSE 0 END) as total_dp"),
+                DB::raw("SUM(CASE WHEN payment_type = 'settlement' THEN amount ELSE 0 END) as total_pelunasan")
+            )
+            ->where('status', 'verified')
+            ->whereYear('payment_date', $year)
+            ->groupBy('month')
+            ->orderBy('month', 'asc')
+            ->get();
+
+        // Outstanding (unpaid transactions)
+        $outstanding = DB::table('transactions as t')
+            ->join('bookings as b', 'b.id', '=', 't.booking_id')
+            ->join('customers as c', 'c.id', '=', 'b.customer_id')
+            ->select(
+                't.invoice_number',
+                't.remaining_amount',
+                'c.name as penyewa',
+                'b.departure_date'
+            )
+            ->where('t.remaining_amount', '>', 0)
+            ->whereNull('t.deleted_at')
+            ->whereNotIn('b.status', ['cancelled'])
+            ->orderBy('b.departure_date', 'asc')
+            ->get();
+
+        return [
+            'monthly_chart' => $monthlyIncome,
+            'outstanding_list' => $outstanding,
+            'summary' => [
+                'total_verified_income' => (float) $this->model->where('status', 'verified')->sum('amount'),
+                'total_outstanding' => (float) $outstanding->sum('remaining_amount'),
+            ],
+        ];
+    }
 }

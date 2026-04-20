@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Admin\BusFacilitiesController;
 use App\Http\Controllers\Api\Admin\BusImagesController;
 use App\Http\Controllers\Api\Admin\CustomerController;
 use App\Http\Controllers\Api\Admin\DriverController;
+use App\Http\Controllers\Api\Admin\IncomeReportController;
 use App\Http\Controllers\Api\Admin\NotificationController;
 use App\Http\Controllers\Api\Admin\PaymentController;
 use App\Http\Controllers\Api\Admin\PaymentMethodController;
@@ -199,6 +200,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         // Report routes
         Route::prefix('reports')->name('reports.')->group(function () {
             Route::get('/bookings', [BookingReportController::class, 'index'])->name('bookings');
+            Route::get('/income', [IncomeReportController::class, 'index'])->name('income');
         });
 
     });

@@ -168,6 +168,7 @@ return [
     // report permission
     'reports' => [
         'bookings' => 'reports.bookings',
+        'income' => 'reports.income',
     ],
 
 ];
