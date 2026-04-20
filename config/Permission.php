@@ -165,4 +165,9 @@ return [
         'delete' => 'notifications.delete',
     ],
 
+    // report permission
+    'reports' => [
+        'bookings' => 'reports.bookings',
+    ],
+
 ];

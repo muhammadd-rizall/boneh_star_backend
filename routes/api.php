@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Admin\ActivityTypeController;
 use App\Http\Controllers\Api\Admin\BookingController;
+use App\Http\Controllers\Api\Admin\BookingReportController;
 use App\Http\Controllers\Api\Admin\BusCategoryController;
 use App\Http\Controllers\Api\Admin\BusesController;
 use App\Http\Controllers\Api\Admin\BusFacilitiesController;
@@ -194,6 +195,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::post('/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('mark-as-read');
         });
         Route::apiResource('notifications', NotificationController::class)->only(['index', 'destroy']);
+
+        // Report routes
+        Route::prefix('reports')->name('reports.')->group(function () {
+            Route::get('/bookings', [BookingReportController::class, 'index'])->name('bookings');
+        });
 
     });
 });
