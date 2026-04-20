@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Admin\BusCategoryController;
 use App\Http\Controllers\Api\Admin\BusesController;
 use App\Http\Controllers\Api\Admin\BusFacilitiesController;
 use App\Http\Controllers\Api\Admin\BusImagesController;
+use App\Http\Controllers\Api\Admin\CompanyProfileController;
 use App\Http\Controllers\Api\Admin\CustomerController;
 use App\Http\Controllers\Api\Admin\DriverController;
 use App\Http\Controllers\Api\Admin\IncomeReportController;
@@ -202,6 +203,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/bookings', [BookingReportController::class, 'index'])->name('bookings');
             Route::get('/income', [IncomeReportController::class, 'index'])->name('income');
         });
+
+        // Company Profile routes
+        Route::get('/company-profile', [CompanyProfileController::class, 'index'])->name('company-profile.index');
+        Route::post('/company-profile', [CompanyProfileController::class, 'store'])->name('company-profile.store');
 
     });
 });
