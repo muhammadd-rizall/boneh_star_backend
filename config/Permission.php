@@ -127,4 +127,25 @@ return [
         'forceDelete' => 'transactions.forceDelete',
     ],
 
+    // payment methods permission
+    'payment_methods' => [
+        'view' => 'payment_methods.view',
+        'create' => 'payment_methods.create',
+        'update' => 'payment_methods.update',
+        'delete' => 'payment_methods.delete',
+        'restore' => 'payment_methods.restore',
+        'forceDelete' => 'payment_methods.forceDelete',
+    ],
+
+    // payments permission
+    'payments' => [
+        'view' => 'payments.view',
+        'create' => 'payments.create',
+        'update' => 'payments.update',
+        'delete' => 'payments.delete',
+        'verify' => 'payments.verify',
+        'restore' => 'payments.restore',
+        'forceDelete' => 'payments.forceDelete',
+    ],
+
 ];

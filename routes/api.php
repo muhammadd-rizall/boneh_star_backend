@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\Admin\BusFacilitiesController;
 use App\Http\Controllers\Api\Admin\BusImagesController;
 use App\Http\Controllers\Api\Admin\CustomerController;
 use App\Http\Controllers\Api\Admin\DriverController;
+use App\Http\Controllers\Api\Admin\PaymentController;
+use App\Http\Controllers\Api\Admin\PaymentMethodController;
 use App\Http\Controllers\Api\Admin\QuotationController;
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\RouteTypeController;
@@ -156,6 +158,24 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::delete('/{id}/force-delete', [TransactionController::class, 'forceDelete'])->name('force-delete');
         });
         Route::apiResource('transactions', TransactionController::class);
+
+        // Payment Method management routes
+        Route::prefix('payment-methods')->name('payment-methods.')->group(function () {
+            Route::get('/active', [PaymentMethodController::class, 'active'])->name('active');
+            Route::get('/trashed', [PaymentMethodController::class, 'trashed'])->name('trashed');
+            Route::post('/{id}/restore', [PaymentMethodController::class, 'restore'])->name('restore');
+            Route::delete('/{id}/force-delete', [PaymentMethodController::class, 'forceDelete'])->name('force-delete');
+        });
+        Route::apiResource('payment-methods', PaymentMethodController::class);
+
+        // Payment management routes
+        Route::prefix('payments')->name('payments.')->group(function () {
+            Route::post('/{id}/verify', [PaymentController::class, 'verify'])->name('verify');
+            Route::get('/trashed', [PaymentController::class, 'trashed'])->name('trashed');
+            Route::post('/{id}/restore', [PaymentController::class, 'restore'])->name('restore');
+            Route::delete('/{id}/force-delete', [PaymentController::class, 'forceDelete'])->name('force-delete');
+        });
+        Route::apiResource('payments', PaymentController::class);
 
     });
 });
