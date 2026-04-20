@@ -159,4 +159,10 @@ return [
         'publish' => 'reviews.publish',
     ],
 
+    // notification permission
+    'notifications' => [
+        'view' => 'notifications.view',
+        'delete' => 'notifications.delete',
+    ],
+
 ];

@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Admin\BusFacilitiesController;
 use App\Http\Controllers\Api\Admin\BusImagesController;
 use App\Http\Controllers\Api\Admin\CustomerController;
 use App\Http\Controllers\Api\Admin\DriverController;
+use App\Http\Controllers\Api\Admin\NotificationController;
 use App\Http\Controllers\Api\Admin\PaymentController;
 use App\Http\Controllers\Api\Admin\PaymentMethodController;
 use App\Http\Controllers\Api\Admin\QuotationController;
@@ -186,6 +187,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::delete('/{id}/force-delete', [ReviewController::class, 'forceDelete'])->name('force-delete');
         });
         Route::apiResource('reviews', ReviewController::class);
+
+        // Notification management routes
+        Route::prefix('notifications')->name('notifications.')->group(function () {
+            Route::post('/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('mark-all-as-read');
+            Route::post('/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('mark-as-read');
+        });
+        Route::apiResource('notifications', NotificationController::class)->only(['index', 'destroy']);
 
     });
 });
