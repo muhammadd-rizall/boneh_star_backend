@@ -8,7 +8,7 @@ use App\Http\Requests\Driver\UpdateDriverRequest;
 use App\Http\Resources\DriverResource;
 use App\Models\Driver;
 use App\Services\DriverService;
-
+use Illuminate\Http\Request;
 
 class DriverController extends BaseController
 {
@@ -22,12 +22,12 @@ class DriverController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', Driver::class);
 
         $statistics = $this->driverService->getStatistics();
-        $drivers = $this->driverService->getPaginatedDrivers();
+        $drivers = $this->driverService->getPaginatedDrivers(10, $request->query('search'));
 
         return response()->json([
             'success' => true,

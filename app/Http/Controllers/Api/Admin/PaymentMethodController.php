@@ -10,6 +10,7 @@ use App\Models\PaymentMethod;
 use App\Services\PaymentMethodService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class PaymentMethodController extends BaseController
 {
@@ -22,10 +23,10 @@ class PaymentMethodController extends BaseController
         $this->paymentMethodService = $paymentMethodService;
     }
 
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         $this->authorize('viewAny', PaymentMethod::class);
-        $paymentMethods = $this->paymentMethodService->getAllPaymentMethods();
+        $paymentMethods = $this->paymentMethodService->getAllPaymentMethods($request->query('search'));
 
         return $this->sendResponse(
             PaymentMethodResource::collection($paymentMethods),

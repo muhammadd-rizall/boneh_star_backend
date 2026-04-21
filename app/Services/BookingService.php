@@ -25,9 +25,9 @@ class BookingService
     /**
      * Get paginated bookings with eager loaded relations.
      */
-    public function getPaginatedBooking(int $perPage = 10)
+    public function getPaginatedBooking(int $perPage = 10, ?string $search = null)
     {
-        return $this->bookingRepository->getPaginatedBooking($perPage);
+        return $this->bookingRepository->getPaginatedBooking($perPage, $search);
     }
 
     /**
@@ -49,7 +49,7 @@ class BookingService
 
             $booking = $this->bookingRepository->create($data);
 
-            if (!empty($buses)) {
+            if (! empty($buses)) {
                 foreach ($buses as $bus) {
                     $booking->bookingBuses()->create($bus);
                 }

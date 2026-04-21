@@ -24,9 +24,9 @@ class QuotationService
     /**
      * Get paginated quotations with eager loaded relations.
      */
-    public function getPaginatedQuotation(int $perPage = 10)
+    public function getPaginatedQuotation(int $perPage = 10, ?string $search = null)
     {
-        return $this->quotationRepository->getPaginatedQuotation($perPage);
+        return $this->quotationRepository->getPaginatedQuotation($perPage, $search);
     }
 
     /**

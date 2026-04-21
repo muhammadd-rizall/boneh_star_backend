@@ -20,9 +20,9 @@ class CustomerService
     }
 
     // get paginated customers
-    public function getPaginatedCustomers(int $perPage = 10)
+    public function getPaginatedCustomers(int $perPage = 10, ?string $search = null)
     {
-        return $this->customerRepository->getPaginatedCustomers($perPage);
+        return $this->customerRepository->getPaginatedCustomers($perPage, $search);
     }
 
     // get customer by id

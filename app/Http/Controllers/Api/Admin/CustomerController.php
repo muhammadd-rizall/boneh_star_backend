@@ -8,6 +8,7 @@ use App\Http\Requests\Customer\UpdateCustomerRequest;
 use App\Http\Resources\CustomerResource;
 use App\Models\Customer;
 use App\Services\CustomerService;
+use Illuminate\Http\Request;
 
 class CustomerController extends BaseController
 {
@@ -21,13 +22,13 @@ class CustomerController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', Customer::class);
 
         $statistics = $this->customerService->getStatistics();
 
-        $customers = $this->customerService->getPaginatedCustomers();
+        $customers = $this->customerService->getPaginatedCustomers(10, $request->query('search'));
 
         return response()->json([
             'success' => true,

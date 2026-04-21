@@ -20,9 +20,9 @@ class RouteTypeService
     }
 
     // get paginated RouteTypes
-    public function getPaginatedRouteTypes(int $perPage = 10)
+    public function getPaginatedRouteTypes(int $perPage = 10, ?string $search = null)
     {
-        return $this->routeTypeRepository->getPaginatedRouteTypes($perPage);
+        return $this->routeTypeRepository->getPaginatedRouteTypes($perPage, $search);
     }
 
     // get RouteType by id

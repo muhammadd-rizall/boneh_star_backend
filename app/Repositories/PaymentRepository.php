@@ -12,9 +12,22 @@ class PaymentRepository extends BaseRepository
         $this->model = $payment;
     }
 
-    public function getPaginatedPayments(int $perPage = 10)
+    public function getPaginatedPayments(int $perPage = 10, ?string $search = null)
     {
-        return $this->model->with(['transaction', 'paymentMethod', 'verifiedBy'])->latest()->paginate($perPage);
+        $query = $this->model->with(['transaction', 'paymentMethod', 'verifiedBy']);
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('transaction', function ($tq) use ($search) {
+                    $tq->where('transaction_code', 'like', "%{$search}%");
+                })
+                    ->orWhereHas('paymentMethod', function ($pq) use ($search) {
+                        $pq->where('name', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        return $query->latest()->paginate($perPage);
     }
 
     public function getTrashedPayments()

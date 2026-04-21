@@ -17,9 +17,21 @@ class BookingRepository extends BaseRepository
         return $this->model->with(['customer', 'activity', 'routeType', 'bookingBuses.bus', 'bookingBuses.driver'])->get();
     }
 
-    public function getPaginatedBooking(int $perPage = 10)
+    public function getPaginatedBooking(int $perPage = 10, ?string $search = null)
     {
-        return $this->model->with(['customer', 'activity', 'routeType', 'bookingBuses.bus', 'bookingBuses.driver'])->latest()->paginate($perPage);
+        $query = $this->model->with(['customer', 'activity', 'routeType', 'bookingBuses.bus', 'bookingBuses.driver']);
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('booking_code', 'like', "%{$search}%")
+                    ->orWhere('origin', 'like', "%{$search}%")
+                    ->orWhereHas('customer', function ($cq) use ($search) {
+                        $cq->where('name', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        return $query->latest()->paginate($perPage);
     }
 
     public function getBookingById(string $id)
@@ -51,7 +63,7 @@ class BookingRepository extends BaseRepository
     {
         $query = $this->model->query()
             ->with(['customer', 'activity', 'routeType'])
-            ->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+            ->whereBetween('created_at', [$startDate.' 00:00:00', $endDate.' 23:59:59']);
 
         if ($status) {
             $query->where('status', $status);
@@ -72,7 +84,7 @@ class BookingRepository extends BaseRepository
     public function getReportStatistics(string $startDate, string $endDate, ?string $status = null, ?string $scope = null)
     {
         $baseQuery = $this->model->query()
-            ->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+            ->whereBetween('created_at', [$startDate.' 00:00:00', $endDate.' 23:59:59']);
 
         if ($status) {
             $baseQuery->where('status', $status);

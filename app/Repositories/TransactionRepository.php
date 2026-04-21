@@ -16,9 +16,20 @@ class TransactionRepository extends BaseRepository
         return $this->model->with(['booking.customer', 'quotation'])->get();
     }
 
-    public function getPaginatedTransaction(int $perPage = 10)
+    public function getPaginatedTransaction(int $perPage = 10, ?string $search = null)
     {
-        return $this->model->with(['booking.customer', 'quotation'])->latest()->paginate($perPage);
+        $query = $this->model->with(['booking.customer', 'quotation']);
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('transaction_code', 'like', "%{$search}%")
+                    ->orWhereHas('booking.customer', function ($cq) use ($search) {
+                        $cq->where('name', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        return $query->latest()->paginate($perPage);
     }
 
     public function getTransactionById(string $id)

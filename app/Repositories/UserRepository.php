@@ -1,42 +1,52 @@
 <?php
+
 namespace App\Repositories;
 
 use App\Models\User;
-use App\Repositories\BaseRepository;
 
 class UserRepository extends BaseRepository
 {
-
     public function __construct(User $user)
     {
         $this->model = $user;
     }
 
-
-    //get all data with roles relation
+    // get all data with roles relation
     public function getAllWithRole(array $relations = ['roles'])
     {
         return $this->model->with($relations)->get();
     }
 
-
-    //find data by email
+    // find data by email
     public function findByEmail(string $email)
     {
         return $this->model->where('email', $email)->firstOrFail();
     }
 
-
-    //get users by role id
+    // get users by role id
     public function getByRole(string $roleId)
     {
-        return $this->model->whereHas('roles', function($query) use ($roleId) {
+        return $this->model->whereHas('roles', function ($query) use ($roleId) {
             $query->where('roles.id', $roleId);
         })->with(['roles'])->get();
     }
 
+    // get users with roles and search support
+    public function getPaginatedUsers(int $perPage = 10, ?string $search = null)
+    {
+        $query = $this->model->with(['roles']);
 
-    //get user statistics
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        return $query->latest()->paginate($perPage);
+    }
+
+    // get user statistics
     public function getStatistics(): array
     {
         return [

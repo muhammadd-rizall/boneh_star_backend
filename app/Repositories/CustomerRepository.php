@@ -16,9 +16,19 @@ class CustomerRepository extends BaseRepository
         return $this->model->all();
     }
 
-    public function getPaginatedCustomers(int $perPage = 10)
+    public function getPaginatedCustomers(int $perPage = 10, ?string $search = null)
     {
-        return $this->model->latest()->paginate($perPage);
+        $query = $this->model->newQuery();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        return $query->latest()->paginate($perPage);
     }
 
     public function findByEmail(string $email): ?Customer

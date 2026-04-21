@@ -9,6 +9,7 @@ use App\Http\Resources\TransactionResource;
 use App\Models\Transaction;
 use App\Services\TransactionService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class TransactionController extends BaseController
 {
@@ -22,16 +23,16 @@ class TransactionController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         $this->authorize('viewAny', Transaction::class);
 
-        $transactions = $this->transactionService->getAllTransaction();
+        $transactions = $this->transactionService->getPaginatedTransaction(10, $request->query('search'));
         $statistics = $this->transactionService->getTransactionStatistics();
 
         return response()->json([
             'success' => true,
-            'data' => TransactionResource::collection($transactions),
+            'data' => TransactionResource::collection($transactions)->response()->getData(true),
             'statistics' => $statistics,
             'message' => 'Transactions retrieved successfully',
         ]);

@@ -8,6 +8,7 @@ use App\Http\Requests\Bus\UpdateBusesRequest;
 use App\Http\Resources\BusesResource;
 use App\Models\Buses;
 use App\Services\BusesService;
+use Illuminate\Http\Request;
 
 class BusesController extends BaseController
 {
@@ -21,13 +22,13 @@ class BusesController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', Buses::class);
 
         $statistics = $this->busesService->getStatistics();
 
-        $buses = $this->busesService->getPaginatedBuses();
+        $buses = $this->busesService->getPaginatedBuses(10, $request->query('search'));
 
         return response()->json([
             'success' => true,

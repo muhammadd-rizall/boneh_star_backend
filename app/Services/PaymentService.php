@@ -16,9 +16,9 @@ class PaymentService
         $this->paymentRepository = $paymentRepository;
     }
 
-    public function getPaginatedPayments(int $perPage = 10)
+    public function getPaginatedPayments(int $perPage = 10, ?string $search = null)
     {
-        return $this->paymentRepository->getPaginatedPayments($perPage);
+        return $this->paymentRepository->getPaginatedPayments($perPage, $search);
     }
 
     public function getPaymentById(string $id)

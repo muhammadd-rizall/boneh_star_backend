@@ -8,6 +8,7 @@ use App\Http\Requests\ActivityType\UpdateActivityTypeRequest;
 use App\Http\Resources\ActivityTypeResource;
 use App\Models\ActivityType;
 use App\Services\ActivityTypeService;
+use Illuminate\Http\Request;
 
 class ActivityTypeController extends BaseController
 {
@@ -21,18 +22,19 @@ class ActivityTypeController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', ActivityType::class);
 
         $statistics = $this->activityTypeService->getStatistics();
-        $activityTypes = $this->activityTypeService->getPaginatedActivityTypes();
+
+        $activity = $this->activityTypeService->getPaginatedActivityTypes(10, $request->query('search'));
 
         return response()->json([
             'success' => true,
             'statistic' => $statistics,
-            'data' => ActivityTypeResource::collection($activityTypes)->response()->getData(true),
-            'message' => 'Activity types retrieved successfully',
+            'data' => ActivityTypeResource::collection($activity)->response()->getData(true),
+            'message' => 'Activity retrieved successfully',
         ], 200);
     }
 

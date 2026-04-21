@@ -8,6 +8,7 @@ use App\Http\Requests\Bus_Facilities\UpdateBusFacilitiesRequest;
 use App\Http\Resources\BusFacilitiesResource;
 use App\Models\BusFacilities;
 use App\Services\BusFacilitiesService;
+use Illuminate\Http\Request;
 
 class BusFacilitiesController extends BaseController
 {
@@ -21,12 +22,13 @@ class BusFacilitiesController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', BusFacilities::class);
 
         $statistics = $this->busFacilitiesService->getStatistics();
-        $facilities = $this->busFacilitiesService->getPaginatedFacilities();
+
+        $facilities = $this->busFacilitiesService->getPaginatedFacilities(10, $request->query('search'));
 
         return response()->json([
             'success' => true,

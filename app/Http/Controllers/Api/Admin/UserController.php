@@ -8,10 +8,10 @@ use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\UserService;
+use Illuminate\Http\Request;
 
 class UserController extends BaseController
 {
-
     protected UserService $userService;
 
     public function __construct(UserService $userService)
@@ -22,17 +22,17 @@ class UserController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', User::class);
 
         $statistics = $this->userService->getStatistics();
-        $users = $this->userService->getAllUsers();
+        $users = $this->userService->getPaginatedUsers(10, $request->query('search'));
 
         return response()->json([
             'success' => true,
             'statistics' => $statistics,
-            'data' => UserResource::collection($users),
+            'data' => UserResource::collection($users)->response()->getData(true),
             'message' => 'Users retrieved successfully',
         ], 200);
     }
@@ -50,7 +50,7 @@ class UserController extends BaseController
 
         $user = $this->userService->createUser($data);
 
-        if (!empty($roleIds)) {
+        if (! empty($roleIds)) {
             $user->roles()->sync($roleIds);
         }
 
@@ -116,11 +116,9 @@ class UserController extends BaseController
         ], 200);
     }
 
-
     /**
      * Display a listing of the trashed resource.
      */
-
     public function trashed()
     {
         $this->authorize('viewAny', User::class);
@@ -134,11 +132,9 @@ class UserController extends BaseController
         ], 200);
     }
 
-
     /**
      * Restore the specified resource from storage.
      */
-
     public function restore($id)
     {
         $user = $this->userService->restoreUser($id);
@@ -149,7 +145,6 @@ class UserController extends BaseController
             'message' => 'User restored successfully',
         ], 200);
     }
-
 
     /**
      * Permanently delete the specified resource from storage.

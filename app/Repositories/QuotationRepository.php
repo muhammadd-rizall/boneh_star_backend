@@ -16,9 +16,20 @@ class QuotationRepository extends BaseRepository
         return $this->model->with(['booking', 'user'])->get();
     }
 
-    public function getPaginatedQuotation(int $perPage = 10)
+    public function getPaginatedQuotation(int $perPage = 10, ?string $search = null)
     {
-        return $this->model->with(['booking', 'user'])->latest()->paginate($perPage);
+        $query = $this->model->with(['booking.customer', 'user']);
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('quotation_code', 'like', "%{$search}%")
+                    ->orWhereHas('booking.customer', function ($cq) use ($search) {
+                        $cq->where('name', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        return $query->latest()->paginate($perPage);
     }
 
     public function getQuotationById(string $id)

@@ -17,9 +17,18 @@ class BusesRepository extends BaseRepository
         return $this->model->all();
     }
 
-    public function getPaginatedBuses(int $perPage = 10)
+    public function getPaginatedBuses(int $perPage = 10, ?string $search = null)
     {
-        return $this->model->latest()->paginate($perPage);
+        $query = $this->model->newQuery();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('plat_number', 'like', "%{$search}%");
+            });
+        }
+
+        return $query->latest()->paginate($perPage);
     }
 
     /**

@@ -20,9 +20,9 @@ class DriverService
     }
 
     // get paginated drivers
-    public function getPaginatedDrivers(int $perPage = 10)
+    public function getPaginatedDrivers(int $perPage = 10, ?string $search = null)
     {
-        return $this->driverRepository->getPaginatedDrivers($perPage);
+        return $this->driverRepository->getPaginatedDrivers($perPage, $search);
     }
 
     // get driver by id

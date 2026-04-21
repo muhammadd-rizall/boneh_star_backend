@@ -20,9 +20,9 @@ class BusCategoryService
     }
 
     // get paginated Categorys
-    public function getPaginatedCategory(int $perPage = 10)
+    public function getPaginatedCategory(int $perPage = 10, ?string $search = null)
     {
-        return $this->busCategoryRepository->getPaginatedCategory($perPage);
+        return $this->busCategoryRepository->getPaginatedCategory($perPage, $search);
     }
 
     // get Category by id

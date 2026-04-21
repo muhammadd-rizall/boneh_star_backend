@@ -19,10 +19,10 @@ class BusFacilitiesService
         return $this->busFacilitiesRepository->getAllFacilities();
     }
 
-    // get paginated facilities
-    public function getPaginatedFacilities(int $perPage = 10)
+    // get paginated Facilities
+    public function getPaginatedFacilities(int $perPage = 10, ?string $search = null)
     {
-        return $this->busFacilitiesRepository->getPaginatedFacilities($perPage);
+        return $this->busFacilitiesRepository->getPaginatedFacilities($perPage, $search);
     }
 
     // get facility by id

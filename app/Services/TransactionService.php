@@ -24,9 +24,9 @@ class TransactionService
     /**
      * Get paginated transactions with eager loaded relations.
      */
-    public function getPaginatedTransaction(int $perPage = 10)
+    public function getPaginatedTransaction(int $perPage = 10, ?string $search = null)
     {
-        return $this->transactionRepository->getPaginatedTransaction($perPage);
+        return $this->transactionRepository->getPaginatedTransaction($perPage, $search);
     }
 
     /**

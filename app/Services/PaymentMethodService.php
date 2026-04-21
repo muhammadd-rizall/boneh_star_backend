@@ -13,9 +13,9 @@ class PaymentMethodService
         $this->paymentMethodRepository = $paymentMethodRepository;
     }
 
-    public function getAllPaymentMethods()
+    public function getAllPaymentMethods(?string $search = null)
     {
-        return $this->paymentMethodRepository->all();
+        return $this->paymentMethodRepository->getAllPaymentMethods($search);
     }
 
     public function getActivePaymentMethods()

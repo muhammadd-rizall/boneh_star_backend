@@ -8,6 +8,7 @@ use App\Http\Requests\Booking\UpdateBookingRequest;
 use App\Http\Resources\BookingResource;
 use App\Models\Booking;
 use App\Services\BookingService;
+use Illuminate\Http\Request;
 
 class BookingController extends BaseController
 {
@@ -21,16 +22,16 @@ class BookingController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', Booking::class);
 
-        $bookings = $this->bookingService->getAllBooking();
+        $bookings = $this->bookingService->getPaginatedBooking(10, $request->query('search'));
         $statistics = $this->bookingService->getBookingStatistics();
 
         return response()->json([
             'success' => true,
-            'data' => BookingResource::collection($bookings),
+            'data' => BookingResource::collection($bookings)->response()->getData(true),
             'statistics' => $statistics,
             'message' => 'Bookings retrieved successfully',
         ]);

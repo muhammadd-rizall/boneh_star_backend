@@ -8,6 +8,7 @@ use App\Http\Requests\Bus_Categories\UpdateBusCategoryRequest;
 use App\Http\Resources\BusCategoriesResource;
 use App\Models\BusCategory;
 use App\Services\BusCategoryService;
+use Illuminate\Http\Request;
 
 class BusCategoryController extends BaseController
 {
@@ -21,13 +22,13 @@ class BusCategoryController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', BusCategory::class);
 
         $statistics = $this->busCategoryService->getStatistics();
 
-        $category = $this->busCategoryService->getPaginatedCategory();
+        $category = $this->busCategoryService->getPaginatedCategory(10, $request->query('search'));
 
         return response()->json([
             'success' => true,

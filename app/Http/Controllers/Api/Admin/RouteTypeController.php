@@ -9,6 +9,7 @@ use App\Http\Resources\RouteTypeResource;
 use App\Models\RouteType;
 use App\Services\RouteTypeService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class RouteTypeController extends BaseController
 {
@@ -22,18 +23,19 @@ class RouteTypeController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index(Request $request)
     {
         $this->authorize('viewAny', RouteType::class);
 
         $statistics = $this->routeTypeService->getStatistics();
-        $routeTypes = $this->routeTypeService->getPaginatedRouteTypes();
+
+        $route = $this->routeTypeService->getPaginatedRouteTypes(10, $request->query('search'));
 
         return response()->json([
             'success' => true,
             'statistic' => $statistics,
-            'data' => RouteTypeResource::collection($routeTypes)->response()->getData(true),
-            'message' => 'Route types retrieved successfully',
+            'data' => RouteTypeResource::collection($route)->response()->getData(true),
+            'message' => 'Route retrieved successfully',
         ], 200);
     }
 

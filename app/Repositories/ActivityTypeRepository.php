@@ -16,9 +16,15 @@ class ActivityTypeRepository extends BaseRepository
         return $this->model->all();
     }
 
-    public function getPaginatedActivityTypes(int $perPage = 10)
+    public function getPaginatedActivityTypes(int $perPage = 10, ?string $search = null)
     {
-        return $this->model->latest()->paginate($perPage);
+        $query = $this->model->newQuery();
+
+        if ($search) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        return $query->latest()->paginate($perPage);
     }
 
     /**

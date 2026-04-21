@@ -8,6 +8,7 @@ use App\Http\Requests\Quotation\UpdateQuotationRequest;
 use App\Http\Resources\QuotationResource;
 use App\Models\Quotation;
 use App\Services\QuotationService;
+use Illuminate\Http\Request;
 
 class QuotationController extends BaseController
 {
@@ -21,15 +22,15 @@ class QuotationController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', Quotation::class);
 
-        $quotations = $this->quotationService->getAllQuotation();
+        $quotations = $this->quotationService->getPaginatedQuotation(10, $request->query('search'));
 
         return response()->json([
             'success' => true,
-            'data' => QuotationResource::collection($quotations),
+            'data' => QuotationResource::collection($quotations)->response()->getData(true),
             'message' => 'Quotations retrieved successfully',
         ]);
     }

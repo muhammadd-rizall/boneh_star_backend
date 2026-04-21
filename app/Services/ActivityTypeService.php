@@ -20,9 +20,9 @@ class ActivityTypeService
     }
 
     // get paginated ActivityTypes
-    public function getPaginatedActivityTypes(int $perPage = 10)
+    public function getPaginatedActivityTypes(int $perPage = 10, ?string $search = null)
     {
-        return $this->activityTypeRepository->getPaginatedActivityTypes($perPage);
+        return $this->activityTypeRepository->getPaginatedActivityTypes($perPage, $search);
     }
 
     // get ActivityType by id

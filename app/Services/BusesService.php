@@ -22,9 +22,9 @@ class BusesService
     }
 
     // get paginated buses
-    public function getPaginatedBuses(int $perPage = 10)
+    public function getPaginatedBuses(int $perPage = 10, ?string $search = null)
     {
-        return $this->busesRepository->getPaginatedBuses($perPage);
+        return $this->busesRepository->getPaginatedBuses($perPage, $search);
     }
 
     // get bus by id
