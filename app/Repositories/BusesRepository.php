@@ -41,4 +41,28 @@ class BusesRepository extends BaseRepository
                 ->toArray(),
         ];
     }
+
+    /**
+     * Get bus availability for a specific period.
+     */
+    public function getBusAvailability(string $startDate, string $endDate)
+    {
+        return $this->model->query()
+            ->where('status', '!=', 'inactive')
+            ->with(['bookingBuses.booking' => function ($query) use ($startDate, $endDate) {
+                $query->where('status', '!=', 'cancelled')
+                    ->where(function ($q) use ($startDate, $endDate) {
+                        $q->where('departure_date', '<=', $endDate.' 23:59:59')
+                            ->where(function ($sq) use ($startDate) {
+                                $sq->where('return_date', '>=', $startDate.' 00:00:00')
+                                    ->orWhere(function ($ssq) use ($startDate) {
+                                        $ssq->whereNull('return_date')
+                                            ->where('departure_date', '>=', $startDate.' 00:00:00');
+                                    });
+                            });
+                    });
+            }])
+            ->orderBy('id')
+            ->get();
+    }
 }

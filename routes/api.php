@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Admin\ActivityTypeController;
 use App\Http\Controllers\Api\Admin\BookingController;
 use App\Http\Controllers\Api\Admin\BookingReportController;
+use App\Http\Controllers\Api\Admin\BusAvailabilityReportController;
 use App\Http\Controllers\Api\Admin\BusCategoryController;
 use App\Http\Controllers\Api\Admin\BusesController;
 use App\Http\Controllers\Api\Admin\BusFacilitiesController;
@@ -202,6 +203,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::prefix('reports')->name('reports.')->group(function () {
             Route::get('/bookings', [BookingReportController::class, 'index'])->name('bookings');
             Route::get('/income', [IncomeReportController::class, 'index'])->name('income');
+            Route::get('/bus-availability', [BusAvailabilityReportController::class, 'index'])->name('bus-availability');
         });
 
         // Company Profile routes

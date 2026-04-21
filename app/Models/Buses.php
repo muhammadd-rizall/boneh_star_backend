@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -47,8 +48,16 @@ class Buses extends Model
     /**
      * Get the facilities for the bus.
      */
-    public function facilities(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function facilities(): BelongsToMany
     {
         return $this->belongsToMany(BusFacilities::class, 'bus_facility', 'bus_id', 'bus_facility_id');
+    }
+
+    /**
+     * Get all booking assignments for the bus.
+     */
+    public function bookingBuses(): HasMany
+    {
+        return $this->hasMany(BookingBus::class, 'bus_id');
     }
 }
