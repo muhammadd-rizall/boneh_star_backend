@@ -202,7 +202,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
         // Report routes
         Route::prefix('reports')->name('reports.')->group(function () {
             Route::get('/bookings', [BookingReportController::class, 'index'])->name('bookings');
+            Route::get('/bookings/excel', [BookingReportController::class, 'exportExcel'])->name('bookings.excel');
+            Route::get('/bookings/pdf', [BookingReportController::class, 'exportPdf'])->name('bookings.pdf');
+
             Route::get('/income', [IncomeReportController::class, 'index'])->name('income');
+            Route::get('/income/excel', [IncomeReportController::class, 'exportExcel'])->name('income.excel');
+            Route::get('/income/pdf', [IncomeReportController::class, 'exportPdf'])->name('income.pdf');
+
             Route::get('/bus-availability', [BusAvailabilityReportController::class, 'index'])->name('bus-availability');
         });
 
