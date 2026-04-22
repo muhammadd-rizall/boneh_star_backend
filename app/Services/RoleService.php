@@ -52,7 +52,10 @@ class RoleService
     // restore role by id
     public function restoreRole(string $id)
     {
-        return $this->roleRepository->findTrashed($id)->restore();
+        $role = $this->roleRepository->findTrashed($id);
+        $role->restore();
+
+        return $role;
     }
 
     // force delete role by id

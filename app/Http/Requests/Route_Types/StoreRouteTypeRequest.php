@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Route_Types;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRouteTypeRequest extends FormRequest
@@ -12,7 +11,7 @@ class StoreRouteTypeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('route_types.create');
+        return $this->user()->can('routes.create');
     }
 
     /**
@@ -25,7 +24,7 @@ class StoreRouteTypeRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'scope' => ['required', 'in:inside,outside'],
-            'description' => ['required', 'string'],
+            'description' => ['nullable', 'string'],
         ];
     }
 
@@ -40,7 +39,7 @@ class StoreRouteTypeRequest extends FormRequest
             'name.required' => 'Name is required',
             'scope.required' => 'Scope is required',
             'scope.in' => 'Invalid scope selected',
-            'description.required' => 'Description is required',
+            'description.required' => 'Description is nullable',
         ];
     }
 }

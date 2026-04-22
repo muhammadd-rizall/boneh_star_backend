@@ -15,6 +15,7 @@ class BusCategoriesResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'name' => $this->name,
             'min_capacity' => $this->min_capacity,
             'max_capacity' => $this->max_capacity,

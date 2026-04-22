@@ -26,7 +26,7 @@ class StoreDriverRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:20'],
             'address' => ['required', 'string'],
-            'photo' => ['nullable', 'string'],
+            'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'status' => ['nullable', 'in:available,on_duty,inactive'],
             'notes' => ['nullable', 'string'],
         ];

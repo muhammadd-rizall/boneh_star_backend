@@ -126,10 +126,11 @@ class TransactionController extends BaseController
     {
         $this->authorize('restore', Transaction::class);
 
-        $this->transactionService->restoreTransaction($id);
+        $transaction = $this->transactionService->restoreTransaction($id);
 
         return response()->json([
             'success' => true,
+            'data' => new TransactionResource($transaction),
             'message' => 'Transaction restored successfully',
         ]);
     }

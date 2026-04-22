@@ -130,10 +130,11 @@ class ReviewController extends BaseController
     {
         $this->authorize('restore', Review::class);
 
-        $this->reviewService->restoreReview($id);
+        $review = $this->reviewService->restoreReview($id);
 
         return response()->json([
             'success' => true,
+            'data' => new ReviewResource($review),
             'message' => 'Review restored successfully',
         ], 200);
     }

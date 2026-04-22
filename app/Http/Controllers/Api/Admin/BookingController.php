@@ -125,10 +125,11 @@ class BookingController extends BaseController
     {
         $this->authorize('restore', Booking::class);
 
-        $this->bookingService->restoreBooking($id);
+        $booking = $this->bookingService->restoreBooking($id);
 
         return response()->json([
             'success' => true,
+            'data' => new BookingResource($booking),
             'message' => 'Booking restored successfully',
         ]);
     }

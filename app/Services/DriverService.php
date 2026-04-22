@@ -3,6 +3,9 @@
 namespace App\Services;
 
 use App\Repositories\DriverRepository;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class DriverService
 {
@@ -34,13 +37,31 @@ class DriverService
     // create driver
     public function createDriver(array $data)
     {
-        return $this->driverRepository->create($data);
+        return DB::transaction(function () use ($data) {
+            if (isset($data['photo']) && $data['photo'] instanceof UploadedFile) {
+                $data['photo'] = $data['photo']->store('drivers', 'public');
+            }
+
+            return $this->driverRepository->create($data);
+        });
     }
 
     // update driver by id
     public function updateDriver(string $id, array $data)
     {
-        return $this->driverRepository->update($id, $data);
+        return DB::transaction(function () use ($id, $data) {
+            $driver = $this->driverRepository->find($id);
+
+            if (isset($data['photo']) && $data['photo'] instanceof UploadedFile) {
+                // Delete old photo if exists
+                if ($driver->photo) {
+                    Storage::disk('public')->delete($driver->photo);
+                }
+                $data['photo'] = $data['photo']->store('drivers', 'public');
+            }
+
+            return $this->driverRepository->update($id, $data);
+        });
     }
 
     // delete driver by id
@@ -64,7 +85,15 @@ class DriverService
     // force delete driver by id
     public function forceDeleteDriver(string $id)
     {
-        return $this->driverRepository->forceDelete($id);
+        $driver = $this->driverRepository->findTrashed($id);
+
+        return DB::transaction(function () use ($driver) {
+            if ($driver->photo) {
+                Storage::disk('public')->delete($driver->photo);
+            }
+
+            return $this->driverRepository->forceDelete($driver->id);
+        });
     }
 
     // get driver statistics

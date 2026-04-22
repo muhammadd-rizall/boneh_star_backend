@@ -126,10 +126,11 @@ class BusFacilitiesController extends BaseController
     {
         $this->authorize('restore', BusFacilities::class);
 
-        $this->busFacilitiesService->restoreFacility($id);
+        $facility = $this->busFacilitiesService->restoreFacility($id);
 
         return response()->json([
             'success' => true,
+            'data' => new BusFacilitiesResource($facility),
             'message' => 'Facility restored successfully',
         ], 200);
     }

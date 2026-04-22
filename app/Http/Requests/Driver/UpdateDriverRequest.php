@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Driver;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateDriverRequest extends FormRequest
@@ -25,7 +26,7 @@ class UpdateDriverRequest extends FormRequest
             'name' => ['sometimes', 'required', 'string', 'max:255'],
             'phone' => ['sometimes', 'required', 'string', 'max:20'],
             'address' => ['sometimes', 'required', 'string'],
-            'photo' => ['nullable', 'string'],
+            'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'status' => ['sometimes', 'required', 'in:available,on_duty,inactive'],
             'notes' => ['nullable', 'string'],
         ];

@@ -126,10 +126,11 @@ class ActivityTypeController extends BaseController
     {
         $this->authorize('restore', ActivityType::class);
 
-        $this->activityTypeService->restoreActivityType($id);
+        $activityType = $this->activityTypeService->restoreActivityType($id);
 
         return response()->json([
             'success' => true,
+            'data' => new ActivityTypeResource($activityType),
             'message' => 'Activity type restored successfully',
         ], 200);
     }

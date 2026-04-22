@@ -23,7 +23,7 @@ class StoreBusesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'bus_category_id' => ['required', 'exists:bus_categories,id'],
+            'bus_category_id' => ['required', 'uuid', 'exists:bus_categories,id'],
             'plat_number' => ['required', 'string', 'max:255', 'unique:buses,plat_number'],
             'name' => ['required', 'string', 'max:255'],
             'seat_count' => ['required', 'integer', 'min:1'],
@@ -32,7 +32,7 @@ class StoreBusesRequest extends FormRequest
             'status' => ['required', 'in:available,booked,maintenance,inactive'],
             'notes' => ['nullable', 'string'],
             'facilities' => ['nullable', 'array'],
-            'facilities.*' => ['exists:bus_facilities,id'],
+            'facilities.*' => ['uuid', 'exists:bus_facilities,id'],
             'images' => ['nullable', 'array'],
             'images.*' => ['image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ];
@@ -42,6 +42,7 @@ class StoreBusesRequest extends FormRequest
     {
         return [
             'bus_category_id.required' => 'Bus category is required',
+            'bus_category_id.uuid' => 'Invalid bus category format',
             'bus_category_id.exists' => 'Bus category does not exist',
             'plat_number.required' => 'Plat number is required',
             'plat_number.unique' => 'Plat number has already been taken',
@@ -50,7 +51,8 @@ class StoreBusesRequest extends FormRequest
             'production_year.required' => 'Production year is required',
             'status.required' => 'Status is required',
             'status.in' => 'Invalid status selected',
-            'notes.required' => 'Notes are required',
+            'facilities.*.uuid' => 'Invalid facility format',
+            'facilities.*.exists' => 'Facility does not exist',
             'images.array' => 'Images must be an array',
             'images.*.image' => 'File must be an image',
             'images.*.mimes' => 'Image must be a type of: jpeg, png, jpg, gif, svg',

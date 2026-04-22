@@ -125,10 +125,11 @@ class DriverController extends BaseController
     {
         $this->authorize('restore', Driver::class);
 
-        $this->driverService->restoreDriver($id);
+        $driver = $this->driverService->restoreDriver($id);
 
         return response()->json([
             'success' => true,
+            'data' => new DriverResource($driver),
             'message' => 'Driver restored successfully',
         ], 200);
     }

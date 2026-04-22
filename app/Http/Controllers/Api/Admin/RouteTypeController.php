@@ -127,10 +127,11 @@ class RouteTypeController extends BaseController
     {
         $this->authorize('restore', RouteType::class);
 
-        $this->routeTypeService->restoreRouteType($id);
+        $routeType = $this->routeTypeService->restoreRouteType($id);
 
         return response()->json([
             'success' => true,
+            'data' => new RouteTypeResource($routeType),
             'message' => 'Route type restored successfully',
         ], 200);
     }

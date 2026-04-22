@@ -32,7 +32,7 @@ class RoleController extends BaseController
 
         return response()->json([
             'success' => true,
-            'statistic' => $statistics,
+            'statistics' => $statistics,
             'data' => RoleResource::collection($roles),
             'message' => 'Roles retrieved successfully',
         ], 200);
@@ -128,14 +128,13 @@ class RoleController extends BaseController
     // Restore the specified resource from storage.
     public function restore($id)
     {
-        $role = $this->roleService->getRoleById($id);
+        $role = $this->roleService->restoreRole($id);
 
         $this->authorize('restore', $role);
 
-        $this->roleService->restoreRole($id);
-
         return response()->json([
             'success' => true,
+            'data' => new RoleResource($role),
             'message' => 'Role restored successfully',
         ], 200);
     }
@@ -143,7 +142,14 @@ class RoleController extends BaseController
     // Permanently delete the specified resource from storage.
     public function forceDelete($id)
     {
-        $role = $this->roleService->getRoleById($id);
+        $role = $this->roleService->getTrashedRoles()->find($id);
+
+        if (! $role) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Role not found in trash',
+            ], 404);
+        }
 
         $this->authorize('forceDelete', $role);
 

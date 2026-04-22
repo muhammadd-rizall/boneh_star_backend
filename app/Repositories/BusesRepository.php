@@ -14,12 +14,12 @@ class BusesRepository extends BaseRepository
 
     public function getAllBuses()
     {
-        return $this->model->all();
+        return $this->model->with(['category', 'facilities', 'images'])->get();
     }
 
     public function getPaginatedBuses(int $perPage = 10, ?string $search = null)
     {
-        $query = $this->model->newQuery();
+        $query = $this->model->newQuery()->with(['category', 'facilities', 'images']);
 
         if ($search) {
             $query->where(function ($q) use ($search) {

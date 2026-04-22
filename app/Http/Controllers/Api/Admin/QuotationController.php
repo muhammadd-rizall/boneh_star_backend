@@ -123,10 +123,11 @@ class QuotationController extends BaseController
     {
         $this->authorize('restore', Quotation::class);
 
-        $this->quotationService->restoreQuotation($id);
+        $quotation = $this->quotationService->restoreQuotation($id);
 
         return response()->json([
             'success' => true,
+            'data' => new QuotationResource($quotation),
             'message' => 'Quotation restored successfully',
         ]);
     }

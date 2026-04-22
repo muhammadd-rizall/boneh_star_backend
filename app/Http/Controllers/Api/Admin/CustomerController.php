@@ -123,10 +123,11 @@ class CustomerController extends BaseController
     public function restore(string $id)
     {
         $this->authorize('restore', Customer::class);
-        $this->customerService->restoreCustomer($id);
+        $customer = $this->customerService->restoreCustomer($id);
 
         return response()->json([
             'success' => true,
+            'data' => new CustomerResource($customer),
             'message' => 'Customer restored successfully',
         ], 200);
     }

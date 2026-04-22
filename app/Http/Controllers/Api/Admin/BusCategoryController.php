@@ -128,10 +128,11 @@ class BusCategoryController extends BaseController
     {
         $this->authorize('restore', BusCategory::class);
 
-        $this->busCategoryService->restoreCategory($id);
+        $category = $this->busCategoryService->restoreCategory($id);
 
         return response()->json([
             'success' => true,
+            'data' => new BusCategoriesResource($category),
             'message' => 'Category restored successfully',
         ], 200);
     }

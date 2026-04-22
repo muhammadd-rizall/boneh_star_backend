@@ -34,7 +34,7 @@ class UserRepository extends BaseRepository
     // get users with roles and search support
     public function getPaginatedUsers(int $perPage = 10, ?string $search = null)
     {
-        $query = $this->model->with(['roles']);
+        $query = $this->model->with(['roles.permissions']);
 
         if ($search) {
             $query->where(function ($q) use ($search) {

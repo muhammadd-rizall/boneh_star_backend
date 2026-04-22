@@ -71,7 +71,9 @@ class UserService
     {
         $user = $this->userRepository->findTrashed($id);
 
-        return $user->restore();
+        $user->restore();
+
+        return $user;
     }
 
     // force delete user by id

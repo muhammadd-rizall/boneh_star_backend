@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Transaction;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateTransactionRequest extends FormRequest
@@ -17,14 +18,14 @@ class UpdateTransactionRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
             'booking_id' => ['required', 'uuid', 'exists:bookings,id'],
             'quotation_id' => ['required', 'uuid', 'exists:quotations,id'],
-            'invoice_number' => ['required', 'string', 'max:255', 'unique:transactions,invoice_number,' . $this->route('transaction')],
+            'invoice_number' => ['nullable', 'string', 'max:255', 'unique:transactions,invoice_number,'.$this->route('transaction')],
             'total_amount' => ['required', 'numeric', 'min:0'],
             'dp_paid' => ['required', 'numeric', 'min:0'],
             'remaining_amount' => ['required', 'numeric', 'min:0'],

@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\ActivityType;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateActivityTypeRequest extends FormRequest
@@ -24,7 +23,7 @@ class UpdateActivityTypeRequest extends FormRequest
     {
         return [
             'name' => ['sometimes', 'required', 'string', 'max:255', 'unique:activity_types,name,'.$this->route('activity_type')],
-            'description' => ['sometimes', 'required', 'string'],
+            'description' => ['sometimes', 'nullable', 'string'],
         ];
     }
 
@@ -38,7 +37,7 @@ class UpdateActivityTypeRequest extends FormRequest
         return [
             'name.required' => 'Name is required',
             'name.unique' => 'Name has already been taken',
-            'description.required' => 'Description is required',
+            'description.required' => 'Description is nullable',
         ];
     }
 }

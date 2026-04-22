@@ -26,7 +26,7 @@ class StoreBookingRequest extends FormRequest
             'customer_id' => ['required', 'uuid', 'exists:customers,id'],
             'activity_id' => ['required', 'uuid', 'exists:activity_types,id'],
             'route_type_id' => ['required', 'uuid', 'exists:route_types,id'],
-            'booking_code' => ['required', 'string', 'max:255', 'unique:bookings,booking_code'],
+            'booking_code' => ['nullable', 'string', 'max:255', 'unique:bookings,booking_code'],
             'departure_date' => ['required', 'date'],
             'return_date' => ['nullable', 'date', 'after_or_equal:departure_date'],
             'origin' => ['required', 'string'],

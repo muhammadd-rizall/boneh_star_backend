@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Route_Types;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateRouteTypeRequest extends FormRequest
@@ -12,7 +11,7 @@ class UpdateRouteTypeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('route_types.update');
+        return $this->user()->can('routes.update');
     }
 
     /**
@@ -25,7 +24,7 @@ class UpdateRouteTypeRequest extends FormRequest
         return [
             'name' => ['sometimes', 'required', 'string', 'max:255'],
             'scope' => ['sometimes', 'required', 'in:inside,outside'],
-            'description' => ['sometimes', 'required', 'string'],
+            'description' => ['sometimes', 'nullable', 'string'],
         ];
     }
 
@@ -40,7 +39,7 @@ class UpdateRouteTypeRequest extends FormRequest
             'name.required' => 'Name is required',
             'scope.required' => 'Scope is required',
             'scope.in' => 'Invalid scope selected',
-            'description.required' => 'Description is required',
+            'description.required' => 'Description is nullable',
         ];
     }
 }

@@ -23,7 +23,7 @@ class UpdateBusesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'bus_category_id' => ['sometimes', 'exists:bus_categories,id'],
+            'bus_category_id' => ['sometimes', 'uuid', 'exists:bus_categories,id'],
             'plat_number' => ['sometimes', 'string', 'max:255', 'unique:buses,plat_number,'.$this->route('bus')],
             'name' => ['sometimes', 'string', 'max:255'],
             'seat_count' => ['sometimes', 'integer', 'min:1'],
@@ -32,7 +32,7 @@ class UpdateBusesRequest extends FormRequest
             'status' => ['sometimes', 'in:available,booked,maintenance,inactive'],
             'notes' => ['nullable', 'string'],
             'facilities' => ['nullable', 'array'],
-            'facilities.*' => ['exists:bus_facilities,id'],
+            'facilities.*' => ['uuid', 'exists:bus_facilities,id'],
             'images' => ['nullable', 'array'],
             'images.*' => ['image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ];
@@ -41,9 +41,12 @@ class UpdateBusesRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'bus_category_id.uuid' => 'Invalid bus category format',
             'bus_category_id.exists' => 'Bus category does not exist',
             'plat_number.unique' => 'Plat number has already been taken',
             'status.in' => 'Invalid status selected',
+            'facilities.*.uuid' => 'Invalid facility format',
+            'facilities.*.exists' => 'Facility does not exist',
             'images.array' => 'Images must be an array',
             'images.*.image' => 'File must be an image',
             'images.*.mimes' => 'Image must be a type of: jpeg, png, jpg, gif, svg',

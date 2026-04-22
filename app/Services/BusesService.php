@@ -18,7 +18,7 @@ class BusesService
     // get all buses
     public function getAllBuses()
     {
-        return $this->busesRepository->all(['category', 'images']);
+        return $this->busesRepository->all(['category', 'facilities', 'images']);
     }
 
     // get paginated buses
@@ -30,7 +30,7 @@ class BusesService
     // get bus by id
     public function getBusById(string $id)
     {
-        return $this->busesRepository->find($id, ['category', 'images']);
+        return $this->busesRepository->find($id, ['category', 'facilities', 'images']);
     }
 
     // create bus
@@ -90,7 +90,7 @@ class BusesService
     // get all trashed buses
     public function getTrashedBuses()
     {
-        return $this->busesRepository->allTrashed(['category', 'images']);
+        return $this->busesRepository->allTrashed(['category', 'facilities', 'images']);
     }
 
     // restore bus by id

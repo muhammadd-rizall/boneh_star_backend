@@ -43,7 +43,8 @@ class BusesController extends BaseController
      */
     public function show(string $id)
     {
-        $this->authorize('view', Buses::class);
+        $bus = Buses::findOrFail($id);
+        $this->authorize('view', $bus);
 
         $bus = $this->busesService->getBusById($id);
 
@@ -77,7 +78,8 @@ class BusesController extends BaseController
      */
     public function update(UpdateBusesRequest $request, string $id)
     {
-        $this->authorize('update', Buses::class);
+        $bus = Buses::findOrFail($id);
+        $this->authorize('update', $bus);
 
         $data = $request->validated();
 
@@ -95,7 +97,8 @@ class BusesController extends BaseController
      */
     public function destroy(string $id)
     {
-        $this->authorize('delete', Buses::class);
+        $bus = Buses::findOrFail($id);
+        $this->authorize('delete', $bus);
 
         $this->busesService->deleteBus($id);
 
@@ -126,7 +129,8 @@ class BusesController extends BaseController
      */
     public function restore(string $id)
     {
-        $this->authorize('restore', Buses::class);
+        $bus = Buses::withTrashed()->findOrFail($id);
+        $this->authorize('restore', $bus);
 
         $this->busesService->restoreBus($id);
 
@@ -141,7 +145,8 @@ class BusesController extends BaseController
      */
     public function forceDelete(string $id)
     {
-        $this->authorize('forceDelete', Buses::class);
+        $bus = Buses::withTrashed()->findOrFail($id);
+        $this->authorize('forceDelete', $bus);
 
         $this->busesService->forceDeleteBus($id);
 
