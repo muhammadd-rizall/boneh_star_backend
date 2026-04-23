@@ -18,7 +18,7 @@ class UpdateReviewRequest extends FormRequest
             'customer_id' => 'sometimes|exists:customers,id',
             'rating' => 'sometimes|integer|min:1|max:5',
             'comment' => 'nullable|string',
-            'is_publish' => 'sometimes|boolean',
+            'is_publish' => 'boolean',
         ];
     }
 

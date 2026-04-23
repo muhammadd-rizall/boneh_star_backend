@@ -16,7 +16,7 @@ use App\Http\Controllers\Api\Admin\NotificationController;
 use App\Http\Controllers\Api\Admin\PaymentController;
 use App\Http\Controllers\Api\Admin\PaymentMethodController;
 use App\Http\Controllers\Api\Admin\QuotationController;
-use App\Http\Controllers\Api\Admin\ReviewController;
+use App\Http\Controllers\Api\Admin\ReviewReportController;
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\RouteTypeController;
 use App\Http\Controllers\Api\Admin\TransactionController;
@@ -183,15 +183,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         });
         Route::apiResource('payments', PaymentController::class);
 
-        // Review management routes
-        Route::prefix('reviews')->name('reviews.')->group(function () {
-            Route::post('/{id}/toggle-publish', [ReviewController::class, 'togglePublish'])->name('toggle-publish');
-            Route::get('/trashed', [ReviewController::class, 'trashed'])->name('trashed');
-            Route::post('/{id}/restore', [ReviewController::class, 'restore'])->name('restore');
-            Route::delete('/{id}/force-delete', [ReviewController::class, 'forceDelete'])->name('force-delete');
-        });
-        Route::apiResource('reviews', ReviewController::class);
-
         // Notification management routes
         Route::prefix('notifications')->name('notifications.')->group(function () {
             Route::post('/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('mark-all-as-read');
@@ -210,6 +201,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/income/pdf', [IncomeReportController::class, 'exportPdf'])->name('income.pdf');
 
             Route::get('/bus-availability', [BusAvailabilityReportController::class, 'index'])->name('bus-availability');
+
+            // Consolidated Review routes in reports
+            Route::prefix('reviews')->name('reviews.')->group(function () {
+                Route::get('/', [ReviewReportController::class, 'index'])->name('index');
+                Route::post('/{id}/toggle-publish', [ReviewReportController::class, 'togglePublish'])->name('toggle-publish');
+                Route::delete('/{id}', [ReviewReportController::class, 'destroy'])->name('destroy');
+            });
         });
 
         // Company Profile routes
