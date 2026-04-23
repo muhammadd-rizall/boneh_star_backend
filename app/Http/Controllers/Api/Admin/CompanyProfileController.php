@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Api\BaseController;
 use App\Http\Requests\CompanyProfile\UpdateCompanyProfileRequest;
 use App\Http\Resources\CompanyProfileResource;
+use App\Models\CompanyProfile;
 use App\Services\CompanyProfileService;
-use Illuminate\Http\JsonResponse;
 
 class CompanyProfileController extends BaseController
 {
@@ -20,8 +20,10 @@ class CompanyProfileController extends BaseController
     /**
      * Display the company profile.
      */
-    public function index(): JsonResponse
+    public function index()
     {
+        $this->authorize('viewAny', CompanyProfile::class);
+
         $profile = $this->service->getProfile();
 
         return response()->json([
@@ -34,8 +36,10 @@ class CompanyProfileController extends BaseController
     /**
      * Update or create the company profile.
      */
-    public function store(UpdateCompanyProfileRequest $request): JsonResponse
+    public function store(UpdateCompanyProfileRequest $request)
     {
+        $this->authorize('update', $this->service->getProfile() ?? CompanyProfile::class);
+
         $profile = $this->service->updateOrCreateProfile($request->validated());
 
         return response()->json([

@@ -15,8 +15,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('company_name');
             $table->text('address');
-            $table->json('phone');
             $table->json('whatsapp');
+            $table->json('social_media')->nullable();
             $table->string('email')->nullable();
             $table->text('description')->nullable();
             $table->string('logo')->nullable();

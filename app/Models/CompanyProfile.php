@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['company_name', 'address', 'phone', 'whatsapp', 'email', 'description', 'logo'])]
+#[Fillable(['company_name', 'address', 'whatsapp', 'social_media', 'email', 'description', 'logo'])]
 class CompanyProfile extends Model
 {
     use HasFactory, HasUuids;
@@ -20,8 +20,8 @@ class CompanyProfile extends Model
     protected function casts(): array
     {
         return [
-            'phone' => 'array',
             'whatsapp' => 'array',
+            'social_media' => 'array',
         ];
     }
 }

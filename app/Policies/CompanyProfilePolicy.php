@@ -12,7 +12,7 @@ class CompanyProfilePolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->hasPermissionTo(config('company_profile.view'));
     }
 
     /**
@@ -20,7 +20,7 @@ class CompanyProfilePolicy
      */
     public function view(User $user, CompanyProfile $companyProfile): bool
     {
-        return false;
+        return $user->hasPermissionTo(config('company_profile.view'));
     }
 
     /**
@@ -28,7 +28,7 @@ class CompanyProfilePolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->hasPermissionTo(config('company_profile.update'));
     }
 
     /**
@@ -36,7 +36,7 @@ class CompanyProfilePolicy
      */
     public function update(User $user, CompanyProfile $companyProfile): bool
     {
-        return false;
+        return $user->hasPermissionTo(config('company_profile.update'));
     }
 
     /**
