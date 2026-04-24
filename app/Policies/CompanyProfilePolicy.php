@@ -44,7 +44,7 @@ class CompanyProfilePolicy
      */
     public function delete(User $user, CompanyProfile $companyProfile): bool
     {
-        return false;
+        return $user->hasPermissionTo(config('company_profile.delete'));
     }
 
     /**

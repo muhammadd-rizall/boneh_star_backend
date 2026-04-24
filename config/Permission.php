@@ -175,6 +175,7 @@ return [
     'company_profile' => [
         'view' => 'company_profile.view',
         'update' => 'company_profile.update',
+        'delete' => 'company_profile.delete',
     ],
 
 ];

@@ -14,9 +14,9 @@ class UpdateCompanyProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'company_name' => 'required|string|max:255',
-            'address' => 'required|string',
-            'whatsapp' => 'required|array|min:1',
+            'company_name' => 'sometimes|required|string|max:255',
+            'address' => 'sometimes|required|string',
+            'whatsapp' => 'nullable|array',
             'whatsapp.*' => 'required|string|max:20',
             'social_media' => 'nullable|array',
             'social_media.*.platform' => 'required|string|max:50',
@@ -24,13 +24,17 @@ class UpdateCompanyProfileRequest extends FormRequest
             'email' => 'nullable|email|max:255',
             'description' => 'nullable|string',
             'logo' => 'nullable|image|max:2048',
+
+            // Flags for clearing data
+            'remove_logo' => 'nullable|boolean',
+            'clear_whatsapp' => 'nullable|boolean',
+            'clear_social_media' => 'nullable|boolean',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'whatsapp.required' => 'At least one WhatsApp number is required',
             'whatsapp.array' => 'WhatsApp numbers must be an array',
         ];
     }

@@ -7,6 +7,7 @@ use App\Http\Requests\CompanyProfile\UpdateCompanyProfileRequest;
 use App\Http\Resources\CompanyProfileResource;
 use App\Models\CompanyProfile;
 use App\Services\CompanyProfileService;
+use Illuminate\Http\JsonResponse;
 
 class CompanyProfileController extends BaseController
 {
@@ -20,7 +21,7 @@ class CompanyProfileController extends BaseController
     /**
      * Display the company profile.
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $this->authorize('viewAny', CompanyProfile::class);
 
@@ -36,7 +37,7 @@ class CompanyProfileController extends BaseController
     /**
      * Update or create the company profile.
      */
-    public function store(UpdateCompanyProfileRequest $request)
+    public function store(UpdateCompanyProfileRequest $request): JsonResponse
     {
         $this->authorize('update', $this->service->getProfile() ?? CompanyProfile::class);
 
@@ -46,6 +47,30 @@ class CompanyProfileController extends BaseController
             'success' => true,
             'data' => new CompanyProfileResource($profile),
             'message' => 'Company profile updated successfully',
+        ], 200);
+    }
+
+    /**
+     * Delete the company profile.
+     */
+    public function destroy(): JsonResponse
+    {
+        $profile = $this->service->getProfile();
+
+        if (! $profile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Company profile not found',
+            ], 404);
+        }
+
+        $this->authorize('delete', $profile);
+
+        $this->service->deleteProfile();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Company profile deleted successfully',
         ], 200);
     }
 }

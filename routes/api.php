@@ -213,6 +213,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         // Company Profile routes
         Route::get('/company-profile', [CompanyProfileController::class, 'index'])->name('company-profile.index');
         Route::post('/company-profile', [CompanyProfileController::class, 'store'])->name('company-profile.store');
+        Route::delete('/company-profile', [CompanyProfileController::class, 'destroy'])->name('company-profile.destroy');
 
     });
 });
