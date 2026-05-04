@@ -23,9 +23,15 @@ class NotificationService
         return $this->notificationRepository->getUnreadCount($targetType, $targetId);
     }
 
-    public function markAsRead(string $id)
+    public function markAsRead(string $id, string $targetType, string $targetId)
     {
-        return $this->notificationRepository->update($id, [
+        $notification = $this->notificationRepository->model
+            ->where('id', $id)
+            ->where('target_type', $targetType)
+            ->where('target_id', $targetId)
+            ->firstOrFail();
+
+        return $this->notificationRepository->update($notification->id, [
             'is_read' => true,
             'read_at' => now(),
         ]);
@@ -41,8 +47,14 @@ class NotificationService
         return $this->notificationRepository->create($data);
     }
 
-    public function deleteNotification(string $id)
+    public function deleteNotification(string $id, string $targetType, string $targetId)
     {
-        return $this->notificationRepository->delete($id);
+        $notification = $this->notificationRepository->model
+            ->where('id', $id)
+            ->where('target_type', $targetType)
+            ->where('target_id', $targetId)
+            ->firstOrFail();
+
+        return $this->notificationRepository->delete($notification->id);
     }
 }

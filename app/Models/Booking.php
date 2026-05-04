@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
@@ -52,7 +53,8 @@ class Booking extends Model
         $date = now()->format('Ymd');
         $prefix = 'BK-'.$date.'-';
 
-        $lastBooking = static::where('booking_code', 'like', $prefix.'%')
+        $lastBooking = static::withTrashed()
+            ->where('booking_code', 'like', $prefix.'%')
             ->orderBy('booking_code', 'desc')
             ->first();
 
@@ -84,5 +86,15 @@ class Booking extends Model
     public function bookingBuses(): HasMany
     {
         return $this->hasMany(BookingBus::class);
+    }
+
+    public function quotation(): HasOne
+    {
+        return $this->hasOne(Quotation::class);
+    }
+
+    public function transaction(): HasOne
+    {
+        return $this->hasOne(Transaction::class);
     }
 }

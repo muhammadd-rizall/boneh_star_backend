@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Api\BaseController;
-use App\Http\Requests\Quotation\StoreQuotationRequest;
-use App\Http\Requests\Quotation\UpdateQuotationRequest;
+use App\Http\Requests\Admin\Quotation\StoreQuotationRequest;
+use App\Http\Requests\Admin\Quotation\UpdateQuotationRequest;
 use App\Http\Resources\QuotationResource;
 use App\Models\Quotation;
 use App\Services\QuotationService;

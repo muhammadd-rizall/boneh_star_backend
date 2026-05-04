@@ -22,6 +22,14 @@ class ReviewRepository extends BaseRepository
         return $this->model->onlyTrashed()->with(['booking', 'customer'])->latest()->get();
     }
 
+    public function getCustomerReviews(string $customerId, int $perPage = 10)
+    {
+        return $this->model->where('customer_id', $customerId)
+            ->with(['booking.activity'])
+            ->latest()
+            ->paginate($perPage);
+    }
+
     /**
      * Get statistics for reviews.
      */

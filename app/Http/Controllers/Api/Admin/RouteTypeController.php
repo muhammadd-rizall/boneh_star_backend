@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Api\BaseController;
-use App\Http\Requests\Route_Types\StoreRouteTypeRequest;
-use App\Http\Requests\Route_Types\UpdateRouteTypeRequest;
+use App\Http\Requests\Admin\RouteType\StoreRouteTypeRequest;
+use App\Http\Requests\Admin\RouteType\UpdateRouteTypeRequest;
 use App\Http\Resources\RouteTypeResource;
 use App\Models\RouteType;
 use App\Services\RouteTypeService;

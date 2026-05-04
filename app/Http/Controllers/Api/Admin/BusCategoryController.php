@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Api\BaseController;
-use App\Http\Requests\Bus_Categories\StoreBusCategoryRequest;
-use App\Http\Requests\Bus_Categories\UpdateBusCategoryRequest;
+use App\Http\Requests\Admin\BusCategory\StoreBusCategoryRequest;
+use App\Http\Requests\Admin\BusCategory\UpdateBusCategoryRequest;
 use App\Http\Resources\BusCategoriesResource;
 use App\Models\BusCategory;
 use App\Services\BusCategoryService;

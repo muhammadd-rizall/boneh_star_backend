@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Api\BaseController;
-use App\Http\Requests\Transaction\StoreTransactionRequest;
-use App\Http\Requests\Transaction\UpdateTransactionRequest;
+use App\Http\Requests\Admin\Transaction\StoreTransactionRequest;
+use App\Http\Requests\Admin\Transaction\UpdateTransactionRequest;
 use App\Http\Resources\TransactionResource;
 use App\Models\Transaction;
 use App\Services\TransactionService;

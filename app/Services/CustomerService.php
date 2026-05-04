@@ -13,6 +13,10 @@ class CustomerService
         $this->customerRepository = $customerRepository;
     }
 
+    /***********************************************************
+     * Admin
+     */
+
     // get all customers
     public function getAllCustomers()
     {
@@ -71,5 +75,15 @@ class CustomerService
     public function getStatistics(): array
     {
         return $this->customerRepository->getStatistics();
+    }
+
+    /**************************************************
+     * Customer
+     */
+
+    // get statistic for custommer view
+    public function getCustomerBookingStatistics(string $customerId): array
+    {
+        return $this->customerRepository->getCustomerBookingStatistics($customerId);
     }
 }

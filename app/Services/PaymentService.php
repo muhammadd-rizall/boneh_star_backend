@@ -60,6 +60,8 @@ class PaymentService
     public function verifyPayment(string $id, array $data)
     {
         return DB::transaction(function () use ($id, $data) {
+            $payment = $this->paymentRepository->find($id, ['transaction']);
+
             $updateData = [
                 'status' => $data['status'],
                 'verified_by' => auth()->id(),
@@ -71,6 +73,25 @@ class PaymentService
             }
 
             $payment = $this->paymentRepository->update($id, $updateData);
+
+            if ($data['status'] === 'verified') {
+                $transaction = $payment->transaction;
+
+                if ($payment->payment_type === 'dp') {
+                    $transaction->dp_paid += $payment->amount;
+                }
+
+                $transaction->remaining_amount -= $payment->amount;
+
+                // Update transaction status
+                if ($transaction->remaining_amount <= 0) {
+                    $transaction->status = 'fully_paid';
+                } elseif ($transaction->dp_paid > 0) {
+                    $transaction->status = 'dp_paid';
+                }
+
+                $transaction->save();
+            }
 
             return $payment->load(['transaction', 'paymentMethod', 'verifiedBy']);
         });

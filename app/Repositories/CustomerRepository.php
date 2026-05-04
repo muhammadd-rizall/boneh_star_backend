@@ -16,6 +16,11 @@ class CustomerRepository extends BaseRepository
         return $this->model->all();
     }
 
+    // ==================================================
+    // Admin
+    // =================================================
+
+    // table for admin view
     public function getPaginatedCustomers(int $perPage = 10, ?string $search = null)
     {
         $query = $this->model->newQuery();
@@ -36,6 +41,7 @@ class CustomerRepository extends BaseRepository
         return $this->model->where('email', $email)->first();
     }
 
+    // statistif for admin view
     public function getStatistics(): array
     {
         return [
@@ -49,6 +55,25 @@ class CustomerRepository extends BaseRepository
                 'active' => $this->model->where('is_active', true)->count(),
                 'inactive' => $this->model->where('is_active', false)->count(),
             ],
+        ];
+    }
+
+    // ==================================================
+    // Customer
+    // =================================================
+
+    // statistic for customer view
+    public function getCustomerBookingStatistics(string $customerId): array
+    {
+        $customer = $this->model->findOrFail($customerId);
+        $bookings = $customer->bookings();
+
+        return [
+            'total_bookings' => $bookings->count(),
+            'pending' => $bookings->where('status', 'pending')->count(),
+            'confirmed' => $bookings->where('status', 'confirmed')->count(),
+            'completed' => $bookings->where('status', 'completed')->count(),
+            'cancelled' => $bookings->where('status', 'cancelled')->count(),
         ];
     }
 }

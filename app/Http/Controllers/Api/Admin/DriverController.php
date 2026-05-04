@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Api\BaseController;
-use App\Http\Requests\Driver\StoreDriverRequest;
-use App\Http\Requests\Driver\UpdateDriverRequest;
+use App\Http\Requests\Admin\Driver\StoreDriverRequest;
+use App\Http\Requests\Admin\Driver\UpdateDriverRequest;
 use App\Http\Resources\DriverResource;
 use App\Models\Driver;
 use App\Services\DriverService;

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Api\BaseController;
-use App\Http\Requests\Booking\StoreBookingRequest;
-use App\Http\Requests\Booking\UpdateBookingRequest;
+use App\Http\Requests\Admin\Booking\StoreBookingRequest;
+use App\Http\Requests\Admin\Booking\UpdateBookingRequest;
 use App\Http\Resources\BookingResource;
 use App\Models\Booking;
 use App\Services\BookingService;

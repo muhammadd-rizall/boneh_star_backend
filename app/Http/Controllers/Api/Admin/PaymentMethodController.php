@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Api\BaseController;
-use App\Http\Requests\Payment_method\StorePaymentMethodRequest;
-use App\Http\Requests\Payment_method\UpdatePaymentMethodRequest;
+use App\Http\Requests\Admin\PaymentMethod\StorePaymentMethodRequest;
+use App\Http\Requests\Admin\PaymentMethod\UpdatePaymentMethodRequest;
 use App\Http\Resources\PaymentMethodResource;
 use App\Models\PaymentMethod;
 use App\Services\PaymentMethodService;

@@ -121,4 +121,14 @@ class BookingService
     {
         return $this->bookingRepository->getStatistics();
     }
+
+    public function getCustomerBookings(string $customerId, int $perPage = 10)
+    {
+        return $this->bookingRepository->getCustomerBookings($customerId, $perPage);
+    }
+
+    public function getCustomerBookingById(string $customerId, string $id)
+    {
+        return $this->bookingRepository->getCustomerBookingById($customerId, $id);
+    }
 }

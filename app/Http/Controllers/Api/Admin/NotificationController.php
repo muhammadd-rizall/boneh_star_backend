@@ -39,7 +39,7 @@ class NotificationController extends BaseController
      */
     public function markAsRead(string $id): JsonResponse
     {
-        $notification = $this->notificationService->markAsRead($id);
+        $notification = $this->notificationService->markAsRead($id, 'admin', auth()->id());
 
         return $this->sendResponse(
             new NotificationResource($notification),
@@ -62,7 +62,7 @@ class NotificationController extends BaseController
      */
     public function destroy(string $id): JsonResponse
     {
-        $this->notificationService->deleteNotification($id);
+        $this->notificationService->deleteNotification($id, 'admin', auth()->id());
 
         return $this->sendResponse(null, 'Notification deleted successfully');
     }

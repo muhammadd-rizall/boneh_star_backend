@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Api\BaseController;
-use App\Http\Requests\Bus_Images\StoreBusImageRequest;
-use App\Http\Requests\Bus_Images\UpdateBusImageRequest;
+use App\Http\Requests\Admin\BusImage\StoreBusImageRequest;
+use App\Http\Requests\Admin\BusImage\UpdateBusImageRequest;
 use App\Http\Resources\BusImageResource;
 use App\Services\BusImageService;
 use Illuminate\Http\JsonResponse;

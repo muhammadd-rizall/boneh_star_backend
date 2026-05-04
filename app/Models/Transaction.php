@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
@@ -44,7 +45,8 @@ class Transaction extends Model
         $date = now()->format('Ymd');
         $prefix = 'INV-'.$date.'-';
 
-        $lastTransaction = static::where('invoice_number', 'like', $prefix.'%')
+        $lastTransaction = static::withTrashed()
+            ->where('invoice_number', 'like', $prefix.'%')
             ->orderBy('invoice_number', 'desc')
             ->first();
 
@@ -66,5 +68,10 @@ class Transaction extends Model
     public function quotation(): BelongsTo
     {
         return $this->belongsTo(Quotation::class);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Api\BaseController;
-use App\Http\Requests\CompanyProfile\UpdateCompanyProfileRequest;
+use App\Http\Requests\Admin\CompanyProfile\UpdateCompanyProfileRequest;
 use App\Http\Resources\CompanyProfileResource;
 use App\Models\CompanyProfile;
 use App\Services\CompanyProfileService;

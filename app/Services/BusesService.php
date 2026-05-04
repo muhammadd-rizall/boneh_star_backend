@@ -68,11 +68,14 @@ class BusesService
             }
 
             if (isset($data['images']) && is_array($data['images'])) {
+                // Delete old images first to prevent orphaned files
+                $this->deleteBusImages($bus);
+
                 foreach ($data['images'] as $index => $image) {
                     $path = $image->store('buses', 'public');
                     $bus->images()->create([
                         'image_path' => $path,
-                        'is_primary' => $index === 0 && $bus->images()->where('is_primary', true)->count() === 0,
+                        'is_primary' => $index === 0,
                     ]);
                 }
             }

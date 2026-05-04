@@ -36,7 +36,7 @@ class BookingRepository extends BaseRepository
 
     public function getBookingById(string $id)
     {
-        return $this->model->with(['customer', 'activity', 'routeType', 'bookingBuses.bus', 'bookingBuses.driver'])->findOrFail($id);
+        return $this->model->with(['customer', 'activity', 'routeType', 'bookingBuses.bus', 'bookingBuses.driver', 'quotation', 'transaction.payments'])->findOrFail($id);
     }
 
     public function getStatistics()
@@ -129,5 +129,20 @@ class BookingRepository extends BaseRepository
             'activity_chart' => $activityStats,
             'status_chart' => $statusStats,
         ];
+    }
+
+    public function getCustomerBookings(string $customerId, int $perPage = 10)
+    {
+        return $this->model->where('customer_id', $customerId)
+            ->with(['activity', 'routeType'])
+            ->latest()
+            ->paginate($perPage);
+    }
+
+    public function getCustomerBookingById(string $customerId, string $id)
+    {
+        return $this->model->where('customer_id', $customerId)
+            ->with(['activity', 'routeType', 'bookingBuses.bus', 'bookingBuses.driver', 'quotation', 'transaction.payments'])
+            ->findOrFail($id);
     }
 }

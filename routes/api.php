@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Admin\ActivityTypeController;
-use App\Http\Controllers\Api\Admin\BookingController;
+use App\Http\Controllers\Api\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Api\Admin\BookingReportController;
 use App\Http\Controllers\Api\Admin\BusAvailabilityReportController;
 use App\Http\Controllers\Api\Admin\BusCategoryController;
@@ -12,10 +12,10 @@ use App\Http\Controllers\Api\Admin\CompanyProfileController;
 use App\Http\Controllers\Api\Admin\CustomerController;
 use App\Http\Controllers\Api\Admin\DriverController;
 use App\Http\Controllers\Api\Admin\IncomeReportController;
-use App\Http\Controllers\Api\Admin\NotificationController;
+use App\Http\Controllers\Api\Admin\NotificationController as AdminNotificationController;
 use App\Http\Controllers\Api\Admin\PaymentController;
 use App\Http\Controllers\Api\Admin\PaymentMethodController;
-use App\Http\Controllers\Api\Admin\QuotationController;
+use App\Http\Controllers\Api\Admin\QuotationController as AdminQuotationController;
 use App\Http\Controllers\Api\Admin\ReviewReportController;
 use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\RouteTypeController;
@@ -26,8 +26,26 @@ use App\Http\Controllers\Api\Auth\Admin\LogoutController as AdminLogoutControlle
 use App\Http\Controllers\Api\Auth\Public\LoginController as PublicLoginController;
 use App\Http\Controllers\Api\Auth\Public\LogoutController as PublicLogoutController;
 use App\Http\Controllers\Api\Auth\Public\RegisterController as PublicRegisterController;
+use App\Http\Controllers\Api\Customer\BookingController;
+use App\Http\Controllers\Api\Customer\HistoryController;
+use App\Http\Controllers\Api\Customer\NotificationController;
+use App\Http\Controllers\Api\Customer\QuotationController;
+use App\Http\Controllers\Api\Customer\ReviewController;
+use App\Http\Controllers\Api\Customer\SettingController;
+use App\Http\Controllers\Api\Public\PublicController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+// Public Data routes
+Route::prefix('public')->name('public.')->group(function () {
+    Route::get('/company-profile', [PublicController::class, 'companyProfile'])->name('company-profile');
+    Route::get('/buses', [PublicController::class, 'buses'])->name('buses.index');
+    Route::get('/buses/{id}', [PublicController::class, 'busDetail'])->name('buses.show');
+    Route::get('/facilities', [PublicController::class, 'facilities'])->name('facilities');
+    Route::get('/reviews', [PublicController::class, 'reviews'])->name('reviews');
+    Route::get('/activity-types', [PublicController::class, 'activityTypes'])->name('activity-types');
+    Route::get('/route-types', [PublicController::class, 'routeTypes'])->name('route-types');
+});
 
 // Auth Public routes
 Route::prefix('auth')->name('auth.')->group(function () {
@@ -51,8 +69,57 @@ Route::middleware(['auth:sanctum'])->group(function () {
         return $request->user()->load('roles.permissions');
     });
 
+    // Customer routes
+    Route::prefix('customer')->name('customer.')->group(function () {
+        Route::get('/profile', [SettingController::class, 'show'])->name('profile.show');
+        Route::patch('/profile', [SettingController::class, 'update'])->name('profile.update');
+        Route::post('/profile/picture', [SettingController::class, 'uploadProfilePicture'])->name('profile.picture');
+        Route::get('/statistics', [SettingController::class, 'statistics'])->name('statistics');
+
+        // Booking routes
+        Route::prefix('bookings')->name('bookings.')->group(function () {
+            Route::get('/', [BookingController::class, 'index'])->name('index');
+            Route::post('/', [BookingController::class, 'store'])->name('store');
+            Route::get('/payment-methods', [BookingController::class, 'paymentMethods'])->name('payment-methods');
+            Route::get('/{id}', [BookingController::class, 'show'])->name('show');
+            Route::post('/{id}/upload-payment', [BookingController::class, 'uploadPayment'])->name('upload-payment');
+            Route::post('/{id}/cancel', [BookingController::class, 'cancel'])->name('cancel');
+        });
+
+        // Quotation routes
+        Route::prefix('quotations')->name('quotations.')->group(function () {
+            Route::get('/{id}', [QuotationController::class, 'show'])->name('show');
+            Route::post('/{id}/accept', [QuotationController::class, 'accept'])->name('accept');
+            Route::post('/{id}/request-revision', [QuotationController::class, 'requestRevision'])->name('request-revision');
+        });
+
+        // History and Tracking routes
+        Route::prefix('history')->name('history.')->group(function () {
+            Route::get('/', [HistoryController::class, 'index'])->name('index');
+            Route::get('/{id}', [HistoryController::class, 'show'])->name('show');
+            Route::get('/{id}/payment-status', [HistoryController::class, 'paymentStatus'])->name('payment-status');
+            Route::get('/{id}/invoice', [HistoryController::class, 'downloadInvoice'])->name('invoice');
+        });
+
+        // Notification routes
+        Route::prefix('notifications')->name('notifications.')->group(function () {
+            Route::get('/', [NotificationController::class, 'index'])->name('index');
+            Route::post('/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('mark-all-as-read');
+            Route::post('/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('mark-as-read');
+            Route::delete('/{id}', [NotificationController::class, 'destroy'])->name('destroy');
+        });
+
+        // Review routes
+        Route::prefix('reviews')->name('reviews.')->group(function () {
+            Route::get('/', [ReviewController::class, 'index'])->name('index');
+            Route::post('/', [ReviewController::class, 'store'])->name('store');
+            Route::get('/{id}', [ReviewController::class, 'show'])->name('show');
+            Route::patch('/{id}', [ReviewController::class, 'update'])->name('update');
+        });
+    });
+
     // Admin routes
-    Route::prefix('admin')->name('admin.')->group(function () {
+    Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
 
         // User management routes
         Route::prefix('users')->name('users.')->group(function () {
@@ -127,11 +194,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         // Booking management routes
         Route::prefix('bookings')->name('bookings.')->group(function () {
-            Route::get('/trashed', [BookingController::class, 'trashed'])->name('trashed');
-            Route::post('/{id}/restore', [BookingController::class, 'restore'])->name('restore');
-            Route::delete('/{id}/force-delete', [BookingController::class, 'forceDelete'])->name('force-delete');
+            Route::get('/trashed', [AdminBookingController::class, 'trashed'])->name('trashed');
+            Route::post('/{id}/restore', [AdminBookingController::class, 'restore'])->name('restore');
+            Route::delete('/{id}/force-delete', [AdminBookingController::class, 'forceDelete'])->name('force-delete');
         });
-        Route::apiResource('bookings', BookingController::class);
+        Route::apiResource('bookings', AdminBookingController::class);
 
         // Activity Type management routes
         Route::prefix('activity-types')->name('activity-types.')->group(function () {
@@ -151,11 +218,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         // Quotation management routes
         Route::prefix('quotations')->name('quotations.')->group(function () {
-            Route::get('/trashed', [QuotationController::class, 'trashed'])->name('trashed');
-            Route::post('/{id}/restore', [QuotationController::class, 'restore'])->name('restore');
-            Route::delete('/{id}/force-delete', [QuotationController::class, 'forceDelete'])->name('force-delete');
+            Route::get('/trashed', [AdminQuotationController::class, 'trashed'])->name('trashed');
+            Route::post('/{id}/restore', [AdminQuotationController::class, 'restore'])->name('restore');
+            Route::delete('/{id}/force-delete', [AdminQuotationController::class, 'forceDelete'])->name('force-delete');
         });
-        Route::apiResource('quotations', QuotationController::class);
+        Route::apiResource('quotations', AdminQuotationController::class);
 
         // Transaction management routes
         Route::prefix('transactions')->name('transactions.')->group(function () {
@@ -185,10 +252,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         // Notification management routes
         Route::prefix('notifications')->name('notifications.')->group(function () {
-            Route::post('/mark-all-as-read', [NotificationController::class, 'markAllAsRead'])->name('mark-all-as-read');
-            Route::post('/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('mark-as-read');
+            Route::post('/mark-all-as-read', [AdminNotificationController::class, 'markAllAsRead'])->name('mark-all-as-read');
+            Route::post('/{id}/mark-as-read', [AdminNotificationController::class, 'markAsRead'])->name('mark-as-read');
         });
-        Route::apiResource('notifications', NotificationController::class)->only(['index', 'destroy']);
+        Route::apiResource('notifications', AdminNotificationController::class)->only(['index', 'destroy']);
 
         // Report routes
         Route::prefix('reports')->name('reports.')->group(function () {

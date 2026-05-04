@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Api\BaseController;
-use App\Http\Requests\Bus\StoreBusesRequest;
-use App\Http\Requests\Bus\UpdateBusesRequest;
+use App\Http\Requests\Admin\Bus\StoreBusesRequest;
+use App\Http\Requests\Admin\Bus\UpdateBusesRequest;
 use App\Http\Resources\BusesResource;
 use App\Models\Buses;
 use App\Services\BusesService;

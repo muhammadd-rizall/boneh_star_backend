@@ -24,6 +24,10 @@ class BusAvailabilityReportService
             $schedules = $bus->bookingBuses->map(function ($bookingBus) {
                 $booking = $bookingBus->booking;
 
+                if (! $booking) {
+                    return null;
+                }
+
                 return [
                     'booking_id' => $booking->id,
                     'booking_code' => $booking->booking_code,

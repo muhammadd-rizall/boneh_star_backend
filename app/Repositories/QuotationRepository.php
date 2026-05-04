@@ -22,7 +22,9 @@ class QuotationRepository extends BaseRepository
 
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('quotation_code', 'like', "%{$search}%")
+                $q->whereHas('booking', function ($bq) use ($search) {
+                    $bq->where('booking_code', 'like', "%{$search}%");
+                })
                     ->orWhereHas('booking.customer', function ($cq) use ($search) {
                         $cq->where('name', 'like', "%{$search}%");
                     });
