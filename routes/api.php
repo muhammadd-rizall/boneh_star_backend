@@ -45,6 +45,7 @@ Route::prefix('public')->name('public.')->group(function () {
     Route::get('/reviews', [PublicController::class, 'reviews'])->name('reviews');
     Route::get('/activity-types', [PublicController::class, 'activityTypes'])->name('activity-types');
     Route::get('/route-types', [PublicController::class, 'routeTypes'])->name('route-types');
+    Route::get('/bus-categories', [PublicController::class, 'busCategories'])->name('bus-categories');
 });
 
 // Auth Public routes

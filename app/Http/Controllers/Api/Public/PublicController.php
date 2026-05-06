@@ -26,7 +26,8 @@ class PublicController extends BaseController
         protected ReviewService $reviewService,
         protected CompanyProfileService $companyProfileService,
         protected ActivityTypeService $activityTypeService,
-        protected RouteTypeService $routeTypeService
+        protected RouteTypeService $routeTypeService,
+        protected \App\Services\BusCategoryService $busCategoryService
     ) {}
 
     /**
@@ -103,5 +104,15 @@ class PublicController extends BaseController
         $types = $this->routeTypeService->getAllRouteTypes();
 
         return $this->sendResponse(RouteTypeResource::collection($types), 'Route types retrieved successfully');
+    }
+
+    /**
+     * Daftar kategori bus.
+     */
+    public function busCategories(): JsonResponse
+    {
+        $categories = $this->busCategoryService->getAllCategory();
+
+        return $this->sendResponse(\App\Http\Resources\BusCategoriesResource::collection($categories), 'Bus categories retrieved successfully');
     }
 }
