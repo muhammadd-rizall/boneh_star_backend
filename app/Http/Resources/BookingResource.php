@@ -38,6 +38,7 @@ class BookingResource extends JsonResource
             'booking_buses' => BookingBusResource::collection($this->whenLoaded('bookingBuses')),
             'quotation' => $this->whenLoaded('quotation'),
             'transaction' => $this->whenLoaded('transaction'),
+            'review' => $this->whenLoaded('review'),
         ];
     }
 }

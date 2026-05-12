@@ -28,10 +28,12 @@ class BusesResource extends JsonResource
             'facilities' => BusFacilitiesResource::collection($this->whenLoaded('facilities')),
             'images' => $this->whenLoaded('images', function () {
                 return $this->images->map(function ($image) {
+                    $isUrl = str_starts_with($image->image_path, 'http');
+
                     return [
                         'id' => $image->id,
                         'image_path' => $image->image_path,
-                        'url' => asset('storage/'.$image->image_path),
+                        'url' => $isUrl ? $image->image_path : asset('storage/'.$image->image_path),
                         'is_primary' => $image->is_primary,
                     ];
                 });

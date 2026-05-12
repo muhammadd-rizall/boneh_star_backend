@@ -142,7 +142,7 @@ class BookingRepository extends BaseRepository
     public function getCustomerBookingById(string $customerId, string $id)
     {
         return $this->model->where('customer_id', $customerId)
-            ->with(['activity', 'routeType', 'bookingBuses.bus', 'bookingBuses.driver', 'quotation', 'transaction.payments'])
+            ->with(['activity', 'routeType', 'bookingBuses.bus', 'bookingBuses.driver', 'quotation', 'transaction.payments', 'review'])
             ->findOrFail($id);
     }
 }

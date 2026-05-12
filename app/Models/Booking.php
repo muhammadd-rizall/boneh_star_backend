@@ -97,4 +97,9 @@ class Booking extends Model
     {
         return $this->hasOne(Transaction::class);
     }
+
+    public function review(): HasOne
+    {
+        return $this->hasOne(Review::class);
+    }
 }

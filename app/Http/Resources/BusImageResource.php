@@ -14,11 +14,13 @@ class BusImageResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $isUrl = str_starts_with($this->image_path, 'http');
+
         return [
             'id' => $this->id,
             'bus_id' => $this->bus_id,
             'image_path' => $this->image_path,
-            'url' => asset('storage/'.$this->image_path),
+            'url' => $isUrl ? $this->image_path : asset('storage/'.$this->image_path),
             'caption' => $this->caption,
             'is_primary' => $this->is_primary,
             'sort_order' => $this->sort_order,
