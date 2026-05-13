@@ -30,7 +30,7 @@ class ReviewReportService
             'monthly_averages' => $this->reviewRepository->getMonthlyRatingAverage($startDate, $endDate),
             'activity_type_averages' => $this->reviewRepository->getActivityTypeRatingAverage(),
             'bus_averages' => $this->reviewRepository->getBusRatingAverage(),
-            'reviews' => $this->reviewRepository->getLatestReviewsForReport($perPage, $rating),
+            'reviews' => $this->reviewRepository->getLatestReviewsForReport($perPage, $rating, false),
         ];
     }
 

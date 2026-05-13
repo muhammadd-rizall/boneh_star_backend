@@ -61,7 +61,7 @@ class ReviewController extends BaseController
 
         $data = $request->validated();
         $data['customer_id'] = $customerId;
-        $data['is_publish'] = true; // Default publish but admin can toggle
+        $data['is_publish'] = false; // Default unpublished, requires admin review
 
         $review = $this->reviewService->createReview($data);
 

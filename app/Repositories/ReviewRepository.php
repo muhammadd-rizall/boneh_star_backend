@@ -126,11 +126,13 @@ class ReviewRepository extends BaseRepository
     /**
      * Get latest reviews with related data for reporting/management with pagination.
      */
-    public function getLatestReviewsForReport(int $perPage = 15, ?int $rating = null)
+    public function getLatestReviewsForReport(int $perPage = 15, ?int $rating = null, bool $onlyPublished = true)
     {
-        $query = $this->model->with(['customer', 'booking.activity'])
-            ->where('is_publish', true)
-            ->latest();
+        $query = $this->model->with(['customer', 'booking.activity'])->latest();
+
+        if ($onlyPublished) {
+            $query->where('is_publish', true);
+        }
 
         if ($rating) {
             $query->where('rating', $rating);
