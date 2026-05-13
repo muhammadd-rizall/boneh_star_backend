@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\Booking;
 
+use App\Rules\BusAvailabilityRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -16,6 +17,16 @@ class UpdateBookingRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'id' => $this->route('booking'),
+        ]);
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, ValidationRule|array<mixed>|string>
@@ -23,6 +34,7 @@ class UpdateBookingRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'id' => ['required', 'uuid', 'exists:bookings,id'],
             'customer_id' => ['required', 'uuid', 'exists:customers,id'],
             'activity_id' => ['required', 'uuid', 'exists:activity_types,id'],
             'route_type_id' => ['required', 'uuid', 'exists:route_types,id'],
@@ -38,7 +50,7 @@ class UpdateBookingRequest extends FormRequest
             'cancelled_by' => ['nullable', 'in:customer,admin'],
             'cancelled_reason' => ['nullable', 'string'],
             'buses' => ['nullable', 'array'],
-            'buses.*.bus_id' => ['required', 'uuid', 'exists:buses,id'],
+            'buses.*.bus_id' => ['required', 'uuid', 'exists:buses,id', new BusAvailabilityRule],
             'buses.*.driver_id' => ['required', 'uuid', 'exists:drivers,id'],
             'buses.*.seat_count' => ['required', 'integer', 'min:1'],
             'buses.*.assignment_notes' => ['nullable', 'string'],

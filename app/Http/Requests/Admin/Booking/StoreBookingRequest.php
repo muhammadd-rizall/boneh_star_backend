@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\Booking;
 
+use App\Rules\BusAvailabilityRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -36,7 +37,7 @@ class StoreBookingRequest extends FormRequest
             'special_notes' => ['nullable', 'string'],
             'status' => ['required', 'in:pending,quoted,confirmed,ongoing,completed,cancelled'],
             'buses' => ['nullable', 'array'],
-            'buses.*.bus_id' => ['required', 'uuid', 'exists:buses,id'],
+            'buses.*.bus_id' => ['required', 'uuid', 'exists:buses,id', new BusAvailabilityRule],
             'buses.*.driver_id' => ['required', 'uuid', 'exists:drivers,id'],
             'buses.*.seat_count' => ['required', 'integer', 'min:1'],
             'buses.*.assignment_notes' => ['nullable', 'string'],
