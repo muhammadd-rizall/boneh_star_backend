@@ -100,7 +100,6 @@ class QuotationService
             $quotation = $this->quotationRepository->find($id);
 
             $this->quotationRepository->update($id, ['status' => 'accepted']);
-            $this->bookingRepository->update($quotation->booking_id, ['status' => 'confirmed']);
 
             // Notify Admin
             $customerName = $quotation->booking->customer->name ?? 'Pelanggan';

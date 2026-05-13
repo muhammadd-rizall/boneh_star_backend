@@ -105,6 +105,15 @@ class PaymentService
                 }
 
                 $transaction->save();
+
+                // Update booking status to confirmed if it was a DP or full payment
+                if (in_array($payment->payment_type, ['dp', 'full'])) {
+                    $booking = $transaction->booking;
+                    if ($booking && $booking->status === 'quoted') {
+                        $booking->status = 'confirmed';
+                        $booking->save();
+                    }
+                }
             }
 
             // Notify Customer
