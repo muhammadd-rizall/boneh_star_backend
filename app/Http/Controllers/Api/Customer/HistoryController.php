@@ -179,8 +179,9 @@ class HistoryController extends BaseController
         }
 
         // 5. Booking Status Final States
-        if (in_array($booking->status, ['ongoing', 'completed', 'cancelled'])) {
+        if (in_array($booking->status, ['confirmed', 'ongoing', 'completed', 'cancelled'])) {
             $statusLabel = [
+                'confirmed' => 'Pemesanan Dikonfirmasi',
                 'ongoing' => 'Perjalanan Berlangsung',
                 'completed' => 'Pemesanan Selesai',
                 'cancelled' => 'Pemesanan Dibatalkan',
