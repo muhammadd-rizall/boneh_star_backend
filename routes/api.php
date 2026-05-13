@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\Admin\BusFacilitiesController;
 use App\Http\Controllers\Api\Admin\BusImagesController;
 use App\Http\Controllers\Api\Admin\CompanyProfileController;
 use App\Http\Controllers\Api\Admin\CustomerController;
+use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Admin\DriverController;
 use App\Http\Controllers\Api\Admin\IncomeReportController;
 use App\Http\Controllers\Api\Admin\NotificationController as AdminNotificationController;
@@ -121,6 +122,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Admin routes
     Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
+
+        // Dashboard route
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         // User management routes
         Route::prefix('users')->name('users.')->group(function () {
