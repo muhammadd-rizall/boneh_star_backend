@@ -11,9 +11,12 @@ class PaymentService
 {
     protected PaymentRepository $paymentRepository;
 
-    public function __construct(PaymentRepository $paymentRepository)
+    protected NotificationService $notificationService;
+
+    public function __construct(PaymentRepository $paymentRepository, NotificationService $notificationService)
     {
         $this->paymentRepository = $paymentRepository;
+        $this->notificationService = $notificationService;
     }
 
     public function getPaginatedPayments(int $perPage = 10, ?string $search = null)
@@ -34,6 +37,17 @@ class PaymentService
             }
 
             $payment = $this->paymentRepository->create($data);
+
+            // Notify Admin
+            $booking = $payment->transaction->booking;
+            $customerName = $booking->customer->name ?? 'Pelanggan';
+            $paymentType = strtoupper($payment->payment_type);
+            $this->notificationService->notifyAdmin(
+                "Bukti Pembayaran {$paymentType} Diterima",
+                "Pelanggan {$customerName} telah mengunggah bukti pembayaran.",
+                'payment',
+                $payment
+            );
 
             return $payment->load(['transaction', 'paymentMethod']);
         });
@@ -60,7 +74,7 @@ class PaymentService
     public function verifyPayment(string $id, array $data)
     {
         return DB::transaction(function () use ($id, $data) {
-            $payment = $this->paymentRepository->find($id, ['transaction']);
+            $payment = $this->paymentRepository->find($id, ['transaction.booking']);
 
             $updateData = [
                 'status' => $data['status'],
@@ -92,6 +106,17 @@ class PaymentService
 
                 $transaction->save();
             }
+
+            // Notify Customer
+            $statusText = $data['status'] === 'verified' ? 'telah diverifikasi' : 'ditolak';
+            $paymentType = strtoupper($payment->payment_type);
+            $this->notificationService->notifyCustomer(
+                $payment->transaction->booking->customer_id,
+                "Status Pembayaran {$paymentType} {$statusText}",
+                "Pembayaran Anda {$statusText}. ".($data['rejection_reason'] ?? ''),
+                'payment',
+                $payment
+            );
 
             return $payment->load(['transaction', 'paymentMethod', 'verifiedBy']);
         });

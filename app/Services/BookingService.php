@@ -9,9 +9,14 @@ class BookingService
 {
     protected BookingRepository $bookingRepository;
 
-    public function __construct(BookingRepository $bookingRepository)
-    {
+    protected NotificationService $notificationService;
+
+    public function __construct(
+        BookingRepository $bookingRepository,
+        NotificationService $notificationService
+    ) {
         $this->bookingRepository = $bookingRepository;
+        $this->notificationService = $notificationService;
     }
 
     /**
@@ -55,6 +60,16 @@ class BookingService
                 }
             }
 
+            // Notify Admin
+            $booking->load('customer');
+            $customerName = $booking->customer->name ?? 'Pelanggan';
+            $this->notificationService->notifyAdmin(
+                'Permintaan Pemesanan Baru',
+                "Pesanan baru dari {$customerName} telah diterima.",
+                'booking',
+                $booking
+            );
+
             return $booking;
         });
     }
@@ -66,16 +81,36 @@ class BookingService
     {
         return DB::transaction(function () use ($id, $data) {
             $buses = $data['buses'] ?? [];
+            $oldStatus = $this->bookingRepository->find($id)->status;
             unset($data['buses']);
 
             $booking = $this->bookingRepository->update($id, $data);
 
-            if (isset($buses)) {
+            if (isset($buses) && ! empty($buses)) {
                 // Sync approach: remove existing and create new ones
                 $booking->bookingBuses()->delete();
                 foreach ($buses as $bus) {
                     $booking->bookingBuses()->create($bus);
                 }
+            }
+
+            // Notify Customer if status changed
+            if (isset($data['status']) && $data['status'] !== $oldStatus) {
+                $statusText = match ($data['status']) {
+                    'confirmed' => 'telah dikonfirmasi',
+                    'ongoing' => 'sedang berlangsung',
+                    'completed' => 'telah selesai',
+                    'cancelled' => 'telah dibatalkan',
+                    default => 'telah diperbarui',
+                };
+
+                $this->notificationService->notifyCustomer(
+                    $booking->customer_id,
+                    'Status Pemesanan Diperbarui',
+                    "Status pemesanan Anda {$statusText}.",
+                    'booking',
+                    $booking
+                );
             }
 
             return $booking;

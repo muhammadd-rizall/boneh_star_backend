@@ -8,9 +8,12 @@ class ReviewService
 {
     protected ReviewRepository $reviewRepository;
 
-    public function __construct(ReviewRepository $reviewRepository)
+    protected NotificationService $notificationService;
+
+    public function __construct(ReviewRepository $reviewRepository, NotificationService $notificationService)
     {
         $this->reviewRepository = $reviewRepository;
+        $this->notificationService = $notificationService;
     }
 
     public function getCustomerReviews(string $customerId, int $perPage = 10)
@@ -20,7 +23,18 @@ class ReviewService
 
     public function createReview(array $data)
     {
-        return $this->reviewRepository->create($data);
+        $review = $this->reviewRepository->create($data);
+
+        // Notify Admin
+        $customerName = $review->booking->customer->name ?? 'Pelanggan';
+        $this->notificationService->notifyAdmin(
+            'Ulasan Baru Diterima',
+            "Pelanggan {$customerName} telah memberikan ulasan perjalanan.",
+            'review',
+            $review
+        );
+
+        return $review;
     }
 
     public function updateReview(string $id, array $data)

@@ -15,14 +15,18 @@ class QuotationService
 
     protected BookingRepository $bookingRepository;
 
+    protected NotificationService $notificationService;
+
     public function __construct(
         QuotationRepository $quotationRepository,
         TransactionRepository $transactionRepository,
-        BookingRepository $bookingRepository
+        BookingRepository $bookingRepository,
+        NotificationService $notificationService
     ) {
         $this->quotationRepository = $quotationRepository;
         $this->transactionRepository = $transactionRepository;
         $this->bookingRepository = $bookingRepository;
+        $this->notificationService = $notificationService;
     }
 
     /**
@@ -66,6 +70,15 @@ class QuotationService
             // Update booking status to quoted
             $this->bookingRepository->update($quotation->booking_id, ['status' => 'quoted']);
 
+            // Notify Customer
+            $this->notificationService->notifyCustomer(
+                $booking->customer_id,
+                'Penawaran Harga Baru',
+                'Anda telah menerima penawaran harga baru untuk pemesanan Anda. Silakan tinjau kembali.',
+                'quotation',
+                $quotation
+            );
+
             return $quotation;
         });
     }
@@ -89,6 +102,15 @@ class QuotationService
             $this->quotationRepository->update($id, ['status' => 'accepted']);
             $this->bookingRepository->update($quotation->booking_id, ['status' => 'confirmed']);
 
+            // Notify Admin
+            $customerName = $quotation->booking->customer->name ?? 'Pelanggan';
+            $this->notificationService->notifyAdmin(
+                'Penawaran Disetujui',
+                "Pelanggan {$customerName} telah menyetujui penawaran harga.",
+                'quotation',
+                $quotation
+            );
+
             // Create transaction
             return $this->transactionRepository->create([
                 'booking_id' => $quotation->booking_id,
@@ -106,10 +128,21 @@ class QuotationService
      */
     public function requestRevision(string $id, string $note)
     {
-        return $this->quotationRepository->update($id, [
+        $quotation = $this->quotationRepository->update($id, [
             'status' => 'revision',
             'revision_note' => $note,
         ]);
+
+        // Notify Admin
+        $customerName = $quotation->booking->customer->name ?? 'Pelanggan';
+        $this->notificationService->notifyAdmin(
+            'Permintaan Revisi Penawaran',
+            "Pelanggan {$customerName} meminta revisi pada penawaran harga.",
+            'quotation',
+            $quotation
+        );
+
+        return $quotation;
     }
 
     /**
