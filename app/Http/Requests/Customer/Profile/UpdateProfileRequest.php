@@ -23,7 +23,7 @@ class UpdateProfileRequest extends FormRequest
      */
     public function rules(): array
     {
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
 
         return [
             'name' => ['sometimes', 'required', 'string', 'max:255'],

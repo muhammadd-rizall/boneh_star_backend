@@ -35,7 +35,7 @@ class HistoryController extends BaseController
      */
     public function index(Request $request): JsonResponse
     {
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
         $bookings = $this->bookingService->getCustomerBookings($customerId, $request->get('per_page', 10));
 
         return $this->sendResponse(
@@ -49,7 +49,7 @@ class HistoryController extends BaseController
      */
     public function show(string $id): JsonResponse
     {
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
         $booking = $this->bookingService->getCustomerBookingById($customerId, $id);
 
         $timeline = $this->generateTimeline($booking);
@@ -65,7 +65,7 @@ class HistoryController extends BaseController
      */
     public function paymentStatus(string $id): JsonResponse
     {
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
         $booking = $this->bookingService->getCustomerBookingById($customerId, $id);
 
         if (! $booking->transaction) {
@@ -88,7 +88,7 @@ class HistoryController extends BaseController
      */
     public function downloadInvoice(string $id)
     {
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
         $booking = $this->bookingService->getCustomerBookingById($customerId, $id);
 
         if (! $booking->transaction) {

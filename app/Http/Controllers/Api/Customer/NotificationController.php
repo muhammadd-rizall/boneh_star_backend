@@ -22,7 +22,7 @@ class NotificationController extends BaseController
      */
     public function index(Request $request): JsonResponse
     {
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
         $notifications = $this->notificationService->getMyNotifications('customer', $customerId, $request->get('per_page', 15));
         $unreadCount = $this->notificationService->getMyUnreadCount('customer', $customerId);
 
@@ -39,7 +39,7 @@ class NotificationController extends BaseController
      */
     public function markAsRead(string $id): JsonResponse
     {
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
         $notification = $this->notificationService->markAsRead($id, 'customer', $customerId);
 
         return $this->sendResponse(
@@ -53,7 +53,7 @@ class NotificationController extends BaseController
      */
     public function markAllAsRead(): JsonResponse
     {
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
         $this->notificationService->markAllAsRead('customer', $customerId);
 
         return $this->sendResponse(null, 'All notifications marked as read');
@@ -64,7 +64,7 @@ class NotificationController extends BaseController
      */
     public function destroy(string $id): JsonResponse
     {
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
         $this->notificationService->deleteNotification($id, 'customer', $customerId);
 
         return $this->sendResponse(null, 'Notification deleted successfully');

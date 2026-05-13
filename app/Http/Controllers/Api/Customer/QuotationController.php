@@ -27,7 +27,7 @@ class QuotationController extends BaseController
      */
     public function show(string $id): JsonResponse
     {
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
         $quotation = $this->quotationService->getQuotationById($id);
 
         // Verify ownership via booking
@@ -43,7 +43,7 @@ class QuotationController extends BaseController
      */
     public function accept(string $id): JsonResponse
     {
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
         $quotation = $this->quotationService->getQuotationById($id);
 
         if ($quotation->booking->customer_id !== $customerId) {
@@ -67,7 +67,7 @@ class QuotationController extends BaseController
      */
     public function requestRevision(RequestRevisionRequest $request, string $id): JsonResponse
     {
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
         $quotation = $this->quotationService->getQuotationById($id);
 
         if ($quotation->booking->customer_id !== $customerId) {

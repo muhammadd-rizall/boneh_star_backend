@@ -24,7 +24,7 @@ class SettingController extends BaseController
      */
     public function show(): JsonResponse
     {
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
         $customer = $this->customerService->getCustomerById($customerId);
 
         return $this->sendResponse(new CustomerResource($customer), 'Profile retrieved successfully');
@@ -35,7 +35,7 @@ class SettingController extends BaseController
      */
     public function update(UpdateProfileRequest $request): JsonResponse
     {
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
         $customer = $this->customerService->updateCustomer($customerId, $request->validated());
 
         return $this->sendResponse(new CustomerResource($customer), 'Profile updated successfully');
@@ -50,7 +50,7 @@ class SettingController extends BaseController
             'profile_picture' => ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ]);
 
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
         $customer = $this->customerService->getCustomerById($customerId);
 
         if ($customer->profile_picture) {
@@ -71,7 +71,7 @@ class SettingController extends BaseController
      */
     public function statistics(): JsonResponse
     {
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
         $statistics = $this->customerService->getCustomerBookingStatistics($customerId);
 
         return $this->sendResponse($statistics, 'Booking statistics retrieved successfully');

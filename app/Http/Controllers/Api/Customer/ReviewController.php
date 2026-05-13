@@ -29,7 +29,7 @@ class ReviewController extends BaseController
      */
     public function index(Request $request): JsonResponse
     {
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
         $reviews = $this->reviewService->getCustomerReviews($customerId, $request->get('per_page', 10));
 
         return $this->sendResponse(
@@ -43,7 +43,7 @@ class ReviewController extends BaseController
      */
     public function store(StoreReviewRequest $request): JsonResponse
     {
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
         $booking = $this->bookingService->getCustomerBookingById($customerId, $request->booking_id);
 
         if ($booking->status !== 'completed') {
@@ -77,7 +77,7 @@ class ReviewController extends BaseController
      */
     public function update(UpdateReviewRequest $request, string $id): JsonResponse
     {
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
         $review = $this->reviewService->getReviewById($id);
 
         if ($review->customer_id !== $customerId) {
@@ -97,7 +97,7 @@ class ReviewController extends BaseController
      */
     public function show(string $id): JsonResponse
     {
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
         $review = $this->reviewService->getReviewById($id);
 
         if ($review->customer_id !== $customerId) {

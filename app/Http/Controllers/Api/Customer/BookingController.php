@@ -37,7 +37,7 @@ class BookingController extends BaseController
      */
     public function index(Request $request): JsonResponse
     {
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
         $bookings = $this->bookingService->getCustomerBookings($customerId, $request->get('per_page', 10));
 
         return $this->sendResponse(
@@ -52,7 +52,7 @@ class BookingController extends BaseController
     public function store(StoreBookingRequest $request): JsonResponse
     {
         $data = $request->validated();
-        $data['customer_id'] = auth('customer')->id();
+        $data['customer_id'] = auth()->id();
         $data['status'] = 'pending';
 
         $booking = $this->bookingService->createBooking($data);
@@ -69,7 +69,7 @@ class BookingController extends BaseController
      */
     public function show(string $id): JsonResponse
     {
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
         $booking = $this->bookingService->getCustomerBookingById($customerId, $id);
 
         return $this->sendResponse(new BookingResource($booking), 'Booking details retrieved successfully');
@@ -80,7 +80,7 @@ class BookingController extends BaseController
      */
     public function uploadPayment(UploadPaymentRequest $request, string $id): JsonResponse
     {
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
         $booking = $this->bookingService->getCustomerBookingById($customerId, $id);
 
         if (! $booking->transaction) {
@@ -119,7 +119,7 @@ class BookingController extends BaseController
     {
         $request->validate(['reason' => ['required', 'string']]);
 
-        $customerId = auth('customer')->id();
+        $customerId = auth()->id();
         $booking = $this->bookingService->getCustomerBookingById($customerId, $id);
 
         if (! in_array($booking->status, ['pending', 'quoted'])) {
