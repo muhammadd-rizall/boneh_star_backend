@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Customer;
 use App\Models\User;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -33,6 +35,16 @@ class AppServiceProvider extends ServiceProvider
             }
 
             return null;
+        });
+
+        // Custom password reset URL for customer
+        ResetPassword::createUrlUsing(function ($notifiable, string $token) {
+            if ($notifiable instanceof Customer) {
+                return env('FRONTEND_URL').'/auth/reset-password?token='.$token.'&email='.$notifiable->getEmailForPasswordReset();
+            }
+
+            // Default behavior for other models if needed
+            return env('FRONTEND_URL').'/auth/reset-password?token='.$token.'&email='.$notifiable->getEmailForPasswordReset();
         });
     }
 }
