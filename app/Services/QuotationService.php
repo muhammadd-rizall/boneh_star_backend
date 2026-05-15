@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Notifications\QuotationUpdated;
 use App\Repositories\BookingRepository;
 use App\Repositories\QuotationRepository;
 use App\Repositories\TransactionRepository;
@@ -71,13 +72,7 @@ class QuotationService
             $this->bookingRepository->update($quotation->booking_id, ['status' => 'quoted']);
 
             // Notify Customer
-            $this->notificationService->notifyCustomer(
-                $booking->customer_id,
-                'Penawaran Harga Baru',
-                'Anda telah menerima penawaran harga baru untuk pemesanan Anda. Silakan tinjau kembali.',
-                'quotation',
-                $quotation
-            );
+            $booking->customer->notify(new QuotationUpdated($quotation, 'new'));
 
             return $quotation;
         });
@@ -88,7 +83,17 @@ class QuotationService
      */
     public function updateQuotation(string $id, array $data)
     {
-        return $this->quotationRepository->update($id, $data);
+        return DB::transaction(function () use ($id, $data) {
+            $quotation = $this->quotationRepository->update($id, $data);
+            $booking = $quotation->booking;
+
+            // Notify Customer if status is 'sent'
+            if ($quotation->status === 'sent') {
+                $booking->customer->notify(new QuotationUpdated($quotation, 'updated'));
+            }
+
+            return $quotation;
+        });
     }
 
     /**

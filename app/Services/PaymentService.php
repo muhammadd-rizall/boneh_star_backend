@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Notifications\PaymentStatusUpdated;
 use App\Repositories\PaymentRepository;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -117,15 +118,7 @@ class PaymentService
             }
 
             // Notify Customer
-            $statusText = $data['status'] === 'verified' ? 'telah diverifikasi' : 'ditolak';
-            $paymentType = strtoupper($payment->payment_type);
-            $this->notificationService->notifyCustomer(
-                $payment->transaction->booking->customer_id,
-                "Status Pembayaran {$paymentType} {$statusText}",
-                "Pembayaran Anda {$statusText}. ".($data['rejection_reason'] ?? ''),
-                'payment',
-                $payment
-            );
+            $payment->transaction->booking->customer->notify(new PaymentStatusUpdated($payment));
 
             return $payment->load(['transaction', 'paymentMethod', 'verifiedBy']);
         });

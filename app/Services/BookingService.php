@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Notifications\BookingStatusUpdated;
 use App\Repositories\BookingRepository;
 use Illuminate\Support\Facades\DB;
 
@@ -96,21 +97,7 @@ class BookingService
 
             // Notify Customer if status changed
             if (isset($data['status']) && $data['status'] !== $oldStatus) {
-                $statusText = match ($data['status']) {
-                    'confirmed' => 'telah dikonfirmasi',
-                    'ongoing' => 'sedang berlangsung',
-                    'completed' => 'telah selesai',
-                    'cancelled' => 'telah dibatalkan',
-                    default => 'telah diperbarui',
-                };
-
-                $this->notificationService->notifyCustomer(
-                    $booking->customer_id,
-                    'Status Pemesanan Diperbarui',
-                    "Status pemesanan Anda {$statusText}.",
-                    'booking',
-                    $booking
-                );
+                $booking->customer->notify(new BookingStatusUpdated($booking));
             }
 
             return $booking;
