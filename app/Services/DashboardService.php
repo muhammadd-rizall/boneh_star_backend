@@ -101,6 +101,11 @@ class DashboardService
             ->values()
             ->toArray();
 
+        // 3. Monthly Chart Data (Last 6 months)
+        $startDate = $now->copy()->subMonths(5)->startOfMonth()->format('Y-m-d');
+        $endDate = $now->format('Y-m-d');
+        $reportStats = $this->bookingRepository->getReportStatistics($startDate, $endDate);
+
         return [
             'stats' => [
                 [
@@ -152,7 +157,8 @@ class DashboardService
                     'href' => "/admin/reviews",
                 ],
             ],
-            'recent_activity' => $activities
+            'recent_activity' => $activities,
+            'monthly_chart' => $reportStats['monthly_chart'],
         ];
     }
 }

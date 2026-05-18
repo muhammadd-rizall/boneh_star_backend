@@ -68,9 +68,6 @@ class QuotationService
 
             $quotation = $this->quotationRepository->create($data);
 
-            // Update booking status to quoted
-            $this->bookingRepository->update($quotation->booking_id, ['status' => 'quoted']);
-
             // Notify Customer
             $booking->customer->notify(new QuotationUpdated($quotation, 'new'));
 
@@ -105,6 +102,9 @@ class QuotationService
             $quotation = $this->quotationRepository->find($id);
 
             $this->quotationRepository->update($id, ['status' => 'accepted']);
+
+            // Update booking status to quoted (represents "Waiting for Payment")
+            $this->bookingRepository->update($quotation->booking_id, ['status' => 'quoted']);
 
             // Notify Admin
             $customerName = $quotation->booking->customer->name ?? 'Pelanggan';

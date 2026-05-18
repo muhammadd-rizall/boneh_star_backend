@@ -50,7 +50,7 @@ class BusAvailabilityRule implements DataAwareRule, ValidationRule
         // Check if the bus is already assigned to another booking that overlaps with these dates
         $isConflict = BookingBus::where('bus_id', $busId)
             ->whereHas('booking', function ($query) use ($departureDate, $returnDate, $currentBookingId) {
-                $query->whereIn('status', ['confirmed', 'ongoing'])
+                $query->whereIn('status', ['pending', 'quoted', 'confirmed', 'ongoing'])
                     ->where(function ($q) use ($departureDate, $returnDate) {
                         $q->whereBetween('departure_date', [$departureDate, $returnDate])
                             ->orWhereBetween('return_date', [$departureDate, $returnDate])

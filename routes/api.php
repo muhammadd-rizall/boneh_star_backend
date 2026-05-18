@@ -24,9 +24,11 @@ use App\Http\Controllers\Api\Admin\TransactionController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Auth\Admin\LoginController as AdminLoginController;
 use App\Http\Controllers\Api\Auth\Admin\LogoutController as AdminLogoutController;
+use App\Http\Controllers\Api\Auth\Public\ForgotPasswordController as PublicForgotPasswordController;
 use App\Http\Controllers\Api\Auth\Public\LoginController as PublicLoginController;
 use App\Http\Controllers\Api\Auth\Public\LogoutController as PublicLogoutController;
 use App\Http\Controllers\Api\Auth\Public\RegisterController as PublicRegisterController;
+use App\Http\Controllers\Api\Auth\Public\ResetPasswordController as PublicResetPasswordController;
 use App\Http\Controllers\Api\Customer\BookingController;
 use App\Http\Controllers\Api\Customer\HistoryController;
 use App\Http\Controllers\Api\Customer\NotificationController;
@@ -53,6 +55,8 @@ Route::prefix('public')->name('public.')->group(function () {
 Route::prefix('auth')->name('auth.')->group(function () {
     Route::post('/login', [PublicLoginController::class, 'login'])->name('login');
     Route::post('/register', [PublicRegisterController::class, 'register'])->name('register');
+    Route::post('/forgot-password', [PublicForgotPasswordController::class, 'sendResetLinkEmail'])->name('forgot-password');
+    Route::post('/reset-password', [PublicResetPasswordController::class, 'reset'])->name('reset-password');
 });
 
 // Auth Admin routes

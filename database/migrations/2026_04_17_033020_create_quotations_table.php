@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('quotations', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('booking_id');
-            $table->uuid('user_id'); // Admin who created the quotation
+            $table->uuid('user_id');
             $table->decimal('proposed_price', 15, 2);
             $table->decimal('dp_amount', 15, 2);
             $table->text('note_to_customer');
