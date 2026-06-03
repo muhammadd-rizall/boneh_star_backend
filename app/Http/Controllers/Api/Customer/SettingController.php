@@ -42,6 +42,24 @@ class SettingController extends BaseController
     }
 
     /**
+     * Update password.
+     */
+    public function updatePassword(Request $request): JsonResponse
+    {
+        $request->validate([
+            'current_password' => ['required', 'current_password:web'],
+            'password' => ['required', 'min:8', 'confirmed'],
+        ]);
+
+        $customerId = auth()->id();
+        $this->customerService->updateCustomer($customerId, [
+            'password' => \Illuminate\Support\Facades\Hash::make($request->password),
+        ]);
+
+        return $this->sendResponse(null, 'Password updated successfully');
+    }
+
+    /**
      * Upload/change profile picture.
      */
     public function uploadProfilePicture(Request $request): JsonResponse

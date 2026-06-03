@@ -79,6 +79,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('customer')->name('customer.')->group(function () {
         Route::get('/profile', [SettingController::class, 'show'])->name('profile.show');
         Route::patch('/profile', [SettingController::class, 'update'])->name('profile.update');
+        Route::patch('/profile/password', [SettingController::class, 'updatePassword'])->name('profile.password');
         Route::post('/profile/picture', [SettingController::class, 'uploadProfilePicture'])->name('profile.picture');
         Route::get('/statistics', [SettingController::class, 'statistics'])->name('statistics');
 
