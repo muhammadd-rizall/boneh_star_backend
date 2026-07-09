@@ -35,7 +35,9 @@ use App\Http\Controllers\Api\Customer\NotificationController;
 use App\Http\Controllers\Api\Customer\QuotationController;
 use App\Http\Controllers\Api\Customer\ReviewController;
 use App\Http\Controllers\Api\Customer\SettingController;
+use App\Http\Controllers\Api\Public\GalleryController as PublicGalleryController;
 use App\Http\Controllers\Api\Public\PublicController;
+use App\Http\Controllers\Api\Admin\GalleryController as AdminGalleryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -49,6 +51,7 @@ Route::prefix('public')->name('public.')->group(function () {
     Route::get('/activity-types', [PublicController::class, 'activityTypes'])->name('activity-types');
     Route::get('/route-types', [PublicController::class, 'routeTypes'])->name('route-types');
     Route::get('/bus-categories', [PublicController::class, 'busCategories'])->name('bus-categories');
+    Route::get('/galleries', [PublicGalleryController::class, 'index'])->name('galleries.index');
 });
 
 // Auth Public routes
@@ -217,6 +220,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::delete('/{id}/force-delete', [ActivityTypeController::class, 'forceDelete'])->name('force-delete');
         });
         Route::apiResource('activity-types', ActivityTypeController::class);
+
+        // Gallery management routes
+        Route::apiResource('galleries', AdminGalleryController::class);
 
         // Route Type management routes
         Route::prefix('route-types')->name('route-types.')->group(function () {

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['name', 'description'])]
+#[Fillable(['name', 'description', 'image'])]
 class ActivityType extends Model
 {
     /** @use HasFactory<\Database\Factories\ActivityTypeFactory> */
