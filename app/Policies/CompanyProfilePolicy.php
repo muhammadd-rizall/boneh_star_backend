@@ -18,7 +18,7 @@ class CompanyProfilePolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, CompanyProfile $companyProfile): bool
+    public function view(User $user, ?CompanyProfile $companyProfile = null): bool
     {
         return $user->hasPermissionTo(config('company_profile.view'));
     }
@@ -34,7 +34,7 @@ class CompanyProfilePolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, CompanyProfile $companyProfile): bool
+    public function update(User $user, ?CompanyProfile $companyProfile = null): bool
     {
         return $user->hasPermissionTo(config('company_profile.update'));
     }
@@ -42,7 +42,7 @@ class CompanyProfilePolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, CompanyProfile $companyProfile): bool
+    public function delete(User $user, ?CompanyProfile $companyProfile = null): bool
     {
         return $user->hasPermissionTo(config('company_profile.delete'));
     }
@@ -50,7 +50,7 @@ class CompanyProfilePolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, CompanyProfile $companyProfile): bool
+    public function restore(User $user, ?CompanyProfile $companyProfile = null): bool
     {
         return false;
     }
@@ -58,7 +58,7 @@ class CompanyProfilePolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, CompanyProfile $companyProfile): bool
+    public function forceDelete(User $user, ?CompanyProfile $companyProfile = null): bool
     {
         return false;
     }

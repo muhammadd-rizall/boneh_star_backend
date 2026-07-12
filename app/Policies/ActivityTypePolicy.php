@@ -18,7 +18,7 @@ class ActivityTypePolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, ActivityType $activityType): bool
+    public function view(User $user, ?ActivityType $activityType = null): bool
     {
         return $user->hasPermissionTo('activities.view');
     }
@@ -34,7 +34,7 @@ class ActivityTypePolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, ActivityType $activityType): bool
+    public function update(User $user, ?ActivityType $activityType = null): bool
     {
         return $user->hasPermissionTo('activities.update');
     }
@@ -42,7 +42,7 @@ class ActivityTypePolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, ActivityType $activityType): bool
+    public function delete(User $user, ?ActivityType $activityType = null): bool
     {
         return $user->hasPermissionTo('activities.delete');
     }
@@ -50,7 +50,7 @@ class ActivityTypePolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, ActivityType $activityType): bool
+    public function restore(User $user, ?ActivityType $activityType = null): bool
     {
         return $user->hasPermissionTo('activities.restore');
     }
@@ -58,7 +58,7 @@ class ActivityTypePolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, ActivityType $activityType): bool
+    public function forceDelete(User $user, ?ActivityType $activityType = null): bool
     {
         return $user->hasPermissionTo('activities.forceDelete');
     }

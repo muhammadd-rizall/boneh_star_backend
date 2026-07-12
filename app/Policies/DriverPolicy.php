@@ -18,7 +18,7 @@ class DriverPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Driver $driver): bool
+    public function view(User $user, ?Driver $driver = null): bool
     {
         return $user->hasPermissionTo('drivers.view');
     }
@@ -34,7 +34,7 @@ class DriverPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Driver $driver): bool
+    public function update(User $user, ?Driver $driver = null): bool
     {
         return $user->hasPermissionTo('drivers.update');
     }
@@ -42,7 +42,7 @@ class DriverPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Driver $driver): bool
+    public function delete(User $user, ?Driver $driver = null): bool
     {
         return $user->hasPermissionTo('drivers.delete');
     }
@@ -50,7 +50,7 @@ class DriverPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Driver $driver): bool
+    public function restore(User $user, ?Driver $driver = null): bool
     {
         return $user->hasPermissionTo('drivers.restore');
     }
@@ -58,7 +58,7 @@ class DriverPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Driver $driver): bool
+    public function forceDelete(User $user, ?Driver $driver = null): bool
     {
         return $user->hasPermissionTo('drivers.forceDelete');
     }

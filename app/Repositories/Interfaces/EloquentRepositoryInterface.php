@@ -10,7 +10,9 @@ interface EloquentRepositoryInterface
 
     public function find($id, array $relations = []);
 
-    Public function findTrashed($id, array $relations = []);
+    public function findTrashed($id, array $relations = []);
+
+    public function findWithTrashed($id, array $relations = []);
 
     public function create(array $data);
 

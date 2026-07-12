@@ -22,10 +22,19 @@ class UpdateTransactionRequest extends FormRequest
      */
     public function rules(): array
     {
+        $params = $this->route() ? $this->route()->parameters() : [];
+        $id = !empty($params) ? reset($params) : null;
+        $id = is_object($id) ? $id->getKey() : $id;
+
+        $uniqueRule = \Illuminate\Validation\Rule::unique('transactions', 'invoice_number');
+        if ($id && is_string($id) && trim($id) !== '') {
+            $uniqueRule->ignore($id);
+        }
+
         return [
             'booking_id' => ['required', 'uuid', 'exists:bookings,id'],
             'quotation_id' => ['required', 'uuid', 'exists:quotations,id'],
-            'invoice_number' => ['nullable', 'string', 'max:255', 'unique:transactions,invoice_number,'.$this->route('transaction')],
+            'invoice_number' => ['nullable', 'string', 'max:255', $uniqueRule],
             'total_amount' => ['required', 'numeric', 'min:0'],
             'dp_paid' => ['required', 'numeric', 'min:0'],
             'remaining_amount' => ['required', 'numeric', 'min:0'],

@@ -122,7 +122,8 @@ class CustomerController extends BaseController
      */
     public function restore(string $id)
     {
-        $this->authorize('restore', Customer::class);
+        $customer = Customer::withTrashed()->findOrFail($id);
+        $this->authorize('restore', $customer);
         $customer = $this->customerService->restoreCustomer($id);
 
         return response()->json([
@@ -137,7 +138,8 @@ class CustomerController extends BaseController
      */
     public function forceDelete(string $id)
     {
-        $this->authorize('forceDelete', Customer::class);
+        $customer = Customer::withTrashed()->findOrFail($id);
+        $this->authorize('forceDelete', $customer);
         $this->customerService->forceDeleteCustomer($id);
 
         return response()->json([

@@ -125,7 +125,8 @@ class RouteTypeController extends BaseController
      */
     public function restore(string $id): JsonResponse
     {
-        $this->authorize('restore', RouteType::class);
+        $routeType = RouteType::withTrashed()->findOrFail($id);
+        $this->authorize('restore', $routeType);
 
         $routeType = $this->routeTypeService->restoreRouteType($id);
 
@@ -141,7 +142,8 @@ class RouteTypeController extends BaseController
      */
     public function forceDelete(string $id): JsonResponse
     {
-        $this->authorize('forceDelete', RouteType::class);
+        $routeType = RouteType::withTrashed()->findOrFail($id);
+        $this->authorize('forceDelete', $routeType);
 
         $this->routeTypeService->forceDeleteRouteType($id);
 

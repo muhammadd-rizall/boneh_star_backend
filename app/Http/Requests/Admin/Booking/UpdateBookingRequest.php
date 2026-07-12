@@ -21,8 +21,12 @@ class UpdateBookingRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
+        $params = $this->route() ? $this->route()->parameters() : [];
+        $id = !empty($params) ? reset($params) : null;
+        $id = is_object($id) ? $id->getKey() : $id;
+
         $this->merge([
-            'id' => $this->route('booking'),
+            'id' => ($id && is_string($id) && trim($id) !== '') ? $id : null,
         ]);
     }
 
@@ -33,12 +37,20 @@ class UpdateBookingRequest extends FormRequest
      */
     public function rules(): array
     {
+        $id = $this->route() ? reset($this->route()->parameters()) : null;
+        $id = is_object($id) ? $id->getKey() : $id;
+
+        $uniqueRule = \Illuminate\Validation\Rule::unique('bookings', 'booking_code');
+        if ($id && is_string($id) && trim($id) !== '') {
+            $uniqueRule->ignore($id);
+        }
+
         return [
             'id' => ['required', 'uuid', 'exists:bookings,id'],
             'customer_id' => ['required', 'uuid', 'exists:customers,id'],
             'activity_id' => ['required', 'uuid', 'exists:activity_types,id'],
             'route_type_id' => ['required', 'uuid', 'exists:route_types,id'],
-            'booking_code' => ['nullable', 'string', 'max:255', 'unique:bookings,booking_code,'.$this->route('booking')],
+            'booking_code' => ['nullable', 'string', 'max:255', $uniqueRule],
             'departure_date' => ['required', 'date'],
             'return_date' => ['nullable', 'date', 'after_or_equal:departure_date'],
             'origin' => ['required', 'string'],

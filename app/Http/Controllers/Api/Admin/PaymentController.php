@@ -117,7 +117,8 @@ class PaymentController extends BaseController
 
     public function restore(string $id): JsonResponse
     {
-        $this->authorize('restore', Payment::class);
+        $payment = Payment::withTrashed()->findOrFail($id);
+        $this->authorize('restore', $payment);
         $payment = $this->paymentService->restorePayment($id);
 
         return $this->sendResponse(new PaymentResource($payment), 'Payment restored successfully');
@@ -125,7 +126,8 @@ class PaymentController extends BaseController
 
     public function forceDelete(string $id): JsonResponse
     {
-        $this->authorize('forceDelete', Payment::class);
+        $payment = Payment::withTrashed()->findOrFail($id);
+        $this->authorize('forceDelete', $payment);
         $this->paymentService->forceDeletePayment($id);
 
         return $this->sendResponse(null, 'Payment permanently deleted successfully');

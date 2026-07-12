@@ -38,4 +38,19 @@ class QuotationRepository extends BaseRepository
     {
         return $this->model->with(['booking', 'user'])->findOrFail($id);
     }
+
+    public function getStatistics()
+    {
+        return [
+            'total_quotations' => $this->model->count(),
+            'by_status' => [
+                'draft' => $this->model->where('status', 'draft')->count(),
+                'sent' => $this->model->where('status', 'sent')->count(),
+                'accepted' => $this->model->where('status', 'accepted')->count(),
+                'revision' => $this->model->where('status', 'revision')->count(),
+                'expired' => $this->model->where('status', 'expired')->count(),
+                'rejected' => $this->model->where('status', 'rejected')->count(),
+            ]
+        ];
+    }
 }

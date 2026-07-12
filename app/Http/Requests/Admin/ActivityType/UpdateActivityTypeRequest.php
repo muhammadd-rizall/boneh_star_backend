@@ -21,8 +21,17 @@ class UpdateActivityTypeRequest extends FormRequest
      */
     public function rules(): array
     {
+        $params = $this->route() ? $this->route()->parameters() : [];
+        $id = !empty($params) ? reset($params) : null;
+        $id = is_object($id) ? $id->getKey() : $id;
+
+        $uniqueRule = \Illuminate\Validation\Rule::unique('activity_types', 'name');
+        if ($id && is_string($id) && trim($id) !== '') {
+            $uniqueRule->ignore($id);
+        }
+
         return [
-            'name' => ['sometimes', 'required', 'string', 'max:255', 'unique:activity_types,name,'.$this->route('activity_type')],
+            'name' => ['sometimes', 'required', 'string', 'max:255', $uniqueRule],
             'description' => ['sometimes', 'nullable', 'string'],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg,webp', 'max:5120'],
         ];

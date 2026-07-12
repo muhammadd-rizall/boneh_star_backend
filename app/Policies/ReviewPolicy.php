@@ -12,7 +12,7 @@ class ReviewPolicy
         return $user->hasPermissionTo(config('reviews.view'));
     }
 
-    public function view(User $user, Review $review): bool
+    public function view(User $user, ?Review $review = null): bool
     {
         return $user->hasPermissionTo(config('reviews.view'));
     }
@@ -22,12 +22,12 @@ class ReviewPolicy
         return $user->hasPermissionTo(config('reviews.create'));
     }
 
-    public function update(User $user, Review $review): bool
+    public function update(User $user, ?Review $review = null): bool
     {
         return $user->hasPermissionTo(config('reviews.update'));
     }
 
-    public function delete(User $user, Review $review): bool
+    public function delete(User $user, ?Review $review = null): bool
     {
         return $user->hasPermissionTo(config('reviews.delete'));
     }

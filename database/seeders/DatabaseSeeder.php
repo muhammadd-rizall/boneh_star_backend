@@ -25,6 +25,8 @@ class DatabaseSeeder extends Seeder
             DriverSeeder::class,
             BusSeeder::class,
             CustomerSeeder::class,
+            BookingSeeder::class,
+            GallerySeeder::class,
         ]);
     }
 }

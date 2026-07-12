@@ -123,7 +123,8 @@ class BookingController extends BaseController
      */
     public function restore(string $id)
     {
-        $this->authorize('restore', Booking::class);
+        $booking = Booking::withTrashed()->findOrFail($id);
+        $this->authorize('restore', $booking);
 
         $booking = $this->bookingService->restoreBooking($id);
 
@@ -139,7 +140,8 @@ class BookingController extends BaseController
      */
     public function forceDelete(string $id)
     {
-        $this->authorize('forceDelete', Booking::class);
+        $booking = Booking::withTrashed()->findOrFail($id);
+        $this->authorize('forceDelete', $booking);
 
         $this->bookingService->forceDeleteBooking($id);
 

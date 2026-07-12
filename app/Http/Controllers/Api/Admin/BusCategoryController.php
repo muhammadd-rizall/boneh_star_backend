@@ -126,7 +126,8 @@ class BusCategoryController extends BaseController
      */
     public function restore(string $id)
     {
-        $this->authorize('restore', BusCategory::class);
+        $category = BusCategory::withTrashed()->findOrFail($id);
+        $this->authorize('restore', $category);
 
         $category = $this->busCategoryService->restoreCategory($id);
 
@@ -142,7 +143,8 @@ class BusCategoryController extends BaseController
      */
     public function forceDelete(string $id)
     {
-        $this->authorize('forceDelete', BusCategory::class);
+        $category = BusCategory::withTrashed()->findOrFail($id);
+        $this->authorize('forceDelete', $category);
 
         $this->busCategoryService->forceDeleteCategory($id);
 

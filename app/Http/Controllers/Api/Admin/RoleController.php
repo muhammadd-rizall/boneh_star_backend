@@ -128,9 +128,10 @@ class RoleController extends BaseController
     // Restore the specified resource from storage.
     public function restore($id)
     {
-        $role = $this->roleService->restoreRole($id);
-
+        $role = Role::withTrashed()->findOrFail($id);
         $this->authorize('restore', $role);
+
+        $role = $this->roleService->restoreRole($id);
 
         return response()->json([
             'success' => true,

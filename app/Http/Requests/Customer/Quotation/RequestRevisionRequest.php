@@ -14,7 +14,7 @@ class RequestRevisionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'revision_note' => ['required', 'string', 'min:10'],
+            'revision_note' => ['required', 'string', 'min:3'],
         ];
     }
 }

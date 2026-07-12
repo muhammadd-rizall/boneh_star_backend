@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     'booking_id',
     'user_id',
     'proposed_price',
+    'initial_price',
     'dp_amount',
     'note_to_customer',
     'status',
@@ -26,6 +27,7 @@ class Quotation extends Model
 
     protected $casts = [
         'proposed_price' => 'decimal:2',
+        'initial_price' => 'decimal:2',
         'dp_amount' => 'decimal:2',
         'valid_until' => 'datetime',
     ];

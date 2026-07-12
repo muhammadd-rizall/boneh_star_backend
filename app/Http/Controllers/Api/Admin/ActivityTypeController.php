@@ -124,7 +124,8 @@ class ActivityTypeController extends BaseController
      */
     public function restore(string $id)
     {
-        $this->authorize('restore', ActivityType::class);
+        $activityType = ActivityType::withTrashed()->findOrFail($id);
+        $this->authorize('restore', $activityType);
 
         $activityType = $this->activityTypeService->restoreActivityType($id);
 
@@ -140,7 +141,8 @@ class ActivityTypeController extends BaseController
      */
     public function forceDelete(string $id)
     {
-        $this->authorize('forceDelete', ActivityType::class);
+        $activityType = ActivityType::withTrashed()->findOrFail($id);
+        $this->authorize('forceDelete', $activityType);
 
         $this->activityTypeService->forceDeleteActivityType($id);
 
@@ -148,6 +150,5 @@ class ActivityTypeController extends BaseController
             'success' => true,
             'message' => 'Activity type permanently deleted successfully',
         ], 200);
-
     }
 }

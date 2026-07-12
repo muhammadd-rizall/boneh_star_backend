@@ -82,7 +82,7 @@ class ActivityTypeService
     // force delete ActivityType by id
     public function forceDeleteActivityType(string $id)
     {
-        $activityType = $this->activityTypeRepository->withTrashed()->find($id);
+        $activityType = $this->activityTypeRepository->findWithTrashed($id);
         if ($activityType && $activityType->image) {
             Storage::disk('public')->delete($activityType->image);
         }

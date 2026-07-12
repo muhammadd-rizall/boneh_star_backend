@@ -37,6 +37,16 @@ abstract class BaseRepository implements EloquentRepositoryInterface
         return $this->model->onlyTrashed()->with($relations)->findOrFail($id);
     }
 
+    //find data by id, including trashed, with relations
+    public function findWithTrashed($id, array $relations = [])
+    {
+        if ($this->hasSoftDeletes()) {
+            return $this->model->withTrashed()->with($relations)->find($id);
+        }
+
+        return $this->find($id, $relations);
+    }
+
     //create data
     public function create(array $data)
     {
@@ -54,7 +64,17 @@ abstract class BaseRepository implements EloquentRepositoryInterface
     //delete data by id
     public function delete($id)
     {
-        return $this->find($id)->delete();
+        if ($this->hasSoftDeletes()) {
+            $record = $this->model->withTrashed()->findOrFail($id);
+            if (!$record->trashed()) {
+                $record->delete();
+            }
+            return $record;
+        }
+
+        $record = $this->find($id);
+        $record->delete();
+        return $record;
     }
 
     //get deleted data
@@ -66,23 +86,41 @@ abstract class BaseRepository implements EloquentRepositoryInterface
     //restore data by id
     public function restore($id)
     {
-        $dataTrashed = $this->model->onlyTrashed()->findOrFail($id);
+        if ($this->hasSoftDeletes()) {
+            $record = $this->model->withTrashed()->findOrFail($id);
+            if ($record->trashed()) {
+                $record->restore();
+            }
+            return $record;
+        }
 
-        if($dataTrashed  && $dataTrashed->trashed()) {
-           $dataTrashed->restore();
-           return $dataTrashed;
-         }
+        throw new \Exception("Model does not support soft deletes.");
     }
 
     //force delete data by id
     public function forceDelete($id)
     {
-        $dataTrashed = $this->model->onlyTrashed()->findOrFail($id);
+        if ($this->hasSoftDeletes()) {
+            $record = $this->model->withTrashed()->find($id);
+            if ($record) {
+                $record->forceDelete();
+            }
+            return null;
+        }
 
-        if($dataTrashed) {
-           $dataTrashed->forceDelete();
-         }
+        $record = $this->model->find($id);
+        if ($record) {
+            $record->delete();
+        }
 
-         return null;
+        return null;
+    }
+
+    /**
+     * Check if the model uses SoftDeletes trait.
+     */
+    protected function hasSoftDeletes(): bool
+    {
+        return in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses_recursive($this->model));
     }
 }

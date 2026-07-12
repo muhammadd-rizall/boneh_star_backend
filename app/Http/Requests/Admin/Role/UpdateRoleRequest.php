@@ -21,9 +21,18 @@ class UpdateRoleRequest extends FormRequest
      */
     public function rules(): array
     {
+        $params = $this->route() ? $this->route()->parameters() : [];
+        $id = !empty($params) ? reset($params) : null;
+        $id = is_object($id) ? $id->getKey() : $id;
+
+        $uniqueRule = \Illuminate\Validation\Rule::unique('roles', 'slug');
+        if ($id && is_string($id) && trim($id) !== '') {
+            $uniqueRule->ignore($id);
+        }
+
         return [
             'name' => ['sometimes', 'string', 'max:255'],
-            'slug' => ['sometimes', 'string', 'max:255', 'unique:roles,slug,'.$this->route('role')->id, 'alpha_dash'],
+            'slug' => ['sometimes', 'string', 'max:255', $uniqueRule, 'alpha_dash'],
             'is_active' => ['sometimes', 'boolean'],
             'permissions_ids' => ['sometimes', 'array'],
             'permissions_ids.*' => ['exists:permissions,id'],

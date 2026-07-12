@@ -66,10 +66,18 @@ class QuotationService
                 throw new \Exception('Cannot create a quotation for a cancelled booking.');
             }
 
+            $data['initial_price'] = $data['proposed_price'];
             $quotation = $this->quotationRepository->create($data);
 
             // Notify Customer
-            $booking->customer->notify(new QuotationUpdated($quotation, 'new'));
+            if ($quotation->status === 'sent') {
+                $booking->customer->notify(new QuotationUpdated($quotation, 'new'));
+            }
+
+            // Update booking status to quoted if quotation is active
+            if (in_array($quotation->status, ['sent', 'revision', 'accepted'])) {
+                $this->bookingRepository->update($booking->id, ['status' => 'quoted']);
+            }
 
             return $quotation;
         });
@@ -87,6 +95,11 @@ class QuotationService
             // Notify Customer if status is 'sent'
             if ($quotation->status === 'sent') {
                 $booking->customer->notify(new QuotationUpdated($quotation, 'updated'));
+            }
+
+            // Update booking status to quoted if quotation is active
+            if (in_array($quotation->status, ['sent', 'revision', 'accepted'])) {
+                $this->bookingRepository->update($booking->id, ['status' => 'quoted']);
             }
 
             return $quotation;
@@ -179,5 +192,13 @@ class QuotationService
     public function forceDeleteQuotation(string $id)
     {
         return $this->quotationRepository->forceDelete($id);
+    }
+
+    /**
+     * Get quotation statistics.
+     */
+    public function getQuotationStatistics()
+    {
+        return $this->quotationRepository->getStatistics();
     }
 }

@@ -22,8 +22,17 @@ class UpdateBusFacilitiesRequest extends FormRequest
      */
     public function rules(): array
     {
+        $params = $this->route() ? $this->route()->parameters() : [];
+        $id = !empty($params) ? reset($params) : null;
+        $id = is_object($id) ? $id->getKey() : $id;
+
+        $uniqueRule = \Illuminate\Validation\Rule::unique('bus_facilities', 'name');
+        if ($id && is_string($id) && trim($id) !== '') {
+            $uniqueRule->ignore($id);
+        }
+
         return [
-            'name' => ['required', 'string', 'max:255', 'unique:bus_facilities,name,'.$this->route('id')],
+            'name' => ['required', 'string', 'max:255', $uniqueRule],
         ];
     }
 

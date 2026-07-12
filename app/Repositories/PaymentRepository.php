@@ -87,10 +87,14 @@ class PaymentRepository extends BaseRepository
     {
         $year = $year ?? date('Y');
 
+        $monthExpression = DB::connection()->getDriverName() === 'sqlite'
+            ? "strftime('%Y-%m', payment_date) as month"
+            : "to_char(payment_date, 'YYYY-MM') as month";
+
         // Monthly income breakdown
         $monthlyIncome = $this->model->query()
             ->select(
-                DB::raw("to_char(payment_date, 'YYYY-MM') as month"),
+                DB::raw($monthExpression),
                 DB::raw('SUM(amount) as total_masuk'),
                 DB::raw("SUM(CASE WHEN payment_type = 'dp' THEN amount ELSE 0 END) as total_dp"),
                 DB::raw("SUM(CASE WHEN payment_type = 'settlement' THEN amount ELSE 0 END) as total_pelunasan")

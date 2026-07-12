@@ -37,4 +37,13 @@ class NotificationRepository extends BaseRepository
                 'read_at' => now(),
             ]);
     }
+
+    public function findNotification(string $id, string $targetType, string $targetId)
+    {
+        return $this->model
+            ->where('id', $id)
+            ->where('target_type', $targetType)
+            ->where('target_id', $targetId)
+            ->firstOrFail();
+    }
 }

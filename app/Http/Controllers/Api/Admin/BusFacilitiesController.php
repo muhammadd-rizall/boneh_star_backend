@@ -124,7 +124,8 @@ class BusFacilitiesController extends BaseController
      */
     public function restore(string $id)
     {
-        $this->authorize('restore', BusFacilities::class);
+        $facility = BusFacilities::withTrashed()->findOrFail($id);
+        $this->authorize('restore', $facility);
 
         $facility = $this->busFacilitiesService->restoreFacility($id);
 
@@ -140,7 +141,8 @@ class BusFacilitiesController extends BaseController
      */
     public function forceDelete(string $id)
     {
-        $this->authorize('forceDelete', BusFacilities::class);
+        $facility = BusFacilities::withTrashed()->findOrFail($id);
+        $this->authorize('forceDelete', $facility);
 
         $this->busFacilitiesService->forceDeleteFacility($id);
 

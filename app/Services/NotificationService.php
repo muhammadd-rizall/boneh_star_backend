@@ -27,11 +27,7 @@ class NotificationService
 
     public function markAsRead(string $id, string $targetType, string $targetId)
     {
-        $notification = $this->notificationRepository->model
-            ->where('id', $id)
-            ->where('target_type', $targetType)
-            ->where('target_id', $targetId)
-            ->firstOrFail();
+        $notification = $this->notificationRepository->findNotification($id, $targetType, $targetId);
 
         return $this->notificationRepository->update($notification->id, [
             'is_read' => true,
@@ -87,11 +83,7 @@ class NotificationService
 
     public function deleteNotification(string $id, string $targetType, string $targetId)
     {
-        $notification = $this->notificationRepository->model
-            ->where('id', $id)
-            ->where('target_type', $targetType)
-            ->where('target_id', $targetId)
-            ->firstOrFail();
+        $notification = $this->notificationRepository->findNotification($id, $targetType, $targetId);
 
         return $this->notificationRepository->delete($notification->id);
     }

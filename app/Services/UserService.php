@@ -69,11 +69,7 @@ class UserService
     // restore user by id
     public function restoreUser(string $id)
     {
-        $user = $this->userRepository->findTrashed($id);
-
-        $user->restore();
-
-        return $user;
+        return $this->userRepository->restore($id);
     }
 
     // force delete user by id

@@ -19,6 +19,7 @@ class QuotationResource extends JsonResource
             'booking_id' => $this->booking_id,
             'user_id' => $this->user_id,
             'proposed_price' => $this->proposed_price,
+            'initial_price' => $this->initial_price ?? $this->proposed_price,
             'dp_amount' => $this->dp_amount,
             'note_to_customer' => $this->note_to_customer,
             'status' => $this->status,

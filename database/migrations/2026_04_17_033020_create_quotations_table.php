@@ -16,6 +16,7 @@ return new class extends Migration
             $table->uuid('booking_id');
             $table->uuid('user_id');
             $table->decimal('proposed_price', 15, 2);
+            $table->decimal('initial_price', 15, 2)->nullable();
             $table->decimal('dp_amount', 15, 2);
             $table->text('note_to_customer');
             $table->enum('status', ['draft', 'sent', 'accepted', 'revision', 'expired', 'rejected'])->default('draft');

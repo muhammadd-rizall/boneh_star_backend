@@ -22,9 +22,18 @@ class UpdateBusesRequest extends FormRequest
      */
     public function rules(): array
     {
+        $params = $this->route() ? $this->route()->parameters() : [];
+        $id = !empty($params) ? reset($params) : null;
+        $id = is_object($id) ? $id->getKey() : $id;
+
+        $uniqueRule = \Illuminate\Validation\Rule::unique('buses', 'plat_number');
+        if ($id && is_string($id) && trim($id) !== '') {
+            $uniqueRule->ignore($id);
+        }
+
         return [
             'bus_category_id' => ['sometimes', 'uuid', 'exists:bus_categories,id'],
-            'plat_number' => ['sometimes', 'string', 'max:255', 'unique:buses,plat_number,'.$this->route('bus')],
+            'plat_number' => ['sometimes', 'string', 'max:255', $uniqueRule],
             'name' => ['sometimes', 'string', 'max:255'],
             'seat_count' => ['sometimes', 'integer', 'min:1'],
             'production_year' => ['sometimes', 'integer', 'min:1900', 'max:'.date('Y')],

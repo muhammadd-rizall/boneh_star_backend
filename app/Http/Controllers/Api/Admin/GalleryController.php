@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\BaseController;
 use App\Http\Requests\Admin\Gallery\StoreGalleryRequest;
 use App\Http\Requests\Admin\Gallery\UpdateGalleryRequest;
 use App\Http\Resources\GalleryResource;
 use App\Services\GalleryService;
-use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
 
-class GalleryController extends Controller
+class GalleryController extends BaseController
 {
-    use ApiResponser;
-
     public function __construct(protected GalleryService $galleryService)
     {}
 
@@ -34,7 +31,7 @@ class GalleryController extends Controller
     {
         $gallery = $this->galleryService->create($request->validated());
 
-        return $this->successResponse(
+        return $this->sendResponse(
             new GalleryResource($gallery),
             'Gallery created successfully',
             201
@@ -45,7 +42,7 @@ class GalleryController extends Controller
     {
         $gallery = $this->galleryService->find($id);
 
-        return $this->successResponse(
+        return $this->sendResponse(
             new GalleryResource($gallery),
             'Gallery retrieved successfully'
         );
@@ -55,7 +52,7 @@ class GalleryController extends Controller
     {
         $gallery = $this->galleryService->update($id, $request->validated());
 
-        return $this->successResponse(
+        return $this->sendResponse(
             new GalleryResource($gallery),
             'Gallery updated successfully'
         );
@@ -65,7 +62,7 @@ class GalleryController extends Controller
     {
         $this->galleryService->delete($id);
 
-        return $this->successResponse(
+        return $this->sendResponse(
             null,
             'Gallery deleted successfully'
         );

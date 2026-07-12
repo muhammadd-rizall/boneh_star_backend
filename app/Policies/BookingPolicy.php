@@ -18,7 +18,7 @@ class BookingPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Booking $booking): bool
+    public function view(User $user, ?Booking $booking = null): bool
     {
         return $user->hasPermissionTo('bookings.view');
     }
@@ -34,7 +34,7 @@ class BookingPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Booking $booking): bool
+    public function update(User $user, ?Booking $booking = null): bool
     {
         return $user->hasPermissionTo('bookings.update');
     }
@@ -42,7 +42,7 @@ class BookingPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Booking $booking): bool
+    public function delete(User $user, ?Booking $booking = null): bool
     {
         return $user->hasPermissionTo('bookings.delete');
     }
@@ -50,7 +50,7 @@ class BookingPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Booking $booking): bool
+    public function restore(User $user, ?Booking $booking = null): bool
     {
         return $user->hasPermissionTo('bookings.restore');
     }
@@ -58,7 +58,7 @@ class BookingPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Booking $booking): bool
+    public function forceDelete(User $user, ?Booking $booking = null): bool
     {
         return $user->hasPermissionTo('bookings.forceDelete');
     }

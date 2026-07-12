@@ -96,10 +96,14 @@ class BookingRepository extends BaseRepository
             });
         }
 
+        $monthExpression = DB::connection()->getDriverName() === 'sqlite'
+            ? "strftime('%Y-%m', created_at) as month"
+            : "to_char(created_at, 'YYYY-MM') as month";
+
         // Monthly counts
         $monthlyStats = (clone $baseQuery)
             ->select(
-                DB::raw("to_char(created_at, 'YYYY-MM') as month"),
+                DB::raw($monthExpression),
                 DB::raw('count(*) as count')
             )
             ->groupBy('month')
@@ -142,7 +146,17 @@ class BookingRepository extends BaseRepository
     public function getCustomerBookingById(string $customerId, string $id)
     {
         return $this->model->where('customer_id', $customerId)
-            ->with(['activity', 'routeType', 'bookingBuses.bus', 'bookingBuses.driver', 'quotation', 'transaction.payments', 'review'])
+            ->with([
+                'activity', 
+                'routeType', 
+                'bookingBuses.bus', 
+                'bookingBuses.driver', 
+                'quotation' => function ($query) {
+                    $query->where('status', '!=', 'draft');
+                }, 
+                'transaction.payments', 
+                'review'
+            ])
             ->findOrFail($id);
     }
 }

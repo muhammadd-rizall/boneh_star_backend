@@ -124,7 +124,8 @@ class TransactionController extends BaseController
      */
     public function restore(string $id): JsonResponse
     {
-        $this->authorize('restore', Transaction::class);
+        $transaction = Transaction::withTrashed()->findOrFail($id);
+        $this->authorize('restore', $transaction);
 
         $transaction = $this->transactionService->restoreTransaction($id);
 
@@ -140,7 +141,8 @@ class TransactionController extends BaseController
      */
     public function forceDelete(string $id): JsonResponse
     {
-        $this->authorize('forceDelete', Transaction::class);
+        $transaction = Transaction::withTrashed()->findOrFail($id);
+        $this->authorize('forceDelete', $transaction);
 
         $this->transactionService->forceDeleteTransaction($id);
 

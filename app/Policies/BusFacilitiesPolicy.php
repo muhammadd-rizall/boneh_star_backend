@@ -18,7 +18,7 @@ class BusFacilitiesPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, BusFacilities $busFacilities): bool
+    public function view(User $user, ?BusFacilities $busFacilities = null): bool
     {
         return $user->hasPermissionTo('facilities.view');
     }
@@ -34,7 +34,7 @@ class BusFacilitiesPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, BusFacilities $busFacilities): bool
+    public function update(User $user, ?BusFacilities $busFacilities = null): bool
     {
         return $user->hasPermissionTo('facilities.update');
     }
@@ -42,7 +42,7 @@ class BusFacilitiesPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, BusFacilities $busFacilities): bool
+    public function delete(User $user, ?BusFacilities $busFacilities = null): bool
     {
         return $user->hasPermissionTo('facilities.delete');
     }
@@ -50,7 +50,7 @@ class BusFacilitiesPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, BusFacilities $busFacilities): bool
+    public function restore(User $user, ?BusFacilities $busFacilities = null): bool
     {
         return $user->hasPermissionTo('facilities.restore');
     }
@@ -58,7 +58,7 @@ class BusFacilitiesPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, BusFacilities $busFacilities): bool
+    public function forceDelete(User $user, ?BusFacilities $busFacilities = null): bool
     {
         return $user->hasPermissionTo('facilities.forceDelete');
     }

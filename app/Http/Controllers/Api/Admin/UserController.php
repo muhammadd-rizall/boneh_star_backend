@@ -137,6 +137,9 @@ class UserController extends BaseController
      */
     public function restore($id)
     {
+        $user = User::withTrashed()->findOrFail($id);
+        $this->authorize('restore', $user);
+
         $user = $this->userService->restoreUser($id);
 
         return response()->json([
@@ -151,6 +154,9 @@ class UserController extends BaseController
      */
     public function forceDelete($id)
     {
+        $user = User::withTrashed()->findOrFail($id);
+        $this->authorize('forceDelete', $user);
+
         $this->userService->forceDeleteUser($id);
 
         return response()->json([

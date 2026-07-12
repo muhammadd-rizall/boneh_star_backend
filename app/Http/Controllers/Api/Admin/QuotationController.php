@@ -27,10 +27,12 @@ class QuotationController extends BaseController
         $this->authorize('viewAny', Quotation::class);
 
         $quotations = $this->quotationService->getPaginatedQuotation(10, $request->query('search'));
+        $statistics = $this->quotationService->getQuotationStatistics();
 
         return response()->json([
             'success' => true,
             'data' => QuotationResource::collection($quotations)->response()->getData(true),
+            'statistics' => $statistics,
             'message' => 'Quotations retrieved successfully',
         ]);
     }
@@ -121,7 +123,8 @@ class QuotationController extends BaseController
      */
     public function restore(string $id)
     {
-        $this->authorize('restore', Quotation::class);
+        $quotation = Quotation::withTrashed()->findOrFail($id);
+        $this->authorize('restore', $quotation);
 
         $quotation = $this->quotationService->restoreQuotation($id);
 
@@ -137,7 +140,8 @@ class QuotationController extends BaseController
      */
     public function forceDelete(string $id)
     {
-        $this->authorize('forceDelete', Quotation::class);
+        $quotation = Quotation::withTrashed()->findOrFail($id);
+        $this->authorize('forceDelete', $quotation);
 
         $this->quotationService->forceDeleteQuotation($id);
 

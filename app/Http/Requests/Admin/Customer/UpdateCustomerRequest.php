@@ -22,9 +22,13 @@ class UpdateCustomerRequest extends FormRequest
      */
     public function rules(): array
     {
-        $customerId = $this->route('customer');
-        if (is_object($customerId)) {
-            $customerId = $customerId->id;
+        $params = $this->route() ? $this->route()->parameters() : [];
+        $customerId = !empty($params) ? reset($params) : null;
+        $customerId = is_object($customerId) ? $customerId->getKey() : $customerId;
+
+        $uniqueRule = Rule::unique('customers', 'email');
+        if ($customerId && is_string($customerId) && trim($customerId) !== '') {
+            $uniqueRule->ignore($customerId);
         }
 
         return [
@@ -34,7 +38,7 @@ class UpdateCustomerRequest extends FormRequest
                 'string',
                 'email',
                 'max:255',
-                Rule::unique('customers', 'email')->ignore($customerId),
+                $uniqueRule,
             ],
             'phone' => ['nullable', 'string', 'max:20'],
             'profile_picture' => ['nullable', 'string', 'max:255'],

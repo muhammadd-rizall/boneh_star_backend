@@ -18,7 +18,7 @@ class TransactionPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Transaction $transaction): bool
+    public function view(User $user, ?Transaction $transaction = null): bool
     {
         return $user->hasPermissionTo('transactions.view');
     }
@@ -34,7 +34,7 @@ class TransactionPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Transaction $transaction): bool
+    public function update(User $user, ?Transaction $transaction = null): bool
     {
         return $user->hasPermissionTo('transactions.update');
     }
@@ -42,7 +42,7 @@ class TransactionPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Transaction $transaction): bool
+    public function delete(User $user, ?Transaction $transaction = null): bool
     {
         return $user->hasPermissionTo('transactions.delete');
     }
@@ -50,7 +50,7 @@ class TransactionPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Transaction $transaction): bool
+    public function restore(User $user, ?Transaction $transaction = null): bool
     {
         return $user->hasPermissionTo('transactions.restore');
     }
@@ -58,7 +58,7 @@ class TransactionPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Transaction $transaction): bool
+    public function forceDelete(User $user, ?Transaction $transaction = null): bool
     {
         return $user->hasPermissionTo('transactions.forceDelete');
     }

@@ -123,7 +123,8 @@ class DriverController extends BaseController
      */
     public function restore(string $id)
     {
-        $this->authorize('restore', Driver::class);
+        $driver = Driver::withTrashed()->findOrFail($id);
+        $this->authorize('restore', $driver);
 
         $driver = $this->driverService->restoreDriver($id);
 
@@ -139,7 +140,8 @@ class DriverController extends BaseController
      */
     public function forceDelete(string $id)
     {
-        $this->authorize('forceDelete', Driver::class);
+        $driver = Driver::withTrashed()->findOrFail($id);
+        $this->authorize('forceDelete', $driver);
 
         $this->driverService->forceDeleteDriver($id);
 
