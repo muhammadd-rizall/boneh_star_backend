@@ -35,6 +35,8 @@ class CompanyProfileService
                 Storage::disk('public')->delete($profile->logo);
             }
             $data['logo'] = $data['logo']->store('company', 'public');
+        } else {
+            unset($data['logo']);
         }
 
         // 2. Handle WhatsApp clearing

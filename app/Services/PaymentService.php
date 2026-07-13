@@ -64,6 +64,8 @@ class PaymentService
                     Storage::disk('public')->delete($payment->transfer_proof);
                 }
                 $data['transfer_proof'] = $data['transfer_proof']->store('payments', 'public');
+            } else {
+                unset($data['transfer_proof']);
             }
 
             $updatedPayment = $this->paymentRepository->update($id, $data);

@@ -56,6 +56,8 @@ class ActivityTypeService
                 Storage::disk('public')->delete($activityType->image);
             }
             $data['image'] = null;
+        } else {
+            unset($data['image']);
         }
 
         return $this->activityTypeRepository->update($id, $data);

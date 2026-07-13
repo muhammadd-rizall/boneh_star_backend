@@ -15,12 +15,14 @@ class RegisterController extends BaseController
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:customers'],
+            'phone' => ['required', 'string', 'max:20'],
             'password' => ['required', 'string', 'min:8'],
         ]);
 
         $customer = Customer::create([
             'name' => $request->name,
             'email' => $request->email,
+            'phone' => $request->phone,
             'password' => $request->password,
         ]);
 

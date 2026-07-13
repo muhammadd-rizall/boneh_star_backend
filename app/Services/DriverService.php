@@ -58,6 +58,8 @@ class DriverService
                     Storage::disk('public')->delete($driver->photo);
                 }
                 $data['photo'] = $data['photo']->store('drivers', 'public');
+            } else {
+                unset($data['photo']);
             }
 
             return $this->driverRepository->update($id, $data);

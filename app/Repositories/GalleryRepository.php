@@ -14,7 +14,10 @@ class GalleryRepository
         $query = $this->model->query();
         
         if ($search) {
-            $query->where('title', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
         }
 
         return $query->latest()->paginate($perPage);

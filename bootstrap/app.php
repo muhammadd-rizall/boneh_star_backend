@@ -22,5 +22,12 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (\Illuminate\Http\Exceptions\PostTooLargeException $e, $request) {
+            if ($request->is('api/*') || $request->wantsJson()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Total ukuran file yang diunggah melebihi batas maksimal server. Silakan kurangi jumlah atau ukuran foto Anda.'
+                ], 413);
+            }
+        });
     })->create();
