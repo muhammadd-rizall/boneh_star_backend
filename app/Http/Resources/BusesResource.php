@@ -20,7 +20,6 @@ class BusesResource extends JsonResource
             'plat_number' => $this->plat_number,
             'name' => $this->name,
             'seat_count' => $this->seat_count,
-            'production_year' => $this->production_year,
             'brand' => $this->brand,
             'status' => $this->status,
             'notes' => $this->notes,

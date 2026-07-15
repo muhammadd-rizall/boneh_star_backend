@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('plat_number')->unique();
             $table->string('name');
             $table->integer('seat_count');
-            $table->integer('production_year');
             $table->string('brand')->nullable();
             $table->enum('status', ['available', 'booked', 'maintenance', 'inactive']);
             $table->text('notes')->nullable();

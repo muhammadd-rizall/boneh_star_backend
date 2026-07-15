@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['bus_category_id', 'plat_number', 'name', 'seat_count', 'production_year', 'brand', 'status', 'notes'])]
+#[Fillable(['bus_category_id', 'plat_number', 'name', 'seat_count', 'brand', 'status', 'notes'])]
 class Buses extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
@@ -25,7 +25,6 @@ class Buses extends Model
     {
         return [
             'seat_count' => 'integer',
-            'production_year' => 'integer',
         ];
     }
 

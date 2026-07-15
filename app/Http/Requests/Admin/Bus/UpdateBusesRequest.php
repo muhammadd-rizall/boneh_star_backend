@@ -36,7 +36,6 @@ class UpdateBusesRequest extends FormRequest
             'plat_number' => ['sometimes', 'string', 'max:255', $uniqueRule],
             'name' => ['sometimes', 'string', 'max:255'],
             'seat_count' => ['sometimes', 'integer', 'min:1'],
-            'production_year' => ['sometimes', 'integer', 'min:1900', 'max:'.date('Y')],
             'brand' => ['nullable', 'string', 'max:255'],
             'status' => ['sometimes', 'in:available,booked,maintenance,inactive'],
             'notes' => ['nullable', 'string'],

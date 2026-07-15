@@ -25,7 +25,6 @@ class BusesFactory extends Factory
             'plat_number' => $this->faker->unique()->regexify('[A-Z]{1,2} [0-9]{1,4} [A-Z]{1,3}'),
             'name' => $this->faker->words(2, true),
             'seat_count' => $this->faker->numberBetween(20, 60),
-            'production_year' => $this->faker->numberBetween(2015, 2024),
             'brand' => $this->faker->randomElement(['Mercedes-Benz', 'Hino', 'Scania', 'Volvo']),
             'status' => 'available',
             'notes' => $this->faker->sentence(),

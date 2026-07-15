@@ -28,7 +28,6 @@ test('admin can search buses by name or plat number', function () {
         'plat_number' => 'B 1234 AAA',
         'name' => 'Mercedes Benz',
         'seat_count' => 50,
-        'production_year' => 2020,
         'status' => 'available',
     ]);
 
@@ -37,7 +36,6 @@ test('admin can search buses by name or plat number', function () {
         'plat_number' => 'D 5678 BBB',
         'name' => 'Scania K410',
         'seat_count' => 50,
-        'production_year' => 2021,
         'status' => 'available',
     ]);
 
