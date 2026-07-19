@@ -84,10 +84,13 @@ class IncomeReportController extends BaseController
             $request->year
         );
 
+        $profile = \App\Models\CompanyProfile::first();
+
         $pdf = Pdf::loadView('reports.income-pdf', [
-            'items' => $report['items'],
-            'month' => $request->month,
-            'year' => $request->year ?? date('Y'),
+            'items'   => $report['items'],
+            'month'   => $request->month,
+            'year'    => $request->year ?? date('Y'),
+            'profile' => $profile,
         ]);
 
         return $pdf->download('laporan-pendapatan-'.now()->format('Y-m-d').'.pdf');

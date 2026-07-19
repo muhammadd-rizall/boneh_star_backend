@@ -40,12 +40,20 @@ class PaymentRepository extends BaseRepository
      */
     public function getStatistics(): array
     {
+        // One query for all counts/amounts
+        $agg = $this->model->selectRaw("
+            count(*) as total_count,
+            sum(CASE WHEN status = 'pending'  THEN 1 ELSE 0 END) as pending_count,
+            sum(CASE WHEN status = 'verified' THEN 1 ELSE 0 END) as verified_count,
+            sum(CASE WHEN status = 'verified' THEN amount ELSE 0 END) as total_amount
+        ")->first();
+
         return [
             'cards' => [
-                'total_amount' => (float) $this->model->where('status', 'verified')->sum('amount'),
-                'total_count' => $this->model->count(),
-                'pending_count' => $this->model->where('status', 'pending')->count(),
-                'verified_count' => $this->model->where('status', 'verified')->count(),
+                'total_amount'   => (float) ($agg->total_amount   ?? 0),
+                'total_count'    => (int)   ($agg->total_count    ?? 0),
+                'pending_count'  => (int)   ($agg->pending_count  ?? 0),
+                'verified_count' => (int)   ($agg->verified_count ?? 0),
             ],
             'by_status' => $this->model->select('status', DB::raw('count(*) as count'))
                 ->groupBy('status')

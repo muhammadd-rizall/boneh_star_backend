@@ -41,18 +41,29 @@ class BookingRepository extends BaseRepository
 
     public function getStatistics()
     {
+        // Single query: GROUP BY status for all counts
+        $statusCounts = $this->model->selectRaw('status, count(*) as count')
+            ->groupBy('status')
+            ->pluck('count', 'status');
+
+        // Single query for passenger/bus aggregates on active statuses
+        $activeStats = $this->model
+            ->selectRaw('sum(passenger_count) as total_passengers, sum(bus_count_requested) as total_buses')
+            ->whereIn('status', ['confirmed', 'ongoing', 'completed'])
+            ->first();
+
         return [
-            'total_bookings' => $this->model->count(),
+            'total_bookings' => $statusCounts->sum(),
             'by_status' => [
-                'pending' => $this->model->where('status', 'pending')->count(),
-                'quoted' => $this->model->where('status', 'quoted')->count(),
-                'confirmed' => $this->model->where('status', 'confirmed')->count(),
-                'ongoing' => $this->model->where('status', 'ongoing')->count(),
-                'completed' => $this->model->where('status', 'completed')->count(),
-                'cancelled' => $this->model->where('status', 'cancelled')->count(),
+                'pending'   => (int) ($statusCounts['pending']   ?? 0),
+                'quoted'    => (int) ($statusCounts['quoted']    ?? 0),
+                'confirmed' => (int) ($statusCounts['confirmed'] ?? 0),
+                'ongoing'   => (int) ($statusCounts['ongoing']   ?? 0),
+                'completed' => (int) ($statusCounts['completed'] ?? 0),
+                'cancelled' => (int) ($statusCounts['cancelled'] ?? 0),
             ],
-            'total_passengers' => $this->model->whereIn('status', ['confirmed', 'ongoing', 'completed'])->sum('passenger_count'),
-            'total_buses_requested' => $this->model->whereIn('status', ['confirmed', 'ongoing', 'completed'])->sum('bus_count_requested'),
+            'total_passengers'     => (int) ($activeStats->total_passengers  ?? 0),
+            'total_buses_requested'=> (int) ($activeStats->total_buses       ?? 0),
         ];
     }
 
@@ -123,15 +134,18 @@ class BookingRepository extends BaseRepository
             ->groupBy('status')
             ->get();
 
+        // Clone before the final aggregation to avoid executing on an already-consumed builder
+        $summaryQuery = clone $baseQuery;
+
         return [
             'summary' => [
-                'total_bookings' => $baseQuery->count(),
-                'total_passengers' => $baseQuery->sum('passenger_count'),
-                'avg_passengers' => round($baseQuery->avg('passenger_count'), 1),
+                'total_bookings'   => $summaryQuery->count(),
+                'total_passengers' => $summaryQuery->sum('passenger_count'),
+                'avg_passengers'   => round($summaryQuery->avg('passenger_count'), 1),
             ],
-            'monthly_chart' => $monthlyStats,
+            'monthly_chart'  => $monthlyStats,
             'activity_chart' => $activityStats,
-            'status_chart' => $statusStats,
+            'status_chart'   => $statusStats,
         ];
     }
 

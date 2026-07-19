@@ -98,10 +98,13 @@ class BookingReportController extends BaseController
             $request->scope
         );
 
+        $profile = \App\Models\CompanyProfile::first();
+
         $pdf = Pdf::loadView('reports.booking-pdf', [
-            'items' => $report['items'],
+            'items'      => $report['items'],
             'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
+            'end_date'   => $request->end_date,
+            'profile'    => $profile,
         ]);
 
         return $pdf->download('laporan-booking-'.now()->format('Y-m-d').'.pdf');

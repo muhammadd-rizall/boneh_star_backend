@@ -17,7 +17,7 @@ class CompanyProfileResource extends JsonResource
             'social_media' => $this->social_media,
             'email' => $this->email,
             'description' => $this->description,
-            'logo' => $this->logo ? asset('storage/'.$this->logo) : null,
+            'logo' => $this->logo ? (strpos($this->logo, 'http') === 0 ? $this->logo : asset('storage/'.$this->logo)) : null,
             'updated_at' => $this->updated_at,
         ];
     }

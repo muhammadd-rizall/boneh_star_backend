@@ -52,6 +52,7 @@ Route::prefix('public')->name('public.')->group(function () {
     Route::get('/route-types', [PublicController::class, 'routeTypes'])->name('route-types');
     Route::get('/bus-categories', [PublicController::class, 'busCategories'])->name('bus-categories');
     Route::get('/galleries', [PublicGalleryController::class, 'index'])->name('galleries.index');
+
 });
 
 // Auth Public routes

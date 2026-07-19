@@ -96,10 +96,11 @@ class HistoryController extends BaseController
         }
 
         $data = [
-            'booking' => $booking,
-            'transaction' => $booking->transaction,
-            'customer' => $booking->customer,
+            'booking'         => $booking,
+            'transaction'     => $booking->transaction,
+            'customer'        => $booking->customer,
             'payment_methods' => $this->paymentMethodService->getActivePaymentMethods(),
+            'profile'         => \App\Models\CompanyProfile::first(),
         ];
 
         $pdf = Pdf::loadView('pdf.invoice', $data);
