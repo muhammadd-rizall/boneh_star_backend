@@ -20,7 +20,7 @@ class CheckPermission
         if (! $user) {
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthorized',
+                'message' => 'Sesi Anda tidak valid atau telah berakhir.',
             ], 401);
         }
 
@@ -38,7 +38,7 @@ class CheckPermission
         if (! $hasPermission) {
             return response()->json([
                 'success' => false,
-                'message' => 'You do not have permission to access this resource.',
+                'message' => 'Anda tidak memiliki hak akses (izin khusus) untuk mengakses layanan ini.',
             ], 403);
         }
 

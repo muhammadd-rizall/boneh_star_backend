@@ -152,7 +152,7 @@ class BookingRepository extends BaseRepository
     public function getCustomerBookings(string $customerId, int $perPage = 10)
     {
         return $this->model->where('customer_id', $customerId)
-            ->with(['activity', 'routeType'])
+            ->with(['activity', 'routeType', 'transaction', 'quotation'])
             ->latest()
             ->paginate($perPage);
     }

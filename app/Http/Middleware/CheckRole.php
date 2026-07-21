@@ -22,7 +22,7 @@ class CheckRole
         if (!$user) {
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthorized',
+                'message' => 'Sesi Anda tidak valid atau telah berakhir.',
             ], 401);
         }
 
@@ -39,7 +39,7 @@ class CheckRole
         if (!$hasAnyRole) {
             return response()->json([
                 'success' => false,
-                'message' => 'You do not have permission to access this resource.',
+                'message' => 'Anda tidak memiliki hak akses (peran) untuk mengakses layanan ini.',
                 'required_roles' => $roles,
                 'your_roles' => $user->roles->pluck('slug'),
             ], 403);

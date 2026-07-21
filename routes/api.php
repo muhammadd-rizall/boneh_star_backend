@@ -95,6 +95,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/{id}', [BookingController::class, 'show'])->name('show');
             Route::post('/{id}/upload-payment', [BookingController::class, 'uploadPayment'])->name('upload-payment');
             Route::post('/{id}/cancel', [BookingController::class, 'cancel'])->name('cancel');
+            Route::post('/{id}/complete', [BookingController::class, 'complete'])->name('complete');
         });
 
         // Quotation routes

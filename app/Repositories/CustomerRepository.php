@@ -13,7 +13,8 @@ class CustomerRepository extends BaseRepository
 
     public function getAllCustomers()
     {
-        return $this->model->all();
+        // Hanya ambil field yang diperlukan untuk dropdown/select, bukan semua kolom
+        return $this->model->select('id', 'name', 'email', 'phone')->orderBy('name')->get();
     }
 
     // ==================================================
@@ -44,16 +45,27 @@ class CustomerRepository extends BaseRepository
     // statistif for admin view
     public function getStatistics(): array
     {
+        // Satu query aggregate untuk semua card statistics
+        $agg = $this->model->selectRaw("
+            count(*) as total,
+            sum(CASE WHEN is_active = true  THEN 1 ELSE 0 END) as active,
+            sum(CASE WHEN is_active = false THEN 1 ELSE 0 END) as inactive,
+            sum(CASE WHEN created_at >= ? THEN 1 ELSE 0 END) as new_members
+        ", [now()->subDays(30)])->first();
+
+        // Query terpisah untuk loyal customers (perlu subquery has())
+        $loyalCount = $this->model->has('bookings', '>=', 3)->count();
+
         return [
             'cards' => [
-                'total' => $this->model->count(),
-                'active' => $this->model->where('is_active', true)->count(),
-                'new_members' => $this->model->where('created_at', '>=', now()->subDays(30))->count(),
-                'loyal_customers' => $this->model->has('bookings', '>=', 3)->count(),
+                'total'            => (int) ($agg->total       ?? 0),
+                'active'           => (int) ($agg->active      ?? 0),
+                'new_members'      => (int) ($agg->new_members ?? 0),
+                'loyal_customers'  => $loyalCount,
             ],
             'account_status' => [
-                'active' => $this->model->where('is_active', true)->count(),
-                'inactive' => $this->model->where('is_active', false)->count(),
+                'active'   => (int) ($agg->active   ?? 0),
+                'inactive' => (int) ($agg->inactive ?? 0),
             ],
         ];
     }
@@ -65,15 +77,22 @@ class CustomerRepository extends BaseRepository
     // statistic for customer view
     public function getCustomerBookingStatistics(string $customerId): array
     {
+        // Satu query GROUP BY menggantikan 5 query count terpisah
         $customer = $this->model->findOrFail($customerId);
-        $bookings = $customer->bookings();
+
+        $stats = $customer->bookings()
+            ->selectRaw("status, count(*) as count")
+            ->groupBy('status')
+            ->pluck('count', 'status');
+
+        $total = $stats->sum();
 
         return [
-            'total_bookings' => $bookings->count(),
-            'pending' => $bookings->where('status', 'pending')->count(),
-            'confirmed' => $bookings->where('status', 'confirmed')->count(),
-            'completed' => $bookings->where('status', 'completed')->count(),
-            'cancelled' => $bookings->where('status', 'cancelled')->count(),
+            'total_bookings' => $total,
+            'pending'        => (int) ($stats['pending']   ?? 0),
+            'confirmed'      => (int) ($stats['confirmed'] ?? 0),
+            'completed'      => (int) ($stats['completed'] ?? 0),
+            'cancelled'      => (int) ($stats['cancelled'] ?? 0),
         ];
     }
 }

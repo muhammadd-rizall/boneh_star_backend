@@ -37,17 +37,17 @@ class StoreQuotationRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'booking_id.required' => 'Booking is required',
-            'booking_id.exists' => 'Selected booking does not exist',
-            'user_id.required' => 'User is required',
-            'user_id.exists' => 'Selected user does not exist',
-            'proposed_price.required' => 'Proposed price is required',
-            'dp_amount.required' => 'DP amount is required',
-            'note_to_customer.required' => 'Note to customer is required',
-            'status.required' => 'Status is required',
-            'status.in' => 'Invalid status selected',
-            'valid_until.required' => 'Validity date is required',
-            'valid_until.after' => 'Validity date must be in the future',
+            'booking_id.required' => 'Pemesanan wajib dipilih.',
+            'booking_id.exists' => 'Pemesanan yang dipilih tidak terdaftar.',
+            'user_id.required' => 'Pengguna wajib dipilih.',
+            'user_id.exists' => 'Pengguna yang dipilih tidak terdaftar.',
+            'proposed_price.required' => 'Harga penawaran wajib diisi.',
+            'dp_amount.required' => 'Jumlah uang muka wajib diisi.',
+            'note_to_customer.required' => 'Catatan untuk pelanggan wajib diisi.',
+            'status.required' => 'Status wajib diisi.',
+            'status.in' => 'Status yang dipilih tidak valid.',
+            'valid_until.required' => 'Tanggal berlaku wajib diisi.',
+            'valid_until.after' => 'Tanggal berlaku harus di masa depan.',
         ];
     }
 }

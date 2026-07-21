@@ -19,7 +19,7 @@ class AdminMiddleware
         if (! ($request->user() instanceof User)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthorized. Admin access required.',
+                'message' => 'Akses ditolak. Layanan ini memerlukan hak akses administrator.',
             ], 403);
         }
 

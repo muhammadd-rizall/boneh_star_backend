@@ -37,7 +37,8 @@ class UpdateBookingRequest extends FormRequest
      */
     public function rules(): array
     {
-        $id = $this->route() ? reset($this->route()->parameters()) : null;
+        $params = $this->route() ? $this->route()->parameters() : [];
+        $id = !empty($params) ? reset($params) : null;
         $id = is_object($id) ? $id->getKey() : $id;
 
         $uniqueRule = \Illuminate\Validation\Rule::unique('bookings', 'booking_code');
@@ -72,36 +73,36 @@ class UpdateBookingRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'customer_id.required' => 'Customer is required',
-            'customer_id.uuid' => 'Customer ID must be a valid UUID',
-            'customer_id.exists' => 'Customer does not exist',
-            'activity_id.required' => 'Activity type is required',
-            'activity_id.uuid' => 'Activity ID must be a valid UUID',
-            'activity_id.exists' => 'Activity type does not exist',
-            'route_type_id.required' => 'Route type is required',
-            'route_type_id.uuid' => 'Route type ID must be a valid UUID',
-            'route_type_id.exists' => 'Route type does not exist',
-            'booking_code.required' => 'Booking code is required',
-            'booking_code.unique' => 'Booking code has already been taken',
-            'departure_date.required' => 'Departure date is required',
-            'departure_date.date' => 'Departure date must be a valid date',
-            'return_date.date' => 'Return date must be a valid date',
-            'return_date.after_or_equal' => 'Return date must be after or equal to departure date',
-            'origin.required' => 'Origin is required',
-            'passenger_count.required' => 'Passenger count is required',
-            'passenger_count.integer' => 'Passenger count must be an integer',
-            'passenger_count.min' => 'Passenger count must be at least 1',
-            'bus_count_requested.required' => 'Bus count requested is required',
-            'bus_count_requested.integer' => 'Bus count requested must be an integer',
-            'bus_count_requested.min' => 'Bus count requested must be at least 1',
-            'status.required' => 'Status is required',
-            'status.in' => 'Invalid status selected',
-            'cancelled_by.in' => 'Invalid cancelled by selected',
-            'buses.*.bus_id.required' => 'Bus is required for assignment',
-            'buses.*.bus_id.exists' => 'Selected bus does not exist',
-            'buses.*.driver_id.required' => 'Driver is required for assignment',
-            'buses.*.driver_id.exists' => 'Selected driver does not exist',
-            'buses.*.seat_count.required' => 'Seat count is required for assignment',
+            'customer_id.required' => 'Pelanggan wajib dipilih.',
+            'customer_id.uuid' => 'ID Pelanggan harus berupa UUID yang valid.',
+            'customer_id.exists' => 'Pelanggan yang dipilih tidak terdaftar.',
+            'activity_id.required' => 'Jenis aktivitas wajib dipilih.',
+            'activity_id.uuid' => 'ID Aktivitas harus berupa UUID yang valid.',
+            'activity_id.exists' => 'Jenis aktivitas tidak terdaftar.',
+            'route_type_id.required' => 'Jenis rute wajib dipilih.',
+            'route_type_id.uuid' => 'ID Jenis rute harus berupa UUID yang valid.',
+            'route_type_id.exists' => 'Jenis rute tidak terdaftar.',
+            'booking_code.required' => 'Kode booking wajib diisi.',
+            'booking_code.unique' => 'Kode booking sudah digunakan.',
+            'departure_date.required' => 'Tanggal keberangkatan wajib diisi.',
+            'departure_date.date' => 'Tanggal keberangkatan harus berupa tanggal yang valid.',
+            'return_date.date' => 'Tanggal kepulangan harus berupa tanggal yang valid.',
+            'return_date.after_or_equal' => 'Tanggal kepulangan harus setelah atau sama dengan tanggal keberangkatan.',
+            'origin.required' => 'Asal keberangkatan wajib diisi.',
+            'passenger_count.required' => 'Jumlah penumpang wajib diisi.',
+            'passenger_count.integer' => 'Jumlah penumpang harus berupa angka.',
+            'passenger_count.min' => 'Jumlah penumpang minimal 1 orang.',
+            'bus_count_requested.required' => 'Jumlah bus wajib diisi.',
+            'bus_count_requested.integer' => 'Jumlah bus harus berupa angka.',
+            'bus_count_requested.min' => 'Jumlah bus minimal 1 unit.',
+            'status.required' => 'Status wajib diisi.',
+            'status.in' => 'Status yang dipilih tidak valid.',
+            'cancelled_by.in' => 'Pembatal oleh tidak valid.',
+            'buses.*.bus_id.required' => 'Bus wajib dipilih untuk alokasi.',
+            'buses.*.bus_id.exists' => 'Bus yang dipilih tidak ditemukan.',
+            'buses.*.driver_id.required' => 'Supir wajib dipilih untuk alokasi.',
+            'buses.*.driver_id.exists' => 'Supir yang dipilih tidak ditemukan.',
+            'buses.*.seat_count.required' => 'Jumlah kursi wajib diisi.',
         ];
     }
 }

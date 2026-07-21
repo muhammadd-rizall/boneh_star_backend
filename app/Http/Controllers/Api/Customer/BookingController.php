@@ -134,4 +134,33 @@ class BookingController extends BaseController
 
         return $this->sendResponse(null, 'Booking cancelled successfully');
     }
+
+    /**
+     * Selesaikan pemesanan perjalanan.
+     */
+    public function complete(string $id): JsonResponse
+    {
+        $customerId = auth()->id();
+        $booking = $this->bookingService->getCustomerBookingById($customerId, $id);
+
+        if (! in_array($booking->status, ['confirmed', 'ongoing'])) {
+            return $this->sendError('Pemesanan tidak dapat diselesaikan pada status saat ini.', [], 400);
+        }
+
+        $today = now()->startOfDay();
+        $returnDate = $booking->return_date->startOfDay();
+        if ($today->lt($returnDate)) {
+            return $this->sendError('Perjalanan belum berakhir. Anda baru dapat menyelesaikan pemesanan pada tanggal kepulangan.', [], 400);
+        }
+
+        if (! $booking->transaction || $booking->transaction->status !== 'fully_paid') {
+            return $this->sendError('Pembayaran belum lunas. Silakan lakukan pelunasan pembayaran terlebih dahulu.', [], 400);
+        }
+
+        $this->bookingService->updateBooking($id, [
+            'status' => 'completed',
+        ]);
+
+        return $this->sendResponse(null, 'Pemesanan perjalanan berhasil diselesaikan.');
+    }
 }

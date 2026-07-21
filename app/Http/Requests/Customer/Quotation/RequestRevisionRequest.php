@@ -17,4 +17,12 @@ class RequestRevisionRequest extends FormRequest
             'revision_note' => ['required', 'string', 'min:3'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'revision_note.required' => 'Catatan revisi/negosiasi wajib diisi.',
+            'revision_note.min' => 'Catatan revisi/negosiasi minimal terdiri dari 3 karakter.',
+        ];
+    }
 }
