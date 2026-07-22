@@ -31,11 +31,17 @@ class IncomeReportController extends BaseController
         $request->validate([
             'month' => 'nullable|integer|between:1,12',
             'year' => 'nullable|integer|min:2020',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
+            'status' => 'nullable|string|in:fully_paid,dp,unpaid',
         ]);
 
         $report = $this->reportService->generateReport(
             $request->month,
-            $request->year
+            $request->year,
+            $request->start_date,
+            $request->end_date,
+            $request->status
         );
 
         return response()->json([
@@ -57,11 +63,17 @@ class IncomeReportController extends BaseController
         $request->validate([
             'month' => 'nullable|integer|between:1,12',
             'year' => 'nullable|integer|min:2020',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
+            'status' => 'nullable|string|in:fully_paid,dp,unpaid',
         ]);
 
         $report = $this->reportService->generateReport(
             $request->month,
-            $request->year
+            $request->year,
+            $request->start_date,
+            $request->end_date,
+            $request->status
         );
 
         return Excel::download(new IncomeExport($report['items']), 'laporan-pendapatan-'.now()->format('Y-m-d').'.xlsx');
@@ -77,20 +89,28 @@ class IncomeReportController extends BaseController
         $request->validate([
             'month' => 'nullable|integer|between:1,12',
             'year' => 'nullable|integer|min:2020',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
+            'status' => 'nullable|string|in:fully_paid,dp,unpaid',
         ]);
 
         $report = $this->reportService->generateReport(
             $request->month,
-            $request->year
+            $request->year,
+            $request->start_date,
+            $request->end_date,
+            $request->status
         );
 
         $profile = \App\Models\CompanyProfile::first();
 
         $pdf = Pdf::loadView('reports.income-pdf', [
-            'items'   => $report['items'],
-            'month'   => $request->month,
-            'year'    => $request->year ?? date('Y'),
-            'profile' => $profile,
+            'items'      => $report['items'],
+            'month'      => $request->month,
+            'year'       => $request->year ?? date('Y'),
+            'start_date' => $request->start_date,
+            'end_date'   => $request->end_date,
+            'profile'    => $profile,
         ]);
 
         return $pdf->download('laporan-pendapatan-'.now()->format('Y-m-d').'.pdf');

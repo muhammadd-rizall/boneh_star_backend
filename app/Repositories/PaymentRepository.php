@@ -68,53 +68,96 @@ class PaymentRepository extends BaseRepository
         ];
     }
 
-    /**
-     * Get income report data.
-     */
-    public function getIncomeReportData(?int $month = null, ?int $year = null)
-    {
+    public function getIncomeReportData(
+        ?int $month = null,
+        ?int $year = null,
+        ?string $startDate = null,
+        ?string $endDate = null,
+        ?string $status = null
+    ) {
         $query = $this->model->query()
             ->with(['transaction.booking.customer', 'paymentMethod'])
             ->where('status', 'verified');
 
-        if ($month) {
-            $query->whereMonth('payment_date', $month);
+        if ($status === 'fully_paid') {
+            $query->where('payment_type', 'settlement');
+        } elseif ($status === 'dp') {
+            $query->where('payment_type', 'dp');
+        } elseif ($status === 'unpaid') {
+            $query->whereRaw('1 = 0');
         }
 
-        if ($year) {
-            $query->whereYear('payment_date', $year);
+        if ($startDate) {
+            $query->whereDate('payment_date', '>=', $startDate);
+        }
+
+        if ($endDate) {
+            $query->whereDate('payment_date', '<=', $endDate);
+        }
+
+        if (!$startDate && !$endDate) {
+            if ($month) {
+                $query->whereMonth('payment_date', $month);
+            }
+
+            if ($year) {
+                $query->whereYear('payment_date', $year);
+            }
         }
 
         return $query->orderBy('payment_date', 'desc')->get();
     }
 
-    /**
-     * Get monthly income statistics.
-     */
-    public function getIncomeStatistics(?int $year = null)
-    {
-        $year = $year ?? date('Y');
+    public function getIncomeStatistics(
+        ?int $year = null,
+        ?string $startDate = null,
+        ?string $endDate = null,
+        ?string $status = null
+    ) {
+        if ($startDate) {
+            $year = (int) date('Y', strtotime($startDate));
+        } else {
+            $year = $year ?? (int) date('Y');
+        }
 
         $monthExpression = DB::connection()->getDriverName() === 'sqlite'
             ? "strftime('%Y-%m', payment_date) as month"
             : "to_char(payment_date, 'YYYY-MM') as month";
 
         // Monthly income breakdown
-        $monthlyIncome = $this->model->query()
+        $monthlyIncomeQuery = $this->model->query()
             ->select(
                 DB::raw($monthExpression),
                 DB::raw('SUM(amount) as total_masuk'),
                 DB::raw("SUM(CASE WHEN payment_type = 'dp' THEN amount ELSE 0 END) as total_dp"),
                 DB::raw("SUM(CASE WHEN payment_type = 'settlement' THEN amount ELSE 0 END) as total_pelunasan")
             )
-            ->where('status', 'verified')
-            ->whereYear('payment_date', $year)
-            ->groupBy('month')
+            ->where('status', 'verified');
+
+        if ($status === 'fully_paid') {
+            $monthlyIncomeQuery->where('payment_type', 'settlement');
+        } elseif ($status === 'dp') {
+            $monthlyIncomeQuery->where('payment_type', 'dp');
+        } elseif ($status === 'unpaid') {
+            $monthlyIncomeQuery->whereRaw('1 = 0');
+        }
+
+        if ($startDate) {
+            $monthlyIncomeQuery->whereDate('payment_date', '>=', $startDate);
+        }
+        if ($endDate) {
+            $monthlyIncomeQuery->whereDate('payment_date', '<=', $endDate);
+        }
+        if (!$startDate && !$endDate) {
+            $monthlyIncomeQuery->whereYear('payment_date', $year);
+        }
+
+        $monthlyIncome = $monthlyIncomeQuery->groupBy('month')
             ->orderBy('month', 'asc')
             ->get();
 
         // Outstanding (unpaid transactions)
-        $outstanding = DB::table('transactions as t')
+        $outstandingQuery = DB::table('transactions as t')
             ->join('bookings as b', 'b.id', '=', 't.booking_id')
             ->join('customers as c', 'c.id', '=', 'b.customer_id')
             ->select(
@@ -125,15 +168,52 @@ class PaymentRepository extends BaseRepository
             )
             ->where('t.remaining_amount', '>', 0)
             ->whereNull('t.deleted_at')
-            ->whereNotIn('b.status', ['cancelled'])
-            ->orderBy('b.departure_date', 'asc')
-            ->get();
+            ->whereNotIn('b.status', ['cancelled']);
+
+        if ($status === 'fully_paid' || $status === 'dp') {
+            $outstandingQuery->whereRaw('1 = 0');
+        }
+
+        if ($startDate) {
+            $outstandingQuery->whereDate('b.departure_date', '>=', $startDate);
+        }
+        if ($endDate) {
+            $outstandingQuery->whereDate('b.departure_date', '<=', $endDate);
+        }
+        if (!$startDate && !$endDate) {
+            if ($year) {
+                $outstandingQuery->whereYear('b.departure_date', $year);
+            }
+        }
+
+        $outstanding = $outstandingQuery->orderBy('b.departure_date', 'asc')->get();
+
+        // Calculate verified income sum based on active filters
+        $totalIncomeQuery = $this->model->where('status', 'verified');
+        
+        if ($status === 'fully_paid') {
+            $totalIncomeQuery->where('payment_type', 'settlement');
+        } elseif ($status === 'dp') {
+            $totalIncomeQuery->where('payment_type', 'dp');
+        } elseif ($status === 'unpaid') {
+            $totalIncomeQuery->whereRaw('1 = 0');
+        }
+
+        if ($startDate) {
+            $totalIncomeQuery->whereDate('payment_date', '>=', $startDate);
+        }
+        if ($endDate) {
+            $totalIncomeQuery->whereDate('payment_date', '<=', $endDate);
+        }
+        if (!$startDate && !$endDate && $year) {
+            $totalIncomeQuery->whereYear('payment_date', $year);
+        }
 
         return [
             'monthly_chart' => $monthlyIncome,
             'outstanding_list' => $outstanding,
             'summary' => [
-                'total_verified_income' => (float) $this->model->where('status', 'verified')->sum('amount'),
+                'total_verified_income' => (float) $totalIncomeQuery->sum('amount'),
                 'total_outstanding' => (float) $outstanding->sum('remaining_amount'),
             ],
         ];

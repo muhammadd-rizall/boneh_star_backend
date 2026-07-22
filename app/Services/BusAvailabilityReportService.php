@@ -42,6 +42,9 @@ class BusAvailabilityReportService
                 'name' => $bus->name,
                 'plat_number' => $bus->plat_number,
                 'status' => $bus->status,
+                'category_name' => $bus->category ? $bus->category->name : null,
+                'seat_count' => $bus->seat_count,
+                'primary_image' => $bus->images->where('is_primary', true)->first()?->image_path ?? ($bus->images->first()?->image_path ?? null),
                 'schedules' => $schedules,
             ];
         });

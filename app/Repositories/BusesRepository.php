@@ -58,7 +58,7 @@ class BusesRepository extends BaseRepository
     {
         return $this->model->query()
             ->where('status', '!=', 'inactive')
-            ->with(['bookingBuses.booking' => function ($query) use ($startDate, $endDate) {
+            ->with(['category', 'images', 'bookingBuses.booking' => function ($query) use ($startDate, $endDate) {
                 $query->where('status', '!=', 'cancelled')
                     ->where(function ($q) use ($startDate, $endDate) {
                         $q->where('departure_date', '<=', $endDate.' 23:59:59')

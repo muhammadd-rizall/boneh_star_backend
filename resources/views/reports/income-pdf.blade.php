@@ -144,10 +144,14 @@
         <h2 class="report-title">LAPORAN PENDAPATAN</h2>
         <p class="report-period">Periode: 
             <strong>
-                @if($month)
-                    {{ \Carbon\Carbon::create()->month((int)$month)->translatedFormat('F') }}
+                @if(isset($start_date) && isset($end_date))
+                    {{ \Carbon\Carbon::parse($start_date)->translatedFormat('d F Y') }} s/d {{ \Carbon\Carbon::parse($end_date)->translatedFormat('d F Y') }}
+                @else
+                    @if($month)
+                        {{ \Carbon\Carbon::create()->month((int)$month)->translatedFormat('F') }}
+                    @endif
+                    {{ $year }}
                 @endif
-                {{ $year }}
             </strong>
         </p>
     </div>
