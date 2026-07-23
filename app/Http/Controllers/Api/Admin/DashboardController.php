@@ -12,6 +12,8 @@ class DashboardController extends BaseController
 
     public function index(): JsonResponse
     {
+        $this->authorize('viewAny', \App\Models\Booking::class);
+
         $data = $this->dashboardService->getDashboardData();
 
         return $this->sendResponse($data, 'Dashboard data retrieved successfully');

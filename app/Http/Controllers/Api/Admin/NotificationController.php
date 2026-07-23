@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Api\BaseController;
 use App\Http\Resources\NotificationResource;
+use App\Models\Notification;
 use App\Services\NotificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,6 +23,7 @@ class NotificationController extends BaseController
      */
     public function index(Request $request): JsonResponse
     {
+        $this->authorize('viewAny', Notification::class);
 
         $notifications = $this->notificationService->getMyNotifications('admin', auth()->id());
         $unreadCount = $this->notificationService->getMyUnreadCount('admin', auth()->id());
@@ -39,10 +41,13 @@ class NotificationController extends BaseController
      */
     public function markAsRead(string $id): JsonResponse
     {
-        $notification = $this->notificationService->markAsRead($id, 'admin', auth()->id());
+        $notification = Notification::findOrFail($id);
+        $this->authorize('view', $notification);
+
+        $updated = $this->notificationService->markAsRead($id, 'admin', auth()->id());
 
         return $this->sendResponse(
-            new NotificationResource($notification),
+            new NotificationResource($updated),
             'Notification marked as read'
         );
     }
@@ -52,6 +57,8 @@ class NotificationController extends BaseController
      */
     public function markAllAsRead(): JsonResponse
     {
+        $this->authorize('viewAny', Notification::class);
+
         $this->notificationService->markAllAsRead('admin', auth()->id());
 
         return $this->sendResponse(null, 'All notifications marked as read');
@@ -62,6 +69,9 @@ class NotificationController extends BaseController
      */
     public function destroy(string $id): JsonResponse
     {
+        $notification = Notification::findOrFail($id);
+        $this->authorize('delete', $notification);
+
         $this->notificationService->deleteNotification($id, 'admin', auth()->id());
 
         return $this->sendResponse(null, 'Notification deleted successfully');

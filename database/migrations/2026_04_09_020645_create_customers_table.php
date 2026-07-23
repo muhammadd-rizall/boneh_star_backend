@@ -15,8 +15,9 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('google_id')->nullable()->index();
             $table->string('phone')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->string('profile_picture')->nullable();
             $table->text('address')->nullable();
             $table->boolean('is_active')->default(true);

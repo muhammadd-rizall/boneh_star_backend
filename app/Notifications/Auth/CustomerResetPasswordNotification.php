@@ -33,17 +33,14 @@ class CustomerResetPasswordNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $url = config('app.frontend_url') . '/auth/reset-password?token=' . $this->token . '&email=' . $notifiable->getEmailForPasswordReset();
+        $resetUrl = config('app.frontend_url') . '/auth/reset-password?token=' . $this->token . '&email=' . urlencode($notifiable->getEmailForPasswordReset());
 
         return (new MailMessage)
             ->subject('Atur Ulang Kata Sandi - Boneh Star')
-            ->greeting('Halo, ' . $notifiable->name . '!')
-            ->line('Kami menerima permintaan untuk mengatur ulang kata sandi akun Boneh Star Anda.')
-            ->line('Silakan klik tombol di bawah ini untuk melanjutkan proses pengaturan ulang kata sandi.')
-            ->action('Atur Ulang Password', $url)
-            ->line('Tautan ini akan kedaluwarsa dalam 60 menit.')
-            ->line('Jika Anda tidak merasa melakukan permintaan ini, abaikan email ini.')
-            ->salutation('Salam hangat,' . "\n" . 'Team Boneh Star');
+            ->view('emails.reset-password', [
+                'name' => $notifiable->name ?? 'customer',
+                'resetUrl' => $resetUrl,
+            ]);
     }
 
     /**

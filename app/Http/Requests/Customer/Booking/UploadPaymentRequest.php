@@ -27,6 +27,36 @@ class UploadPaymentRequest extends FormRequest
         ];
     }
 
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            $bookingId = $this->route('id');
+            if (! $bookingId) {
+                return;
+            }
+
+            $booking = \App\Models\Booking::with('transaction')->find($bookingId);
+            if (! $booking || ! $booking->transaction) {
+                return;
+            }
+
+            $transaction = $booking->transaction;
+            $amount = (float) $this->input('amount');
+
+            if ($transaction->remaining_amount <= 0 || $transaction->status === 'fully_paid') {
+                $validator->errors()->add('amount', 'Tagihan untuk pemesanan ini sudah lunas.');
+                return;
+            }
+
+            if ($amount > (float) $transaction->remaining_amount) {
+                $validator->errors()->add(
+                    'amount',
+                    'Jumlah pembayaran (Rp ' . number_format($amount, 0, ',', '.') . ') melebihi sisa tagihan (Rp ' . number_format($transaction->remaining_amount, 0, ',', '.') . ').'
+                );
+            }
+        });
+    }
+
     public function messages(): array
     {
         return [

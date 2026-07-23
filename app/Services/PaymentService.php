@@ -78,27 +78,29 @@ class PaymentService
     {
         return DB::transaction(function () use ($id, $data) {
             $payment = $this->paymentRepository->find($id, ['transaction.booking']);
+            $previousStatus = $payment->status;
+            $newStatus = $data['status'];
 
             $updateData = [
-                'status' => $data['status'],
+                'status' => $newStatus,
                 'verified_by' => auth()->id(),
                 'verified_at' => now(),
             ];
 
-            if ($data['status'] === 'rejected') {
+            if ($newStatus === 'rejected') {
                 $updateData['rejection_reason'] = $data['rejection_reason'] ?? null;
             }
 
             $payment = $this->paymentRepository->update($id, $updateData);
 
-            if ($data['status'] === 'verified') {
+            if ($newStatus === 'verified' && $previousStatus !== 'verified') {
                 $transaction = $payment->transaction;
 
                 if ($payment->payment_type === 'dp') {
                     $transaction->dp_paid += $payment->amount;
                 }
 
-                $transaction->remaining_amount -= $payment->amount;
+                $transaction->remaining_amount = max(0, $transaction->remaining_amount - $payment->amount);
 
                 // Update transaction status
                 if ($transaction->remaining_amount <= 0) {
@@ -117,6 +119,24 @@ class PaymentService
                         $booking->save();
                     }
                 }
+            } elseif ($newStatus === 'rejected' && $previousStatus === 'verified') {
+                $transaction = $payment->transaction;
+
+                if ($payment->payment_type === 'dp') {
+                    $transaction->dp_paid = max(0, $transaction->dp_paid - $payment->amount);
+                }
+
+                $transaction->remaining_amount = min($transaction->total_amount, $transaction->remaining_amount + $payment->amount);
+
+                if ($transaction->remaining_amount >= $transaction->total_amount) {
+                    $transaction->status = 'waiting';
+                } elseif ($transaction->dp_paid > 0) {
+                    $transaction->status = 'dp_paid';
+                } else {
+                    $transaction->status = 'waiting';
+                }
+
+                $transaction->save();
             }
 
             // Notify Customer

@@ -87,6 +87,14 @@ class BookingController extends BaseController
             return $this->sendError('No active transaction found for this booking. Accept quotation first.', [], 400);
         }
 
+        if ($booking->transaction->remaining_amount <= 0 || $booking->transaction->status === 'fully_paid') {
+            return $this->sendError('Tagihan untuk pemesanan ini sudah lunas.', [], 400);
+        }
+
+        if ((float) $request->amount > (float) $booking->transaction->remaining_amount) {
+            return $this->sendError('Nominal pembayaran melebihi sisa tagihan.', [], 422);
+        }
+
         $data = $request->validated();
         $data['transaction_id'] = $booking->transaction->id;
         $data['status'] = 'pending';

@@ -16,10 +16,26 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! ($request->user() instanceof User)) {
+        $user = $request->user();
+
+        if (! ($user instanceof User)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Akses ditolak. Layanan ini memerlukan hak akses administrator.',
+            ], 403);
+        }
+
+        if (! $user->is_active) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Akses ditolak. Akun Anda tidak aktif.',
+            ], 403);
+        }
+
+        if (! $user->roles()->where('is_active', true)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Akses ditolak. Anda tidak memiliki peran (role) administrator atau staf yang aktif.',
             ], 403);
         }
 

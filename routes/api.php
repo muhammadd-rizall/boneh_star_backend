@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Auth\Admin\LoginController as AdminLoginController;
 use App\Http\Controllers\Api\Auth\Admin\LogoutController as AdminLogoutController;
 use App\Http\Controllers\Api\Auth\Public\ForgotPasswordController as PublicForgotPasswordController;
+use App\Http\Controllers\Api\Auth\Public\GoogleAuthController as PublicGoogleAuthController;
 use App\Http\Controllers\Api\Auth\Public\LoginController as PublicLoginController;
 use App\Http\Controllers\Api\Auth\Public\LogoutController as PublicLogoutController;
 use App\Http\Controllers\Api\Auth\Public\RegisterController as PublicRegisterController;
@@ -58,6 +59,7 @@ Route::prefix('public')->name('public.')->group(function () {
 // Auth Public routes
 Route::prefix('auth')->name('auth.')->group(function () {
     Route::post('/login', [PublicLoginController::class, 'login'])->name('login');
+    Route::post('/google', [PublicGoogleAuthController::class, 'googleLogin'])->name('google');
     Route::post('/register', [PublicRegisterController::class, 'register'])->name('register');
     Route::post('/forgot-password', [PublicForgotPasswordController::class, 'sendResetLinkEmail'])->name('forgot-password');
     Route::post('/reset-password', [PublicResetPasswordController::class, 'reset'])->name('reset-password');
