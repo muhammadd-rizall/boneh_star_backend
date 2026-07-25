@@ -26,7 +26,7 @@ class IncomeReportController extends BaseController
      */
     public function index(Request $request): JsonResponse
     {
-        $this->authorize('viewAny', Payment::class);
+        $this->authorize('reports.income');
 
         $request->validate([
             'month' => 'nullable|integer|between:1,12',
@@ -58,7 +58,7 @@ class IncomeReportController extends BaseController
      */
     public function exportExcel(Request $request)
     {
-        $this->authorize('viewAny', Payment::class);
+        $this->authorize('reports.income');
 
         $request->validate([
             'month' => 'nullable|integer|between:1,12',
@@ -84,7 +84,7 @@ class IncomeReportController extends BaseController
      */
     public function exportPdf(Request $request)
     {
-        $this->authorize('viewAny', Payment::class);
+        $this->authorize('reports.income');
 
         $request->validate([
             'month' => 'nullable|integer|between:1,12',

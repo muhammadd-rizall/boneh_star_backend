@@ -27,7 +27,7 @@ class BookingReportController extends BaseController
     public function index(Request $request): JsonResponse
     {
         // Use class string for authorization check
-        $this->authorize('viewAny', Booking::class);
+        $this->authorize('reports.bookings');
 
         $request->validate([
             'start_date' => 'required|date',
@@ -58,7 +58,7 @@ class BookingReportController extends BaseController
      */
     public function exportExcel(Request $request)
     {
-        $this->authorize('viewAny', Booking::class);
+        $this->authorize('reports.bookings');
 
         $request->validate([
             'start_date' => 'required|date',
@@ -82,7 +82,7 @@ class BookingReportController extends BaseController
      */
     public function exportPdf(Request $request)
     {
-        $this->authorize('viewAny', Booking::class);
+        $this->authorize('reports.bookings');
 
         $request->validate([
             'start_date' => 'required|date',

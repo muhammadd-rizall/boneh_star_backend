@@ -11,9 +11,9 @@ uses(RefreshDatabase::class);
 
 test('admin can download booking report as excel', function () {
     $user = User::factory()->create();
-    $permission = Permission::create(['name' => 'View Bookings', 'slug' => 'bookings.view', 'group' => 'bookings']);
+    $permission = Permission::create(['name' => 'View Bookings Report', 'slug' => 'reports.bookings', 'group' => 'reports']);
     $role = Role::create(['name' => 'Admin', 'slug' => 'admin']);
-    $role->permissions()->attach($permission);
+    $role->permissions()->attach([$permission->id]);
     $user->roles()->attach($role);
     $this->actingAs($user);
 
@@ -25,9 +25,9 @@ test('admin can download booking report as excel', function () {
 
 test('admin can download income report as pdf', function () {
     $user = User::factory()->create();
-    $permission = Permission::create(['name' => 'View Payments', 'slug' => 'payments.view', 'group' => 'payments']);
+    $permission = Permission::create(['name' => 'View Income Report', 'slug' => 'reports.income', 'group' => 'reports']);
     $role = Role::create(['name' => 'Admin', 'slug' => 'admin']);
-    $role->permissions()->attach($permission);
+    $role->permissions()->attach([$permission->id]);
     $user->roles()->attach($role);
     $this->actingAs($user);
 

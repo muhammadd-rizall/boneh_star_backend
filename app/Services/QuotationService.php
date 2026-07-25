@@ -89,6 +89,21 @@ class QuotationService
     public function updateQuotation(string $id, array $data)
     {
         return DB::transaction(function () use ($id, $data) {
+            $existing = $this->quotationRepository->find($id);
+
+            if ($existing->booking && $existing->booking->status === 'cancelled') {
+                throw new \Exception('Tidak dapat memperbarui penawaran untuk pemesanan yang telah dibatalkan.');
+            }
+
+            // Jika status penawaran sebelumnya 'revision' dan admin melakukan pembaruan,
+            // otomatis ubah status menjadi 'sent' jika tidak ditentukan status final lain (seperti rejected/expired)
+            // agar pelanggan dapat langsung menyetujui atau menawar kembali.
+            if ($existing->status === 'revision') {
+                if (!isset($data['status']) || $data['status'] === 'revision') {
+                    $data['status'] = 'sent';
+                }
+            }
+
             $quotation = $this->quotationRepository->update($id, $data);
             $booking = $quotation->booking;
 
@@ -113,6 +128,10 @@ class QuotationService
     {
         return DB::transaction(function () use ($id) {
             $quotation = $this->quotationRepository->find($id);
+
+            if ($quotation->booking->status === 'cancelled') {
+                throw new \Exception('Tidak dapat menyetujui penawaran untuk pemesanan yang telah dibatalkan.');
+            }
 
             $this->quotationRepository->update($id, ['status' => 'accepted']);
 
@@ -145,21 +164,27 @@ class QuotationService
      */
     public function requestRevision(string $id, string $note)
     {
-        $quotation = $this->quotationRepository->update($id, [
+        $quotation = $this->quotationRepository->find($id);
+
+        if ($quotation->booking->status === 'cancelled') {
+            throw new \Exception('Tidak dapat meminta revisi untuk pemesanan yang telah dibatalkan.');
+        }
+
+        $updatedQuotation = $this->quotationRepository->update($id, [
             'status' => 'revision',
             'revision_note' => $note,
         ]);
 
         // Notify Admin
-        $customerName = $quotation->booking->customer->name ?? 'Pelanggan';
+        $customerName = $updatedQuotation->booking->customer->name ?? 'Pelanggan';
         $this->notificationService->notifyAdmin(
             'Permintaan Revisi Penawaran',
             "Pelanggan {$customerName} meminta revisi pada penawaran harga.",
             'quotation',
-            $quotation
+            $updatedQuotation
         );
 
-        return $quotation;
+        return $updatedQuotation;
     }
 
     /**

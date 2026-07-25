@@ -22,6 +22,12 @@ class UpdateQuotationRequest extends FormRequest
      */
     public function rules(): array
     {
+        $booking = $this->booking_id ? \App\Models\Booking::find($this->booking_id) : null;
+        $validUntilRules = ['required', 'date'];
+        if ($booking && $booking->departure_date) {
+            $validUntilRules[] = 'before_or_equal:' . \Carbon\Carbon::parse($booking->departure_date)->format('Y-m-d');
+        }
+
         return [
             'booking_id' => ['required', 'uuid', 'exists:bookings,id'],
             'user_id' => ['required', 'uuid', 'exists:users,id'],
@@ -29,7 +35,7 @@ class UpdateQuotationRequest extends FormRequest
             'dp_amount' => ['required', 'numeric', 'min:0'],
             'note_to_customer' => ['required', 'string'],
             'status' => ['required', 'in:draft,sent,accepted,revision,expired,rejected'],
-            'valid_until' => ['required', 'date'],
+            'valid_until' => $validUntilRules,
             'revision_note' => ['nullable', 'string'],
         ];
     }
@@ -47,6 +53,7 @@ class UpdateQuotationRequest extends FormRequest
             'status.required' => 'Status wajib diisi.',
             'status.in' => 'Status yang dipilih tidak valid.',
             'valid_until.required' => 'Tanggal berlaku wajib diisi.',
+            'valid_until.before_or_equal' => 'Masa berlaku penawaran tidak boleh melebihi tanggal keberangkatan pesanan.',
         ];
     }
 }

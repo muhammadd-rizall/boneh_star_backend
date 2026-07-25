@@ -8,7 +8,7 @@ class UpdateGalleryRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can(config('galleries.update'));
     }
 
     public function rules(): array

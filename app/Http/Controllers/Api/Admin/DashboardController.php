@@ -12,7 +12,9 @@ class DashboardController extends BaseController
 
     public function index(): JsonResponse
     {
-        $this->authorize('viewAny', \App\Models\Booking::class);
+        if (! auth()->check() || ! auth()->user()->is_active) {
+            return $this->sendError('Unauthorized access.', [], 403);
+        }
 
         $data = $this->dashboardService->getDashboardData();
 

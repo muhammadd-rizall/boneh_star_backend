@@ -8,7 +8,7 @@ class StoreGalleryRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // Simplified for MVP
+        return $this->user()->can(config('galleries.create'));
     }
 
     public function rules(): array

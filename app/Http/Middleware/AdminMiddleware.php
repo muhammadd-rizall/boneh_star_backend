@@ -32,10 +32,15 @@ class AdminMiddleware
             ], 403);
         }
 
-        if (! $user->roles()->where('is_active', true)->exists()) {
+        $hasAccess = $user->roles()
+            ->where('is_active', true)
+            ->whereNotIn('slug', ['customer', 'driver'])
+            ->exists();
+
+        if (! $hasAccess) {
             return response()->json([
                 'success' => false,
-                'message' => 'Akses ditolak. Anda tidak memiliki peran (role) administrator atau staf yang aktif.',
+                'message' => 'Akses ditolak. Anda tidak memiliki izin untuk mengakses area ini.',
             ], 403);
         }
 

@@ -95,6 +95,13 @@ class BookingService
                 }
             }
 
+            // If booking is cancelled, reject any active quotation
+            if (isset($data['status']) && $data['status'] === 'cancelled') {
+                if ($booking->quotation && in_array($booking->quotation->status, ['draft', 'sent', 'revision'])) {
+                    $booking->quotation()->update(['status' => 'rejected']);
+                }
+            }
+
             // Notify Customer if status changed
             if (isset($data['status']) && $data['status'] !== $oldStatus) {
                 $booking->customer->notify(new BookingStatusUpdated($booking));

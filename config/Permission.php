@@ -178,4 +178,12 @@ return [
         'delete' => 'company_profile.delete',
     ],
 
+    // gallery permissions
+    'galleries' => [
+        'view' => 'galleries.view',
+        'create' => 'galleries.create',
+        'update' => 'galleries.update',
+        'delete' => 'galleries.delete',
+    ],
+
 ];

@@ -21,6 +21,20 @@ class RoleController extends BaseController
         $this->roleService = $roleService;
     }
 
+    /**
+     * Get list of active roles for form dropdowns (Lookup API).
+     */
+    public function activeList()
+    {
+        $roles = Role::where('is_active', true)->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => RoleResource::collection($roles),
+            'message' => 'Active roles list retrieved successfully',
+        ], 200);
+    }
+
     // / Display a listing of the resource.
     public function index()
     {

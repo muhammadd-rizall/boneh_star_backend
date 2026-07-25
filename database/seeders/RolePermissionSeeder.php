@@ -55,7 +55,8 @@ class RolePermissionSeeder extends Seeder
         );
 
         // Hanya beri akses VIEW
-        $viewPermissions = Permission::where('slug', 'like', '%.view')->pluck('id');
+        $viewPermissions = Permission::where('slug', 'like', '%.view')
+            ->pluck('id');
         $staffRole->permissions()->sync($viewPermissions);
 
         // 4. Create Default Admin User

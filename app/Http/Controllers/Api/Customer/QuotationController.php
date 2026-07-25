@@ -50,6 +50,10 @@ class QuotationController extends BaseController
             return $this->sendError('Unauthorized to accept this quotation', [], 403);
         }
 
+        if ($quotation->booking->status === 'cancelled') {
+            return $this->sendError('Tidak dapat menyetujui penawaran karena pemesanan telah dibatalkan.', [], 400);
+        }
+
         if ($quotation->status !== 'sent') {
             return $this->sendError('Quotation is not in a state that can be accepted', [], 400);
         }
@@ -72,6 +76,10 @@ class QuotationController extends BaseController
 
         if ($quotation->booking->customer_id !== $customerId) {
             return $this->sendError('Unauthorized to request revision for this quotation', [], 403);
+        }
+
+        if ($quotation->booking->status === 'cancelled') {
+            return $this->sendError('Tidak dapat meminta revisi karena pemesanan telah dibatalkan.', [], 400);
         }
 
         if (! in_array($quotation->status, ['sent', 'revision'])) {

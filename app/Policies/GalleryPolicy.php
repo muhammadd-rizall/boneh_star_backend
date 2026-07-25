@@ -13,7 +13,7 @@ class GalleryPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->hasPermissionTo(config('galleries.view'));
     }
 
     /**
@@ -21,7 +21,7 @@ class GalleryPolicy
      */
     public function view(User $user, Gallery $gallery): bool
     {
-        return false;
+        return $user->hasPermissionTo(config('galleries.view'));
     }
 
     /**
@@ -29,7 +29,7 @@ class GalleryPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->hasPermissionTo(config('galleries.create'));
     }
 
     /**
@@ -37,7 +37,7 @@ class GalleryPolicy
      */
     public function update(User $user, Gallery $gallery): bool
     {
-        return false;
+        return $user->hasPermissionTo(config('galleries.update'));
     }
 
     /**
@@ -45,7 +45,7 @@ class GalleryPolicy
      */
     public function delete(User $user, Gallery $gallery): bool
     {
-        return false;
+        return $user->hasPermissionTo(config('galleries.delete'));
     }
 
     /**
@@ -53,7 +53,7 @@ class GalleryPolicy
      */
     public function restore(User $user, Gallery $gallery): bool
     {
-        return false;
+        return $user->hasPermissionTo(config('galleries.delete'));
     }
 
     /**
@@ -61,6 +61,6 @@ class GalleryPolicy
      */
     public function forceDelete(User $user, Gallery $gallery): bool
     {
-        return false;
+        return $user->hasPermissionTo(config('galleries.delete'));
     }
 }

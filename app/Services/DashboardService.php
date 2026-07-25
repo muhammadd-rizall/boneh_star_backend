@@ -59,43 +59,55 @@ class DashboardService
         $totalTransactions = $this->transactionRepository->getStatistics()['total_transactions'];
         $avgRating = $this->reviewRepository->getStatistics()['average_rating'];
 
-        // 2. Recent Activities
-        $recentBookings = Booking::with('customer')
-            ->latest()
-            ->take(5)
-            ->get()
-            ->map(fn($b) => [
-                'icon' => 'CheckCircle2',
-                'color' => 'text-emerald-500',
-                'text' => "Pemesanan #{$b->booking_code} oleh {$b->customer->name} telah dibuat",
-                'time' => $b->created_at->diffForHumans()
-            ]);
+        // 2. Recent Activities (filtered by permissions)
+        $activities = collect();
+        $user = auth()->user();
 
-        $recentPayments = Payment::with('transaction.booking.customer')
-            ->where('status', 'pending')
-            ->latest()
-            ->take(3)
-            ->get()
-            ->map(fn($p) => [
-                'icon' => 'CreditCard',
-                'color' => 'text-sky-500',
-                'text' => "Pembayaran baru dari {$p->transaction->booking->customer->name} menunggu verifikasi",
-                'time' => $p->created_at->diffForHumans()
-            ]);
+        if ($user->can('bookings.view')) {
+            $recentBookings = Booking::with('customer')
+                ->latest()
+                ->take(5)
+                ->get()
+                ->map(fn($b) => [
+                    'icon' => 'CheckCircle2',
+                    'color' => 'text-emerald-500',
+                    'text' => "Pemesanan #{$b->booking_code} oleh {$b->customer->name} telah dibuat",
+                    'time' => $b->created_at->diffForHumans()
+                ]);
+            $activities = $activities->concat($recentBookings);
+        }
 
-        $recentQuotations = Quotation::with('booking.customer')
-            ->where('status', 'sent')
-            ->latest()
-            ->take(2)
-            ->get()
-            ->map(fn($q) => [
-                'icon' => 'AlertCircle',
-                'color' => 'text-amber-500',
-                'text' => "Penawaran #QT-{$q->id} telah dikirim ke {$q->booking->customer->name}",
-                'time' => $q->created_at->diffForHumans()
-            ]);
+        if ($user->can('payments.view')) {
+            $recentPayments = Payment::with('transaction.booking.customer')
+                ->where('status', 'pending')
+                ->latest()
+                ->take(3)
+                ->get()
+                ->map(fn($p) => [
+                    'icon' => 'CreditCard',
+                    'color' => 'text-sky-500',
+                    'text' => "Pembayaran baru dari {$p->transaction->booking->customer->name} menunggu verifikasi",
+                    'time' => $p->created_at->diffForHumans()
+                ]);
+            $activities = $activities->concat($recentPayments);
+        }
 
-        $activities = $recentBookings->concat($recentPayments)->concat($recentQuotations)
+        if ($user->can('quotations.view')) {
+            $recentQuotations = Quotation::with('booking.customer')
+                ->where('status', 'sent')
+                ->latest()
+                ->take(2)
+                ->get()
+                ->map(fn($q) => [
+                    'icon' => 'AlertCircle',
+                    'color' => 'text-amber-500',
+                    'text' => "Penawaran #QT-{$q->id} telah dikirim ke {$q->booking->customer->name}",
+                    'time' => $q->created_at->diffForHumans()
+                ]);
+            $activities = $activities->concat($recentQuotations);
+        }
+
+        $activities = $activities
             ->sortByDesc('time')
             ->take(5)
             ->values()

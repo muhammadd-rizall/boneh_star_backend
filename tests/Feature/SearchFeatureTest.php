@@ -17,7 +17,7 @@ test('admin can search buses by name or plat number', function () {
     $user = User::factory()->create();
     $permission = Permission::create(['name' => 'View Buses', 'slug' => 'buses.view', 'group' => 'buses']);
     $role = Role::create(['name' => 'Admin', 'slug' => 'admin']);
-    $role->permissions()->attach($permission);
+    $role->permissions()->attach([$permission->id]);
     $user->roles()->attach($role);
     $this->actingAs($user);
 
@@ -58,7 +58,7 @@ test('admin can search bookings by booking code or customer name', function () {
     $user = User::factory()->create();
     $permission = Permission::create(['name' => 'View Bookings', 'slug' => 'bookings.view', 'group' => 'bookings']);
     $role = Role::create(['name' => 'Admin', 'slug' => 'admin']);
-    $role->permissions()->attach($permission);
+    $role->permissions()->attach([$permission->id]);
     $user->roles()->attach($role);
     $this->actingAs($user);
 

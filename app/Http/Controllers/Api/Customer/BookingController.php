@@ -83,6 +83,10 @@ class BookingController extends BaseController
         $customerId = auth()->id();
         $booking = $this->bookingService->getCustomerBookingById($customerId, $id);
 
+        if ($booking->status === 'cancelled') {
+            return $this->sendError('Tidak dapat mengunggah bukti pembayaran untuk pemesanan yang telah dibatalkan.', [], 400);
+        }
+
         if (! $booking->transaction) {
             return $this->sendError('No active transaction found for this booking. Accept quotation first.', [], 400);
         }
@@ -91,8 +95,15 @@ class BookingController extends BaseController
             return $this->sendError('Tagihan untuk pemesanan ini sudah lunas.', [], 400);
         }
 
-        if ((float) $request->amount > (float) $booking->transaction->remaining_amount) {
-            return $this->sendError('Nominal pembayaran melebihi sisa tagihan.', [], 422);
+        $pendingPaymentsSum = $booking->transaction->payments()->where('status', 'pending')->sum('amount');
+        $effectiveRemaining = max(0, (float) $booking->transaction->remaining_amount - $pendingPaymentsSum);
+
+        if ($effectiveRemaining <= 0) {
+            return $this->sendError('Bukti pembayaran Anda sebelumnya sedang dalam proses verifikasi oleh admin.', [], 400);
+        }
+
+        if ((float) $request->amount > $effectiveRemaining) {
+            return $this->sendError('Nominal pembayaran melebihi sisa tagihan yang belum terverifikasi.', [], 422);
         }
 
         $data = $request->validated();

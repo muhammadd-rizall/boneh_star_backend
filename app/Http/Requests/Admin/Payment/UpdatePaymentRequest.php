@@ -8,7 +8,7 @@ class UpdatePaymentRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can(config('Permission.payments.update'));
+        return $this->user()->can(config('payments.update'));
     }
 
     public function rules(): array

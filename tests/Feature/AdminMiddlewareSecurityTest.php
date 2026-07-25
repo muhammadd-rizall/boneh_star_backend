@@ -70,3 +70,22 @@ test('active admin user with role can access dashboard and notifications', funct
         ->getJson('/api/admin/notifications')
         ->assertStatus(200);
 });
+
+test('active user with non-admin role cannot access admin dashboard or notifications', function () {
+    $driverRole = Role::create([
+        'name' => 'Driver',
+        'slug' => 'driver',
+        'is_active' => true,
+    ]);
+
+    $driverUser = User::factory()->create(['is_active' => true]);
+    $driverUser->roles()->attach($driverRole->id);
+
+    $this->actingAs($driverUser, 'sanctum')
+        ->getJson('/api/admin/dashboard')
+        ->assertStatus(403);
+
+    $this->actingAs($driverUser, 'sanctum')
+        ->getJson('/api/admin/notifications')
+        ->assertStatus(403);
+});
