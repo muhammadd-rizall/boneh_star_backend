@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['name', 'min_capacity', 'max_capacity', 'description'])]
+#[Fillable(['name', 'min_capacity', 'max_capacity', 'price_inside_min', 'price_inside_max', 'price_outside', 'description'])]
 class BusCategory extends Model
 {
     /** @use HasFactory<BusCategoryFactory> */
@@ -25,6 +25,9 @@ class BusCategory extends Model
         return [
             'min_capacity' => 'integer',
             'max_capacity' => 'integer',
+            'price_inside_min' => 'integer',
+            'price_inside_max' => 'integer',
+            'price_outside' => 'integer',
         ];
     }
 }

@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('name');
             $table->integer('min_capacity');
             $table->integer('max_capacity');
+            $table->integer('price_inside_min')->nullable();
+            $table->integer('price_inside_max')->nullable();
+            $table->integer('price_outside')->nullable();
             $table->text('description')->nullable();
             $table->softDeletes();
             $table->timestamps();

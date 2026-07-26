@@ -26,6 +26,9 @@ class UpdateBusCategoryRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'min_capacity' => ['required', 'integer', 'min:1'],
             'max_capacity' => ['required', 'integer', 'min:1', 'gte:min_capacity'],
+            'price_inside_min' => ['nullable', 'integer', 'min:0'],
+            'price_inside_max' => ['nullable', 'integer', 'min:0', 'gte:price_inside_min'],
+            'price_outside' => ['nullable', 'integer', 'min:0'],
             'description' => ['nullable', 'string', 'max:1000'],
         ];
     }
