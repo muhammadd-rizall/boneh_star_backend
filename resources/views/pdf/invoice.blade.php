@@ -252,7 +252,7 @@
                     <div class="info-title">PENGIRIM:</div>
                     <strong>{{ $profile->company_name ?? 'PO Boneh Star' }}</strong><br>
                     Layanan Sewa Bus Pariwisata<br>
-                    Tipe Armada: Big Bus, Medium Bus, Mini Bus<br>
+                    Tipe Armada: Big Bus, Medium Bus<br>
                     Rute Dalam & Luar Kota
                 </td>
             </tr>
@@ -277,7 +277,7 @@
                     <td>
                         <strong>Rute:</strong> {{ $booking->origin }} - {{ $booking->full_route }}<br>
                         <strong>Keberangkatan:</strong> {{ $booking->departure_date->format('d/m/Y') }}<br>
-                        <strong>Kepulangan:</strong> {{ $booking->return_date->format('d/m/Y') }}
+                        <strong>Kepulangan:</strong> {{ $booking->return_date ? $booking->return_date->format('d/m/Y') : '1 Hari Perjalanan' }}
                     </td>
                     <td style="text-align: right; font-weight: bold;">
                         Rp {{ number_format($transaction->total_amount, 0, ',', '.') }}

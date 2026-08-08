@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\Booking;
 use App\Models\Quotation;
 use App\Notifications\Channels\SystemChannel;
 use Illuminate\Bus\Queueable;
@@ -31,8 +32,8 @@ class QuotationUpdated extends Notification
             'title' => $title,
             'message' => $message,
             'type' => 'quotation',
-            'reference_type' => Quotation::class,
-            'reference_id' => $this->quotation->id,
+            'reference_type' => Booking::class,
+            'reference_id' => $this->quotation->booking_id,
         ];
     }
 }

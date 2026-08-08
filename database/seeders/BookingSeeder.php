@@ -265,8 +265,8 @@ class BookingSeeder extends Seeder
                     'title' => 'Pembayaran Masuk',
                     'message' => "Customer {$customer->name} mengunggah bukti bayar DP untuk invoice {$transaction->invoice_number}.",
                     'type' => 'payment',
-                    'reference_type' => Payment::class,
-                    'reference_id' => null, // or payment id
+                    'reference_type' => Booking::class,
+                    'reference_id' => $booking->id,
                     'is_read' => false
                 ]);
             } elseif ($subType === 'verified') {
@@ -288,8 +288,8 @@ class BookingSeeder extends Seeder
                     'title' => 'Pembayaran Terverifikasi',
                     'message' => "Pembayaran DP Anda untuk invoice {$transaction->invoice_number} telah disetujui admin.",
                     'type' => 'payment',
-                    'reference_type' => Payment::class,
-                    'reference_id' => $payment->id,
+                    'reference_type' => Booking::class,
+                    'reference_id' => $booking->id,
                     'is_read' => false
                 ]);
             }

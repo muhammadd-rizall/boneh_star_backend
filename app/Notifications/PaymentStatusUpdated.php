@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\Booking;
 use App\Models\Payment;
 use App\Notifications\Channels\SystemChannel;
 use Illuminate\Bus\Queueable;
@@ -30,8 +31,8 @@ class PaymentStatusUpdated extends Notification
             'title' => "Status Pembayaran {$paymentType} {$statusText}",
             'message' => "Pembayaran Anda {$statusText}{$rejectionReason}",
             'type' => 'payment',
-            'reference_type' => Payment::class,
-            'reference_id' => $this->payment->id,
+            'reference_type' => Booking::class,
+            'reference_id' => $this->payment->transaction?->booking_id,
         ];
     }
 }

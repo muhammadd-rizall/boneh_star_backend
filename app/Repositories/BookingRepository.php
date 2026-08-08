@@ -159,7 +159,8 @@ class BookingRepository extends BaseRepository
 
     public function getCustomerBookingById(string $customerId, string $id)
     {
-        return $this->model->where('customer_id', $customerId)
+        // Try finding by Booking ID directly
+        $booking = $this->model->where('customer_id', $customerId)
             ->with([
                 'activity', 
                 'routeType', 
@@ -171,6 +172,29 @@ class BookingRepository extends BaseRepository
                 'transaction.payments', 
                 'review'
             ])
-            ->findOrFail($id);
+            ->find($id);
+
+        if ($booking) {
+            return $booking;
+        }
+
+        // Fallback: check if ID belongs to a Quotation
+        $quotation = \App\Models\Quotation::find($id);
+        if ($quotation && $quotation->booking) {
+            $resolvedBookingId = $quotation->booking_id;
+            return $this->getCustomerBookingById($customerId, $resolvedBookingId);
+        }
+
+        // Fallback: check if ID belongs to a Payment
+        $payment = \App\Models\Payment::find($id);
+        if ($payment && $payment->transaction) {
+            $resolvedBookingId = $payment->transaction->booking_id;
+            return $this->getCustomerBookingById($customerId, $resolvedBookingId);
+        }
+
+        // Throw standard exception if not found
+        throw (new \Illuminate\Database\Eloquent\ModelNotFoundException)->setModel(
+            get_class($this->model), [$id]
+        );
     }
 }
