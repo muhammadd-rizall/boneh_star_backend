@@ -145,6 +145,15 @@ class BookingController extends BaseController
             return $this->sendError('This booking cannot be cancelled in its current state', [], 400);
         }
 
+        if ($booking->transaction) {
+            $hasPayments = $booking->transaction->payments()
+                ->whereIn('status', ['pending', 'verified'])
+                ->exists();
+            if ($hasPayments) {
+                return $this->sendError('Tidak dapat membatalkan pemesanan karena Anda telah mengirimkan bukti pembayaran. Silakan hubungi admin untuk pembatalan.', [], 400);
+            }
+        }
+
         $this->bookingService->updateBooking($id, [
             'status' => 'cancelled',
             'cancelled_by' => 'customer',
