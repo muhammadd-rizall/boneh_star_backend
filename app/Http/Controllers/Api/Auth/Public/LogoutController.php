@@ -14,7 +14,7 @@ class LogoutController extends BaseController
 
         return response()->json([
             'success' => true,
-            'message' => 'Logged out successfully',
+            'message' => 'Berhasil keluar',
         ], 200);
     }
 }

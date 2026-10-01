@@ -28,6 +28,16 @@ class ActivityTypeController extends BaseController
 
         $statistics = $this->activityTypeService->getStatistics();
 
+        if ($request->query('all') === 'true') {
+            $activity = $this->activityTypeService->getAllActivityTypes();
+            return response()->json([
+                'success' => true,
+                'statistic' => $statistics,
+                'data' => ActivityTypeResource::collection($activity),
+                'message' => 'Activity retrieved successfully',
+            ], 200);
+        }
+
         $activity = $this->activityTypeService->getPaginatedActivityTypes(10, $request->query('search'));
 
         return response()->json([

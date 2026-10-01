@@ -28,6 +28,16 @@ class CustomerController extends BaseController
 
         $statistics = $this->customerService->getStatistics();
 
+        if ($request->query('all') === 'true') {
+            $customers = $this->customerService->getAllCustomers();
+            return response()->json([
+                'success' => true,
+                'statistic' => $statistics,
+                'data' => CustomerResource::collection($customers),
+                'message' => 'Customers retrieved successfully',
+            ], 200);
+        }
+
         $customers = $this->customerService->getPaginatedCustomers(10, $request->query('search'));
 
         return response()->json([

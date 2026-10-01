@@ -176,7 +176,7 @@ class BookingController extends BaseController
         }
 
         $today = now()->startOfDay();
-        $returnDate = $booking->return_date->startOfDay();
+        $returnDate = ($booking->return_date ?? $booking->departure_date)->startOfDay();
         if ($today->lt($returnDate)) {
             return $this->sendError('Perjalanan belum berakhir. Anda baru dapat menyelesaikan pemesanan pada tanggal kepulangan.', [], 400);
         }

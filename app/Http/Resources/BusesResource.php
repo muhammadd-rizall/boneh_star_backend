@@ -23,6 +23,7 @@ class BusesResource extends JsonResource
             'brand' => $this->brand,
             'status' => $this->status,
             'notes' => $this->notes,
+            'is_available_on_dates' => $this->is_available_on_dates ?? null,
             'category' => new BusCategoriesResource($this->whenLoaded('category')),
             'facilities' => BusFacilitiesResource::collection($this->whenLoaded('facilities')),
             'images' => $this->whenLoaded('images', function () {

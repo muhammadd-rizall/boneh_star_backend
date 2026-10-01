@@ -20,7 +20,7 @@ class LoginController extends BaseController
         if (! auth()->guard('customer')->attempt($request->only('email', 'password'))) {
             return response()->json([
                 'success' => false,
-                'message' => 'The provided credentials are incorrect.',
+                'message' => 'Email atau password yang Anda masukkan salah.',
             ], 401);
         }
 
@@ -32,7 +32,7 @@ class LoginController extends BaseController
 
             return response()->json([
                 'success' => false,
-                'message' => 'Your account is inactive. Please contact support.',
+                'message' => 'Akun Anda tidak aktif. Silakan hubungi dukungan pelanggan.',
             ], 403);
         }
 
@@ -41,7 +41,7 @@ class LoginController extends BaseController
 
         return response()->json([
             'success' => true,
-            'message' => 'Logged in successfully',
+            'message' => 'Berhasil masuk',
             'data' => [
                 'user' => new CustomerResource($customer),
                 'token' => $token,

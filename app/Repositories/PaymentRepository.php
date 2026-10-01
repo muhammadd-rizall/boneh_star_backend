@@ -14,7 +14,7 @@ class PaymentRepository extends BaseRepository
 
     public function getPaginatedPayments(int $perPage = 10, ?string $search = null)
     {
-        $query = $this->model->with(['transaction', 'paymentMethod', 'verifiedBy']);
+        $query = $this->model->with(['transaction.booking.customer', 'paymentMethod', 'verifiedBy']);
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -32,7 +32,7 @@ class PaymentRepository extends BaseRepository
 
     public function getTrashedPayments()
     {
-        return $this->model->onlyTrashed()->with(['transaction', 'paymentMethod', 'verifiedBy'])->latest()->get();
+        return $this->model->onlyTrashed()->with(['transaction.booking.customer', 'paymentMethod', 'verifiedBy'])->latest()->get();
     }
 
     /**

@@ -29,6 +29,16 @@ class RouteTypeController extends BaseController
 
         $statistics = $this->routeTypeService->getStatistics();
 
+        if ($request->query('all') === 'true') {
+            $route = $this->routeTypeService->getAllRouteTypes();
+            return response()->json([
+                'success' => true,
+                'statistic' => $statistics,
+                'data' => RouteTypeResource::collection($route),
+                'message' => 'Route retrieved successfully',
+            ], 200);
+        }
+
         $route = $this->routeTypeService->getPaginatedRouteTypes(10, $request->query('search'));
 
         return response()->json([

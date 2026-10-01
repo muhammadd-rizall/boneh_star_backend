@@ -28,7 +28,7 @@ class RegisterController extends BaseController
 
         return response()->json([
             'success' => true,
-            'message' => 'Registered successfully',
+            'message' => 'Registrasi berhasil',
             'data' => [
                 'user' => new CustomerResource($customer),
             ],

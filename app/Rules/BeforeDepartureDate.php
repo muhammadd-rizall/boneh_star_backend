@@ -28,11 +28,21 @@ class BeforeDepartureDate implements ValidationRule
             return;
         }
 
-        $paymentDate = strtotime($value);
-        $departureDate = strtotime($booking->departure_date->format('Y-m-d'));
+        // Gunakan format Y-m-d murni untuk menghindari efek timezone
+        $paymentDate   = $value; // sudah string 'Y-m-d' dari input
+        $departureDate = $booking->departure_date->format('Y-m-d');
+        $today         = now()->format('Y-m-d');
 
+        // 1. Check if declared payment date is before departure date
         if ($paymentDate >= $departureDate) {
             $fail('Tanggal pembayaran harus sebelum hari keberangkatan armada.');
+            return;
+        }
+
+        // 2. Check if today's date is before departure date
+        if ($today >= $departureDate) {
+            $fail('Batas waktu pembayaran telah habis (harus sebelum hari keberangkatan armada).');
+            return;
         }
     }
 }

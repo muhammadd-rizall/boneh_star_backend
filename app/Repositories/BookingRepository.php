@@ -14,13 +14,13 @@ class BookingRepository extends BaseRepository
 
     public function getAllBooking()
     {
-        return $this->model->with(['customer', 'activity', 'routeType', 'bookingBuses.bus', 'bookingBuses.driver'])->get();
+        return $this->model->with(['customer', 'activity', 'routeType', 'bookingBuses.bus.category', 'bookingBuses.driver'])->latest()->get();
     }
 
     public function getPaginatedBooking(int $perPage = 10, ?string $search = null)
     {
-        $query = $this->model->with(['customer', 'activity', 'routeType', 'bookingBuses.bus', 'bookingBuses.driver']);
-
+        $query = $this->model->with(['customer', 'activity', 'routeType', 'bookingBuses.bus.category', 'bookingBuses.driver']);
+        
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('booking_code', 'like', "%{$search}%")
@@ -36,7 +36,7 @@ class BookingRepository extends BaseRepository
 
     public function getBookingById(string $id)
     {
-        return $this->model->with(['customer', 'activity', 'routeType', 'bookingBuses.bus', 'bookingBuses.driver', 'quotation', 'transaction.payments'])->findOrFail($id);
+        return $this->model->with(['customer', 'activity', 'routeType', 'bookingBuses.bus.category', 'bookingBuses.driver', 'quotation', 'transaction.payments'])->findOrFail($id);
     }
 
     public function getStatistics()
@@ -86,7 +86,7 @@ class BookingRepository extends BaseRepository
             });
         }
 
-        return $query->orderBy('departure_date', 'desc')->get();
+        return $query->orderBy('created_at', 'desc')->get();
     }
 
     /**

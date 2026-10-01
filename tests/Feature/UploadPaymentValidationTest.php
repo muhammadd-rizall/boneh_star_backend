@@ -118,3 +118,104 @@ test('customer can upload valid payment within remaining amount limit', function
 
     $response->assertStatus(200);
 });
+
+test('customer cannot upload payment amount different from required dp amount', function () {
+    $this->actingAs($this->customer, 'sanctum');
+
+    $file = UploadedFile::fake()->image('receipt.jpg');
+
+    // Case 1: Less than required DP
+    $response = $this->postJson("/api/customer/bookings/{$this->booking->id}/upload-payment", [
+        'payment_method_id' => $this->paymentMethod->id,
+        'amount' => 300000, // dp_amount is 500000
+        'payment_type' => 'dp',
+        'payment_date' => now()->format('Y-m-d'),
+        'transfer_proof' => $file,
+    ]);
+
+    $response->assertStatus(422)
+        ->assertJsonValidationErrors(['amount']);
+
+    // Case 2: Greater than required DP
+    $response2 = $this->postJson("/api/customer/bookings/{$this->booking->id}/upload-payment", [
+        'payment_method_id' => $this->paymentMethod->id,
+        'amount' => 600000, // dp_amount is 500000
+        'payment_type' => 'dp',
+        'payment_date' => now()->format('Y-m-d'),
+        'transfer_proof' => $file,
+    ]);
+
+    $response2->assertStatus(422)
+        ->assertJsonValidationErrors(['amount']);
+});
+
+test('customer cannot upload payment amount different from remaining amount for settlement', function () {
+    $this->actingAs($this->customer, 'sanctum');
+
+    $file = UploadedFile::fake()->image('receipt.jpg');
+
+    $response = $this->postJson("/api/customer/bookings/{$this->booking->id}/upload-payment", [
+        'payment_method_id' => $this->paymentMethod->id,
+        'amount' => 1500000, // remaining_amount is 2000000
+        'payment_type' => 'settlement',
+        'payment_date' => now()->format('Y-m-d'),
+        'transfer_proof' => $file,
+    ]);
+
+    $response->assertStatus(422)
+        ->assertJsonValidationErrors(['amount']);
+});
+
+test('customer cannot upload another dp if one is already pending or verified', function () {
+    // Create an existing DP payment
+    $this->transaction->payments()->create([
+        'payment_method_id' => $this->paymentMethod->id,
+        'amount' => 500000,
+        'payment_type' => 'dp',
+        'payment_date' => now()->format('Y-m-d'),
+        'transfer_proof' => 'receipt.jpg',
+        'status' => 'pending',
+    ]);
+
+    $this->actingAs($this->customer, 'sanctum');
+
+    $file = UploadedFile::fake()->image('receipt2.jpg');
+
+    $response = $this->postJson("/api/customer/bookings/{$this->booking->id}/upload-payment", [
+        'payment_method_id' => $this->paymentMethod->id,
+        'amount' => 500000,
+        'payment_type' => 'dp',
+        'payment_date' => now()->format('Y-m-d'),
+        'transfer_proof' => $file,
+    ]);
+
+    $response->assertStatus(422)
+        ->assertJsonValidationErrors(['payment_type']);
+});
+
+test('customer cannot upload another payment if a settlement is already pending or verified', function () {
+    // Create an existing Settlement payment
+    $this->transaction->payments()->create([
+        'payment_method_id' => $this->paymentMethod->id,
+        'amount' => 2000000,
+        'payment_type' => 'settlement',
+        'payment_date' => now()->format('Y-m-d'),
+        'transfer_proof' => 'receipt.jpg',
+        'status' => 'pending',
+    ]);
+
+    $this->actingAs($this->customer, 'sanctum');
+
+    $file = UploadedFile::fake()->image('receipt2.jpg');
+
+    $response = $this->postJson("/api/customer/bookings/{$this->booking->id}/upload-payment", [
+        'payment_method_id' => $this->paymentMethod->id,
+        'amount' => 500000,
+        'payment_type' => 'dp',
+        'payment_date' => now()->format('Y-m-d'),
+        'transfer_proof' => $file,
+    ]);
+
+    $response->assertStatus(422)
+        ->assertJsonValidationErrors(['payment_type']);
+});

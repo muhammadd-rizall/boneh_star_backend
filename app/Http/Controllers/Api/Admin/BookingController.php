@@ -26,8 +26,19 @@ class BookingController extends BaseController
     {
         $this->authorize('viewAny', Booking::class);
 
-        $bookings = $this->bookingService->getPaginatedBooking(10, $request->query('search'));
         $statistics = $this->bookingService->getBookingStatistics();
+
+        if ($request->query('all') === 'true') {
+            $bookings = $this->bookingService->getAllBooking();
+            return response()->json([
+                'success' => true,
+                'data' => BookingResource::collection($bookings),
+                'statistics' => $statistics,
+                'message' => 'Bookings retrieved successfully',
+            ]);
+        }
+
+        $bookings = $this->bookingService->getPaginatedBooking(10, $request->query('search'));
 
         return response()->json([
             'success' => true,

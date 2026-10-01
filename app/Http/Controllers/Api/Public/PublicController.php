@@ -47,6 +47,27 @@ class PublicController extends BaseController
     {
         $buses = $this->busesService->getPaginatedBuses($request->get('per_page', 12), $request->get('search'));
 
+        $startDate = $request->query('start_date');
+        $endDate = $request->query('end_date');
+
+        if ($startDate && $endDate) {
+            $conflictingBusIds = \App\Models\BookingBus::whereHas('booking', function ($query) use ($startDate, $endDate) {
+                $query->whereIn('status', ['pending', 'quoted', 'confirmed', 'ongoing'])
+                    ->where(function ($q) use ($startDate, $endDate) {
+                        $q->whereBetween('departure_date', [$startDate, $endDate])
+                            ->orWhereBetween('return_date', [$startDate, $endDate])
+                            ->orWhere(function ($inner) use ($startDate, $endDate) {
+                                $inner->where('departure_date', '<=', $startDate)
+                                    ->where('return_date', '>=', $endDate);
+                            });
+                    });
+            })->pluck('bus_id')->toArray();
+
+            foreach ($buses as $bus) {
+                $bus->is_available_on_dates = !in_array($bus->id, $conflictingBusIds);
+            }
+        }
+
         return $this->sendResponse(
             BusesResource::collection($buses)->response()->getData(true),
             'Buses retrieved successfully'

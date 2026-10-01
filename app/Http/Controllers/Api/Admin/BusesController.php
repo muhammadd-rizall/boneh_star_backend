@@ -28,6 +28,16 @@ class BusesController extends BaseController
 
         $statistics = $this->busesService->getStatistics();
 
+        if ($request->query('all') === 'true') {
+            $buses = $this->busesService->getAllBuses();
+            return response()->json([
+                'success' => true,
+                'statistic' => $statistics,
+                'data' => BusesResource::collection($buses),
+                'message' => 'Buses retrieved successfully',
+            ], 200);
+        }
+
         $buses = $this->busesService->getPaginatedBuses(10, $request->query('search'));
 
         return response()->json([

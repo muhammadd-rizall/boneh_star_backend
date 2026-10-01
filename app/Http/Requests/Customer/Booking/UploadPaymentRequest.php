@@ -35,17 +35,78 @@ class UploadPaymentRequest extends FormRequest
                 return;
             }
 
-            $booking = \App\Models\Booking::with('transaction')->find($bookingId);
+            $booking = \App\Models\Booking::with(['transaction.quotation', 'transaction.payments'])->find($bookingId);
             if (! $booking || ! $booking->transaction) {
                 return;
             }
 
             $transaction = $booking->transaction;
             $amount = (float) $this->input('amount');
+            $paymentType = $this->input('payment_type');
+            
+            $dpFromQuotation = (float) ($transaction->quotation->dp_amount ?? 0);
+            $dpFallback      = round((float) $transaction->total_amount * 0.3);
+            \Log::info("UPLOAD PAYMENT DIAGNOSTIC:", [
+                'input_amount'        => $amount,
+                'input_payment_type'  => $paymentType,
+                'input_payment_date'  => $this->input('payment_date'),
+                'departure_date'      => $booking->departure_date->format('Y-m-d'),
+                'quotation_loaded'    => $transaction->quotation ? 'yes' : 'null',
+                'dp_amount_quotation' => $dpFromQuotation,
+                'dp_amount_fallback'  => $dpFallback,
+                'remaining_amount'    => (float) $transaction->total_amount,
+            ]);
 
             if ($transaction->remaining_amount <= 0 || $transaction->status === 'fully_paid') {
                 $validator->errors()->add('amount', 'Tagihan untuk pemesanan ini sudah lunas.');
                 return;
+            }
+
+            // Check existing payments
+            $payments = $transaction->payments;
+            $hasDp = $payments->whereIn('status', ['pending', 'verified'])->where('payment_type', 'dp')->count() > 0;
+            $hasSettlement = $payments->whereIn('status', ['pending', 'verified'])->where('payment_type', 'settlement')->count() > 0;
+
+            if ($hasSettlement) {
+                $validator->errors()->add('payment_type', 'Pembayaran pelunasan sudah diunggah dan sedang dalam proses verifikasi atau telah disetujui.');
+                return;
+            }
+
+            if ($paymentType === 'dp') {
+                if ($hasDp) {
+                    $validator->errors()->add('payment_type', 'Pembayaran uang muka (DP) sudah dilakukan atau sedang menunggu verifikasi. Silakan pilih kategori Pelunasan.');
+                    return;
+                }
+
+                $dpAmountFromQuotation = (float) ($transaction->quotation->dp_amount ?? 0);
+                // Fallback ke 30% total jika dp_amount belum diset di quotation
+                $requiredDp = $dpAmountFromQuotation > 0
+                    ? $dpAmountFromQuotation
+                    : round((float) $transaction->total_amount * 0.3);
+
+                if ($requiredDp <= 0) {
+                    $validator->errors()->add('amount', 'Jumlah DP tidak dapat ditentukan. Silakan hubungi admin.');
+                    return;
+                }
+
+                if (abs($amount - $requiredDp) > 0.01) {
+                    $validator->errors()->add(
+                        'amount',
+                        'Jumlah pembayaran uang muka (DP) harus tepat sebesar Rp ' . number_format($requiredDp, 0, ',', '.') . '.'
+                    );
+                    return;
+                }
+            }
+
+            if ($paymentType === 'settlement') {
+                $remaining = (float) $transaction->remaining_amount;
+                if (abs($amount - $remaining) > 0.01) {
+                    $validator->errors()->add(
+                        'amount',
+                        'Jumlah pembayaran pelunasan harus tepat sebesar sisa tagihan (Rp ' . number_format($remaining, 0, ',', '.') . ').'
+                    );
+                    return;
+                }
             }
 
             if ($amount > (float) $transaction->remaining_amount) {

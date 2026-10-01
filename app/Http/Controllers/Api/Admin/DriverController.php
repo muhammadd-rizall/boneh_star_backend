@@ -27,6 +27,17 @@ class DriverController extends BaseController
         $this->authorize('viewAny', Driver::class);
 
         $statistics = $this->driverService->getStatistics();
+
+        if ($request->query('all') === 'true') {
+            $drivers = $this->driverService->getAllDrivers();
+            return response()->json([
+                'success' => true,
+                'statistic' => $statistics,
+                'data' => DriverResource::collection($drivers),
+                'message' => 'Drivers retrieved successfully',
+            ], 200);
+        }
+
         $drivers = $this->driverService->getPaginatedDrivers(10, $request->query('search'));
 
         return response()->json([
